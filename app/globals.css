@@ -222,9 +222,126 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
+.simple-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, .75fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.simple-dashboard__call,
+.simple-card {
+  background: rgba(14,23,36,.94);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.simple-dashboard__call {
+  border-left-width: 5px;
+}
+
+.simple-dashboard__side {
+  display: grid;
+  gap: 14px;
+}
+
+.candidate-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.candidate-bars__row {
+  display: grid;
+  grid-template-columns: minmax(112px, .28fr) minmax(0, 1fr) 64px;
+  gap: 10px;
+  align-items: center;
+}
+
+.candidate-bars__track {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.candidate-bars__track > div {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.simple-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, .8fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.province-popularity {
+  display: grid;
+  gap: 8px;
+  max-height: 500px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.province-popularity__row {
+  display: grid;
+  grid-template-columns: minmax(112px, .8fr) repeat(5, minmax(58px, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid rgba(28,42,58,.9);
+  border-radius: 8px;
+  background: rgba(18,28,44,.52);
+}
+
+.sentiment-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.model-details {
+  margin-top: 16px;
+  border: 1px solid rgba(245,196,0,.32);
+  border-radius: 10px;
+  background: rgba(4,9,13,.48);
+  padding: 0 16px 16px;
+}
+
+.model-details > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 0;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.model-details > summary::-webkit-details-marker {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .zambia-map-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .simple-dashboard,
+  .simple-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sentiment-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .province-popularity__row {
+    grid-template-columns: minmax(96px, .7fr) repeat(5, minmax(54px, 1fr));
+    overflow-x: auto;
   }
 
   .operator-lens {
@@ -283,6 +400,14 @@ body {
 
   .undecided-model__cards {
     grid-template-columns: 1fr !important;
+  }
+
+  .candidate-bars__row {
+    grid-template-columns: minmax(90px, .4fr) minmax(0, 1fr) 54px;
+  }
+
+  .sentiment-strip {
+    grid-template-columns: 1fr;
   }
 }
 

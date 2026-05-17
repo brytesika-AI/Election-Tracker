@@ -446,11 +446,8 @@ export default function Dashboard() {
   }))
 
   const pollData = [
-    { name: 'HH (UPND)',         value: 47.2, color: C.upnd },
-    { name: 'Mundubile + Makebi', value: 20.3, color: C.pf   },
-    { name: "M'membe (SP)",      value: 4.1,  color: C.sp   },
-    { name: 'Kalaba (CF)',       value: 3.8,  color: C.dp   },
-    { name: 'Undecided/Other',   value: 24.6, color: C.muted},
+    ...ELECTION_DATA.figures.map(f => ({ name: `${f.shortName} (${f.party.split(' ')[0]})`, value: f.poll, color: f.color })),
+    { name: 'Undecided/Other',   value: ELECTION_DATA.nationalPoll.others_undecided, color: C.muted},
   ]
 
   const platData = ELECTION_DATA.platforms.map((p, i) => ({
@@ -471,6 +468,47 @@ export default function Dashboard() {
   const provData = ELECTION_DATA.provinces.map(p => ({
     name: p.name, 'Voters (K)': Math.round(p.voters / 1000),
     color: p.lean === 'UPND' ? C.upnd : p.lean === 'PF' ? C.pf : C.gold,
+  }))
+  const sortedFigures = [...ELECTION_DATA.figures].sort((a, b) => b.poll - a.poll)
+  const leader = sortedFigures[0]
+  const runnerUp = sortedFigures[1]
+  const nationalAccounted = ELECTION_DATA.figures.reduce((sum, f) => sum + f.poll, 0)
+  const outrightStatus = leader.poll > ELECTION_DATA.presidentialThreshold
+    ? `${leader.shortName} above first-round gate`
+    : 'No outright winner yet'
+  const runoffData = [
+    { name: leader.shortName, value: leader.poll, color: leader.color, note: `${firstRoundGap.toFixed(1)} pts short of 50%+1` },
+    { name: runnerUp.shortName, value: runnerUp.poll, color: runnerUp.color, note: `${(leader.poll - runnerUp.poll).toFixed(1)} pts behind leader` },
+    { name: 'All others', value: Math.max(0, nationalAccounted - leader.poll - runnerUp.poll), color: C.gold, note: 'Minor candidates and issue lanes' },
+    { name: 'Undecided', value: ELECTION_DATA.nationalPoll.others_undecided, color: C.muted, note: 'Available pool before first round' },
+  ]
+  const provincePopularity = ELECTION_DATA.provinces.map((p) => {
+    const kalaba = Math.max(1, Math.min(8, p.name === 'Luapula' ? 7 : p.name === 'Eastern' ? 5 : Math.round(ELECTION_DATA.nationalPoll.kalaba_cf)))
+    const membe = Math.max(2, Math.min(9, ['Copperbelt', 'Lusaka'].includes(p.name) ? 6 : Math.round(ELECTION_DATA.nationalPoll.membe_sp)))
+    const kateka = Math.max(1, Math.min(3, ['Lusaka', 'Central'].includes(p.name) ? 2 : 1))
+    const allocated = p.upnd + p.pf + kalaba + membe + kateka
+    return {
+      ...p,
+      hh: p.upnd,
+      mundubile: p.pf,
+      kalaba,
+      membe,
+      kateka,
+      undecided: Math.max(0, 100 - allocated),
+      mood: p.lean === 'UPND' ? 'Government advantage' : p.lean === 'PF' ? 'Opposition pressure' : 'Competitive / persuadable',
+      sentiment: p.lean === 'UPND' ? 58 : p.lean === 'PF' ? 44 : 50,
+    }
+  })
+  const strongholdSplit = [
+    { label: 'UPND anchors', provinces: 'Southern, Western, North-Western, Central', value: 4, color: C.upnd },
+    { label: 'Opposition anchors', provinces: 'Northern, Luapula, Muchinga, Copperbelt', value: 4, color: C.pf },
+    { label: 'True battleground', provinces: 'Lusaka and Copperbelt urban margins', value: 2, color: C.gold },
+  ]
+  const sentimentByProvince = provincePopularity.map(p => ({
+    name: p.name,
+    score: p.sentiment,
+    mood: p.mood,
+    color: p.sentiment >= 55 ? C.teal : p.sentiment <= 45 ? C.warn : C.gold,
   }))
 
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
@@ -783,6 +821,131 @@ export default function Dashboard() {
         </div>
 
         {/* ── KPI ROW ─────────────────────────────────────── */}
+        <SectionLabel layer="ELECTION BOARD" title="Simple Zambia 2026 Dashboard"
+          sub="The model runs behind the scenes; this front view keeps the election call, rerun gate, provinces, strongholds and voter mood easy to read." />
+        <div className="simple-dashboard">
+          <div className="simple-dashboard__call" style={{ borderColor: leader.color }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'start', marginBottom: 18 }}>
+              <div>
+                <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>OUTRIGHT WINNER</div>
+                <h2 style={{ color: C.text, fontSize: 34, lineHeight: 1.02, margin: '8px 0 6px', fontWeight: 950 }}>{outrightStatus}</h2>
+                <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.6 }}>
+                  {leader.shortName} leads the model, but Zambia requires more than 50% of valid votes. The public call stays at lead, not first-round win, until that gate clears.
+                </div>
+              </div>
+              <CandidatePhoto photo={leader.photo} shortName={leader.shortName} color={leader.color} size={72} />
+            </div>
+            <div className="candidate-bars">
+              {sortedFigures.map(f => (
+                <div key={f.id} className="candidate-bars__row">
+                  <div style={{ minWidth: 112 }}>
+                    <div style={{ color: f.color, fontSize: 12, fontWeight: 900 }}>{f.shortName}</div>
+                    <div style={{ color: C.muted, fontSize: 9 }}>{f.party}</div>
+                  </div>
+                  <div className="candidate-bars__track">
+                    <div style={{ width: `${Math.min(100, f.poll * 1.75)}%`, background: f.color }} />
+                  </div>
+                  <div style={{ color: C.text, fontSize: 16, fontWeight: 950, minWidth: 56, textAlign: 'right' }}>{f.poll.toFixed(1)}%</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="simple-dashboard__side">
+            <div className="simple-card">
+              <div style={{ color: C.warn, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>RERUN FIGURES</div>
+              <div style={{ color: C.text, fontSize: 24, fontWeight: 950, marginTop: 8 }}>{firstRoundGap.toFixed(1)} pts short</div>
+              <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, margin: '6px 0 12px' }}>If no candidate crosses 50%+1, the model shifts to a runoff-transfer view.</div>
+              {runoffData.map(item => (
+                <div key={item.name} style={{ marginBottom: 9 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                    <span style={{ color: item.color, fontSize: 11, fontWeight: 900 }}>{item.name}</span>
+                    <span style={{ color: C.text, fontSize: 11, fontWeight: 900 }}>{item.value.toFixed(1)}%</span>
+                  </div>
+                  <div style={{ height: 7, borderRadius: 999, background: C.line, overflow: 'hidden', margin: '4px 0' }}>
+                    <div style={{ width: `${Math.min(100, item.value * 1.8)}%`, background: item.color, height: '100%' }} />
+                  </div>
+                  <div style={{ color: C.muted, fontSize: 9 }}>{item.note}</div>
+                </div>
+              ))}
+            </div>
+            <div className="simple-card">
+              <div style={{ color: C.teal, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>QUICK READ</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10 }}>
+                <KpiCard label="LEADER" value={leader.shortName} sub={leader.name} borderColor={leader.color} />
+                <KpiCard label="NEXT CANDIDATE" value={runnerUp.shortName} sub={runnerUp.name} borderColor={runnerUp.color} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="simple-grid">
+          <ChartCard title="POPULARITY PER PRESIDENTIAL CANDIDATE PER PROVINCE" sub="Clean province readout; detailed weighting is kept in the model layer">
+            <div className="province-popularity">
+              {provincePopularity.map(p => (
+                <div key={p.name} className="province-popularity__row">
+                  <div>
+                    <div style={{ color: C.text, fontSize: 12, fontWeight: 900 }}>{p.name}</div>
+                    <div style={{ color: C.muted, fontSize: 9 }}>{Math.round(p.voters / 1000)}k voters</div>
+                  </div>
+                  {[
+                    ['HH', p.hh, C.upnd],
+                    ['BM/MZ', p.mundubile, C.pf],
+                    ['HK', p.kalaba, C.dp],
+                    ['FM', p.membe, C.sp],
+                    ['CK', p.kateka, '#8E44AD'],
+                  ].map(([name, value, color]) => (
+                    <div key={`${p.name}-${name}`} style={{ minWidth: 58 }}>
+                      <div style={{ color: color as string, fontSize: 10, fontWeight: 900 }}>{name}</div>
+                      <div style={{ height: 6, borderRadius: 999, background: C.line, overflow: 'hidden', marginTop: 4 }}>
+                        <div style={{ width: `${value as number}%`, background: color as string, height: '100%' }} />
+                      </div>
+                      <div style={{ color: C.muted, fontSize: 9, marginTop: 2 }}>{value}%</div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+
+          <ChartCard title="STRONGHOLD SPLIT" sub="How the province map currently breaks into anchors and battlegrounds">
+            <div style={{ display: 'grid', gap: 12 }}>
+              {strongholdSplit.map(s => (
+                <div key={s.label} style={{ border: `1px solid ${s.color}55`, borderRadius: 8, padding: 12, background: `${s.color}0D` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+                    <div style={{ color: s.color, fontWeight: 900, fontSize: 13 }}>{s.label}</div>
+                    <div style={{ color: C.text, fontWeight: 950 }}>{s.value}/10</div>
+                  </div>
+                  <div style={{ height: 9, borderRadius: 999, background: C.line, overflow: 'hidden', marginBottom: 8 }}>
+                    <div style={{ width: `${s.value * 10}%`, background: s.color, height: '100%' }} />
+                  </div>
+                  <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.5 }}>{s.provinces}</div>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+        </div>
+
+        <ChartCard title="VOTER SENTIMENT PER PROVINCE" sub="Simple mood score, driven by issue pressure, strongholds and public sentiment signals">
+          <div className="sentiment-strip">
+            {sentimentByProvince.map(p => (
+              <div key={p.name} style={{ border: `1px solid ${p.color}55`, borderRadius: 8, padding: 10, background: `${p.color}0D` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
+                  <span style={{ color: C.text, fontSize: 12, fontWeight: 900 }}>{p.name}</span>
+                  <span style={{ color: p.color, fontSize: 13, fontWeight: 950 }}>{p.score}</span>
+                </div>
+                <div style={{ height: 8, borderRadius: 999, background: C.line, overflow: 'hidden', marginBottom: 8 }}>
+                  <div style={{ width: `${p.score}%`, background: p.color, height: '100%' }} />
+                </div>
+                <div style={{ color: C.muted, fontSize: 10, lineHeight: 1.45 }}>{p.mood}</div>
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+
+        <details className="model-details">
+          <summary>Advanced model notes, agents and source detail</summary>
+
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 12, marginBottom: 16 }}>
@@ -1660,6 +1823,8 @@ export default function Dashboard() {
             AI analysis on this platform supplements — it does not replace — authoritative sources.
           </div>
         </div>
+
+        </details>
 
       </div>
 
