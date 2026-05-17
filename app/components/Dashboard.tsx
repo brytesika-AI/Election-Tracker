@@ -21,8 +21,15 @@ const C = {
 type FbLeaderSentiment = {
   leaderId: string; leaderName: string; fbPage: string; sampleCount: number
   postsCount: number; commentsCount: number; liveData: boolean
-  analysis: { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }
+  analysis: { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[]; devilsAdvocate?: string; strategicCounter?: string }
   source: string; mcpLayer: string; mode: string; timestamp: string
+}
+
+type SocialSentiment = {
+  candidateId: string; candidateName: string; platform: string; sampleCount: number
+  liveData: boolean; dataSource: string
+  analysis: { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[]; devilsAdvocate?: string; strategicCounter?: string; youthGrievance?: string }
+  mode: string; timestamp: string
 }
 
 type NlpHeadline = {
@@ -307,9 +314,13 @@ export default function Dashboard() {
   const [verdicts, setVerdicts]       = useState<JudgeVerdict[]>([])
   const [judgeLoading, setJudgeLoading] = useState(false)
   const [judgeMode, setJudgeMode]     = useState<'idle' | 'demo' | 'ai'>('idle')
-  const [fbSentiment, setFbSentiment] = useState<FbLeaderSentiment[]>([])
-  const [fbLoading, setFbLoading]     = useState(false)
-  const [refreshing, setRefreshing]   = useState(false)
+  const [fbSentiment, setFbSentiment]       = useState<FbLeaderSentiment[]>([])
+  const [fbLoading, setFbLoading]           = useState(false)
+  const [twSentiment, setTwSentiment]       = useState<SocialSentiment[]>([])
+  const [twLoading, setTwLoading]           = useState(false)
+  const [ttSentiment, setTtSentiment]       = useState<SocialSentiment[]>([])
+  const [ttLoading, setTtLoading]           = useState(false)
+  const [refreshing, setRefreshing]         = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
   const [showQuotes, setShowQuotes]   = useState(false)
@@ -337,6 +348,24 @@ export default function Dashboard() {
     } catch { /* keep existing */ } finally { setFbLoading(false) }
   }, [])
 
+  const fetchTwSentiment = useCallback(async () => {
+    setTwLoading(true)
+    try {
+      const res = await fetch('/api/twitter-sentiment')
+      const json = await res.json()
+      setTwSentiment(json.results ?? [])
+    } catch { /* keep existing */ } finally { setTwLoading(false) }
+  }, [])
+
+  const fetchTtSentiment = useCallback(async () => {
+    setTtLoading(true)
+    try {
+      const res = await fetch('/api/tiktok-sentiment')
+      const json = await res.json()
+      setTtSentiment(json.results ?? [])
+    } catch { /* keep existing */ } finally { setTtLoading(false) }
+  }, [])
+
   const callJudges = useCallback(async () => {
     setJudgeLoading(true); setVerdicts([])
     try {
@@ -349,13 +378,15 @@ export default function Dashboard() {
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true)
-    await Promise.all([fetchFbSentiment()])
+    await Promise.all([fetchFbSentiment(), fetchTwSentiment(), fetchTtSentiment()])
     setLastUpdated(new Date()); setRefreshing(false)
-  }, [fetchFbSentiment])
+  }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment])
 
   useEffect(() => {
     setLastUpdated(new Date())
     fetchFbSentiment()
+    fetchTwSentiment()
+    fetchTtSentiment()
     fetchNlpSentiment()
     // Check Vercel health
     fetch('/api/vercel-health').then(r => r.json()).then(d => setVercelStatus(d.status)).catch(() => {})
@@ -813,6 +844,148 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* ── TWITTER/X SENTIMENT ───────────────────────────────── */}
+        <SectionLabel layer="TWITTER/X" title="Twitter/X Candidate Sentiment — AI Analysis + Strategy Guide"
+          sub="Live tweets scored by AI · Devil's advocate critique + strategic counter-move for each candidate" />
+        <div style={{ background: C.card, border: `1px solid #1DA1F2`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#1DA1F2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 900, color: 'white', flexShrink: 0 }}>𝕏</div>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1DA1F2' }}>TWITTER/X MONITORING · AI SENTIMENT + STRATEGY</div>
+                <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
+                  Live: HH · PF-NDC · Kalaba · M&#39;membe · Devil&#39;s advocate + strategic counter per candidate
+                </div>
+              </div>
+            </div>
+            <button onClick={fetchTwSentiment} disabled={twLoading}
+              style={{ padding: '8px 16px', background: '#1DA1F2', color: 'white', border: 'none', borderRadius: 6, fontFamily: 'monospace', fontWeight: 800, fontSize: 10, cursor: 'pointer' }}>
+              {twLoading ? '⟳ FETCHING...' : '⟳ REFRESH'}
+            </button>
+          </div>
+          {twSentiment.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+              {twSentiment.map(tw => {
+                const sentColor = tw.analysis.sentiment === 'positive' ? C.teal : tw.analysis.sentiment === 'negative' ? C.warn : C.gold
+                const fig = ELECTION_DATA.figures.find(f => f.id === tw.candidateId)
+                const lColor = fig?.color ?? C.muted
+                return (
+                  <div key={tw.candidateId} className="card-hover rounded-xl p-4" style={{ background: C.card2, border: `1.5px solid ${lColor}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: `${lColor}20`, border: `2px solid ${lColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 900, color: lColor }}>{fig?.shortName ?? tw.candidateId.toUpperCase().slice(0,2)}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 12, fontWeight: 800, color: lColor }}>{tw.candidateName}</div>
+                        <div style={{ fontSize: 9, color: '#1DA1F2', fontFamily: 'monospace' }}>𝕏 Twitter/X</div>
+                      </div>
+                      {tw.liveData && <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: '#00C9A720', color: '#00C9A7', border: '1px solid #00C9A740', flexShrink: 0 }}>LIVE</span>}
+                    </div>
+                    <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '3px 10px', borderRadius: 8, background: `${sentColor}20`, color: sentColor, border: `1px solid ${sentColor}`, display: 'inline-block', marginBottom: 8 }}>
+                      {tw.analysis.sentiment.toUpperCase()} · {tw.analysis.score}/100
+                    </span>
+                    <p style={{ fontSize: 11, color: C.text, lineHeight: 1.6, marginBottom: 8, opacity: 0.9 }}>{tw.analysis.summary}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10 }}>
+                      {tw.analysis.topThemes.map((t, i) => (
+                        <span key={i} style={{ fontSize: 9, padding: '2px 7px', borderRadius: 10, background: `${lColor}15`, color: lColor, border: `1px solid ${lColor}30` }}>{t}</span>
+                      ))}
+                    </div>
+                    {tw.analysis.devilsAdvocate && (
+                      <div style={{ background: `${C.warn}10`, border: `1px solid ${C.warn}30`, borderLeft: `3px solid ${C.warn}`, borderRadius: 5, padding: '8px 10px', marginBottom: 8 }}>
+                        <div style={{ fontSize: 9, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>⚔ DEVIL&#39;S ADVOCATE</div>
+                        <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6, opacity: 0.9 }}>{tw.analysis.devilsAdvocate}</div>
+                      </div>
+                    )}
+                    {tw.analysis.strategicCounter && (
+                      <div style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderLeft: `3px solid ${C.teal}`, borderRadius: 5, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 9, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>✅ STRATEGIC COUNTER</div>
+                        <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6, opacity: 0.9 }}>{tw.analysis.strategicCounter}</div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: C.muted, fontFamily: 'monospace', fontSize: 10 }}>
+              {twLoading ? '⟳ Fetching Twitter/X and running AI analysis...' : 'Loading Twitter/X sentiment...'}
+            </div>
+          )}
+        </div>
+
+        {/* ── TIKTOK YOUTH SENTIMENT ────────────────────────────── */}
+        <SectionLabel layer="TIKTOK · YOUTH" title="TikTok Youth Sentiment — 18-35 Voter Intelligence"
+          sub="How young Zambians talk about each candidate on TikTok · Youth grievance + candidate strategy guide" />
+        <div style={{ background: C.card, border: `1px solid #FE2C55`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg,#FE2C55,#25F4EE)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🎵</div>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#FE2C55' }}>TIKTOK YOUTH INTELLIGENCE · 18–35 VOTER SENTIMENT</div>
+                <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
+                  Youth grievance · devil&#39;s advocate · strategic counter-move per candidate · 34.1% youth unemployment context
+                </div>
+              </div>
+            </div>
+            <button onClick={fetchTtSentiment} disabled={ttLoading}
+              style={{ padding: '8px 16px', background: '#FE2C55', color: 'white', border: 'none', borderRadius: 6, fontFamily: 'monospace', fontWeight: 800, fontSize: 10, cursor: 'pointer' }}>
+              {ttLoading ? '⟳ FETCHING...' : '⟳ REFRESH'}
+            </button>
+          </div>
+          {ttSentiment.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+              {ttSentiment.map(tt => {
+                const sentColor = tt.analysis.sentiment === 'positive' ? C.teal : tt.analysis.sentiment === 'negative' ? C.warn : C.gold
+                const fig = ELECTION_DATA.figures.find(f => f.id === tt.candidateId)
+                const lColor = fig?.color ?? C.muted
+                return (
+                  <div key={tt.candidateId} className="card-hover rounded-xl p-4" style={{ background: C.card2, border: `1.5px solid ${lColor}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: `${lColor}20`, border: `2px solid ${lColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 900, color: lColor }}>{fig?.shortName ?? tt.candidateId.toUpperCase().slice(0,2)}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 12, fontWeight: 800, color: lColor }}>{tt.candidateName}</div>
+                        <div style={{ fontSize: 9, color: '#FE2C55', fontFamily: 'monospace' }}>🎵 TikTok Youth</div>
+                      </div>
+                      {tt.liveData && <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: '#00C9A720', color: '#00C9A7', border: '1px solid #00C9A740', flexShrink: 0 }}>LIVE</span>}
+                    </div>
+                    <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '3px 10px', borderRadius: 8, background: `${sentColor}20`, color: sentColor, border: `1px solid ${sentColor}`, display: 'inline-block', marginBottom: 8 }}>
+                      {tt.analysis.sentiment.toUpperCase()} · {tt.analysis.score}/100
+                    </span>
+                    <p style={{ fontSize: 11, color: C.text, lineHeight: 1.6, marginBottom: 8, opacity: 0.9 }}>{tt.analysis.summary}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10 }}>
+                      {tt.analysis.topThemes.map((t, i) => (
+                        <span key={i} style={{ fontSize: 9, padding: '2px 7px', borderRadius: 10, background: `${lColor}15`, color: lColor, border: `1px solid ${lColor}30` }}>{t}</span>
+                      ))}
+                    </div>
+                    {tt.analysis.youthGrievance && (
+                      <div style={{ background: `${C.sp}10`, border: `1px solid ${C.sp}30`, borderLeft: `3px solid ${C.sp}`, borderRadius: 5, padding: '8px 10px', marginBottom: 8 }}>
+                        <div style={{ fontSize: 9, color: C.sp, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>🎤 YOUTH GRIEVANCE</div>
+                        <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6, opacity: 0.9 }}>{tt.analysis.youthGrievance}</div>
+                      </div>
+                    )}
+                    {tt.analysis.devilsAdvocate && (
+                      <div style={{ background: `${C.warn}10`, border: `1px solid ${C.warn}30`, borderLeft: `3px solid ${C.warn}`, borderRadius: 5, padding: '8px 10px', marginBottom: 8 }}>
+                        <div style={{ fontSize: 9, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>⚔ DEVIL&#39;S ADVOCATE</div>
+                        <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6, opacity: 0.9 }}>{tt.analysis.devilsAdvocate}</div>
+                      </div>
+                    )}
+                    {tt.analysis.strategicCounter && (
+                      <div style={{ background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderLeft: `3px solid ${C.teal}`, borderRadius: 5, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 9, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>✅ STRATEGIC COUNTER</div>
+                        <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6, opacity: 0.9 }}>{tt.analysis.strategicCounter}</div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: C.muted, fontFamily: 'monospace', fontSize: 10 }}>
+              {ttLoading ? '⟳ Fetching TikTok youth data and running AI analysis...' : 'Loading TikTok youth sentiment...'}
+            </div>
+          )}
+          <div style={{ marginTop: 12, fontSize: 9, color: '#444', fontFamily: 'monospace', borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+            Youth context: 34.1% unemployment · 5.2M internet users · 2.4M Facebook · TikTok fastest growing in 18-35 bracket · Apify clockworks~tiktok-scraper
+          </div>
+        </div>
 
         {/* ── INTELLIGENCE FRAMEWORK ─────────────────────────── */}
         <SectionLabel layer="INTELLIGENCE" title="How the AI Analyses the Election"
