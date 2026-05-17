@@ -943,6 +943,12 @@ export default function Dashboard() {
           </div>
         </ChartCard>
 
+        <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"
+          sub="A filled Zambia map makes the lead geography readable immediately: orange for UPND, red for the opposition lane, gold for contested." />
+        <div style={{ marginBottom: 16 }}>
+          <ZambiaMap />
+        </div>
+
         <details className="model-details">
           <summary>Advanced model notes, agents and source detail</summary>
 
@@ -1257,13 +1263,6 @@ export default function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
-        </div>
-
-        {/* ── GEOSPATIAL MAP ───────────────────────────────── */}
-        <SectionLabel layer="GEOSPATIAL" title="Zambia Province Electoral Map — Where the Votes Are"
-          sub="Click any province to see registered voters, party support, and strategic intelligence by region" />
-        <div style={{ marginBottom: 16 }}>
-          <ZambiaMap />
         </div>
 
         {/* ── NLP HEADLINE ANALYZER ────────────────────────── */}
