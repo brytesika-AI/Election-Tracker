@@ -522,7 +522,7 @@ export default function Dashboard() {
       call: 'UPND advantage, contested downside',
       confidence: 68,
       color: C.teal,
-      method: 'Key judgments, source reliability grades, confidence levels, alternative hypotheses and indicator watchlists.',
+      method: 'Structured analytic techniques: key judgments, source reliability grades, red-team alternatives and indicator watchlists.',
       projection: 'HH remains the best-positioned candidate if economic irritation does not consolidate into a single opposition vehicle.',
       triggers: ['Mundubile-Makebi ticket clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
       whitebox: 'Separates official facts from estimates, grades each signal by reliability, and shows which indicators would change the call.',
@@ -534,7 +534,7 @@ export default function Dashboard() {
       call: 'Lean UPND',
       confidence: 72,
       color: C.gold,
-      method: 'Projection gates: current lead, province path, remaining undecided pool, turnout assumptions and confidence threshold.',
+      method: 'Bayesian projection gates: current lead, province path, undecided pool, turnout assumptions, margin of error and confidence threshold.',
       projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga, Eastern transferability and Copperbelt watched as Mundubile-Makebi pickup lanes.',
       triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile-Makebi below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
       whitebox: 'Shows the thresholds, province path and undecided assumptions before any candidate is moved from Toss-up to Lean/Likely.',
@@ -546,14 +546,52 @@ export default function Dashboard() {
       call: 'Incumbent path intact',
       confidence: 74,
       color: C.ndc,
-      method: 'Fuses voter register, province leans, economy, open intelligence, platform sentiment, issue risk and scenario deltas.',
+      method: 'Fuses voter register, clustered districts, province leans, economy, open intelligence, platform sentiment, issue risk and scenario deltas.',
       projection: 'The integrated graph points to an incumbent path through Lusaka, Southern, Western and North-Western, with Copperbelt as the decisive stress test.',
-      triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Field-event and media spike matching'],
+      triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Reporting-order bias checks'],
       whitebox: 'Links each candidate score to visible evidence nodes: province, issue, platform, turnout, credibility and missing-data penalty.',
       caveat: 'Fusion output is only as strong as source freshness, labels and missing-data handling.',
     },
   ]
   const selectedProjection = projectionModes.find(mode => mode.id === projectionMode) ?? projectionModes[1]
+  const agenticModel = [
+    {
+      agent: 'Data Scientist Agent',
+      method: 'District clustering',
+      input: 'ECZ 2016/2021 patterns, province register, constituency history, turnout bands.',
+      output: 'Classifies districts as UPND-heavy, PF-linked, swing, urban-growth or rural-lag clusters.',
+      color: C.ndc,
+    },
+    {
+      agent: 'Pollster Agent',
+      method: 'Bayesian polling blend',
+      input: 'Afrobarometer-style surveys, local polls, demographic shifts, undecided pool and margin of error.',
+      output: 'Produces candidate intervals and prevents over-reading a single noisy poll or platform spike.',
+      color: C.gold,
+    },
+    {
+      agent: 'Analyst Agent',
+      method: 'Structured red team',
+      input: 'Elite dynamics, coalition cohesion, tribal/regional voting patterns, copper prices, load shedding and campaign finance signals.',
+      output: 'Tests opponent pathways and explains why a lead could break, hold or narrow.',
+      color: C.warn,
+    },
+    {
+      agent: 'Real-Time Agent',
+      method: 'Reporting-order correction',
+      input: 'Live ECZ/result feeds when available, station order, rural/urban lag, radio/community sentiment and anomaly alerts.',
+      output: 'Adjusts early returns for non-random reporting so urban-first results do not distort the national call.',
+      color: C.teal,
+    },
+  ]
+  const whiteboxWeights = [
+    { label: 'Official ECZ facts', value: 30, note: 'register, constituency map, certified results flow', color: C.zg },
+    { label: 'Historical clusters', value: 20, note: '2016/2021 district behaviour and turnout bands', color: C.ndc },
+    { label: 'Polling blend', value: 18, note: 'survey averages, uncertainty, undecided allocation', color: C.gold },
+    { label: 'Issue pressure', value: 14, note: 'cost of living, electricity, jobs, copper economy', color: C.warn },
+    { label: 'Open intelligence', value: 10, note: 'media, civil society, radio, OSINT verification', color: C.teal },
+    { label: 'Social velocity', value: 8, note: 'Facebook, X, TikTok directional movement only', color: C.pf },
+  ]
   const decisionStack = [
     {
       layer: 'STATE',
@@ -831,6 +869,41 @@ export default function Dashboard() {
 
         <SectionLabel layer="DECISION STACK" title="5 Layer Strategy Operating System"
           sub="State → Time → Causality → Simulation → Optimization, adapted for election intelligence decisions" />
+        <SectionLabel layer="HYBRID MODEL" title="Agentic Election Prediction System"
+          sub="District clustering + Bayesian polling blend + structured red team + real-time reporting-order correction for Zambia" />
+        <div className="hybrid-model" style={{ display: 'grid', gridTemplateColumns: '1.35fr 1fr', gap: 14, marginBottom: 16 }}>
+          <div style={{ background: 'rgba(14,23,36,.92)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: 16 }}>
+            <div className="hybrid-model__agents" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
+              {agenticModel.map(agent => (
+                <div key={agent.agent} className="card-hover" style={{ border: `1px solid ${agent.color}55`, background: `${agent.color}0D`, borderRadius: 8, padding: '12px 11px', minHeight: 190 }}>
+                  <div style={{ fontSize: 10, color: agent.color, fontFamily: 'monospace', fontWeight: 950, marginBottom: 7 }}>{agent.agent.toUpperCase()}</div>
+                  <div style={{ color: C.text, fontSize: 14, fontWeight: 900, marginBottom: 8 }}>{agent.method}</div>
+                  <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, marginBottom: 10 }}>{agent.input}</div>
+                  <div style={{ borderTop: `1px solid ${agent.color}35`, paddingTop: 8, color: C.text, fontSize: 11, lineHeight: 1.5 }}>{agent.output}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: 'rgba(4,9,13,.72)', border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 950, letterSpacing: 1, marginBottom: 10 }}>WHITEBOX WEIGHTS</div>
+            {whiteboxWeights.map(weight => (
+              <div key={weight.label} style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 4 }}>
+                  <div style={{ fontSize: 11, color: C.text, fontWeight: 800 }}>{weight.label}</div>
+                  <div style={{ fontSize: 11, color: weight.color, fontFamily: 'monospace', fontWeight: 900 }}>{weight.value}%</div>
+                </div>
+                <div style={{ height: 8, borderRadius: 999, background: C.line, overflow: 'hidden' }}>
+                  <div style={{ width: `${weight.value * 3.1}%`, maxWidth: '100%', height: '100%', background: weight.color }} />
+                </div>
+                <div style={{ fontSize: 9, color: C.muted, lineHeight: 1.45, marginTop: 3 }}>{weight.note}</div>
+              </div>
+            ))}
+            <div style={{ marginTop: 12, padding: '9px 11px', borderRadius: 8, background: `${C.warn}10`, border: `1px solid ${C.warn}35`, fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+              Zambia adjustment: live results must be corrected for rural/urban reporting lag because early urban batches can create false momentum.
+            </div>
+          </div>
+        </div>
+
         <div className="decision-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 16 }}>
           {decisionStack.map((layer, idx) => (
             <div key={layer.layer} className="card-hover" style={{ background: 'rgba(14,23,36,.92)', border: `1px solid ${layer.color}66`, borderRadius: 8, padding: '14px 13px', minHeight: 190 }}>

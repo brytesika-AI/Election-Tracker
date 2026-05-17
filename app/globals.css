@@ -243,6 +243,14 @@ body {
     grid-template-columns: 1fr !important;
   }
 
+  .hybrid-model {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hybrid-model__agents {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   .heritage-hero__content {
     grid-template-columns: 1fr;
     padding: 28px 24px 44px;
@@ -261,6 +269,12 @@ body {
   .heritage-hero__attribution {
     left: 24px;
     right: 24px;
+  }
+}
+
+@media (max-width: 620px) {
+  .hybrid-model__agents {
+    grid-template-columns: 1fr !important;
   }
 }
 
