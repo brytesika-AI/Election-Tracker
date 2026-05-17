@@ -1,20 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // ── Credentials ─────────────────────────────────────────────────────────────
-const CF_ACCOUNT_ID  = process.env.CLOUDFLARE_ACCOUNT_ID
-const CF_API_TOKEN   = process.env.CLOUDFLARE_API_TOKEN
-const CF_MODEL       = '@cf/meta/llama-3.1-8b-instruct'
+const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID
+const CF_API_TOKEN  = process.env.CLOUDFLARE_API_TOKEN
+const CF_MODEL      = '@cf/meta/llama-3.1-8b-instruct'
+const APIFY_TOKEN   = process.env.APIFY_API_TOKEN
 
-// MCP / Scraping layer (priority order):
-// 1. Apify MCP — apify/facebook-pages-scraper actor (no FB login needed)
-// 2. Bright Data MCP — web unlocker for social pages
-// 3. Facebook Graph API — official but requires token + permissions
-// 4. Curated samples — always available fallback
-const APIFY_TOKEN    = process.env.APIFY_API_TOKEN          // apify.com → Settings → API tokens
-const BRIGHTDATA_TOKEN = process.env.BRIGHTDATA_API_TOKEN   // brightdata.com → API credentials
-const FB_TOKEN       = process.env.FACEBOOK_ACCESS_TOKEN    // fb app token fallback
-const FB_BASE        = 'https://graph.facebook.com/v19.0'
-
+// ── Candidate Facebook pages ─────────────────────────────────────────────────
 const LEADER_PAGES = [
   { id: 'hh',     name: 'Hakainde Hichilema', fbPage: 'HakaindehichilemaHH',  fbUrl: 'https://www.facebook.com/HakaindehichilemaHH' },
   { id: 'pf_ndc', name: 'PF-NDC Alliance',    fbPage: 'BrianMundubile',        fbUrl: 'https://www.facebook.com/BrianMundubile' },
@@ -22,152 +14,98 @@ const LEADER_PAGES = [
   { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
 ]
 
-// ── MCP Layer 1: Apify facebook-pages-scraper ───────────────────────────────
-// Actor: apify/facebook-pages-scraper
-// Docs: https://apify.com/apify/facebook-pages-scraper
-// Cost: ~0.25 CU per run (free tier: 5 USD/month)
-
-interface ApifyPost {
-  text?: string
-  topLevelUrl?: string
-  timestamp?: string
-  comments?: { text: string }[]
+// ── In-memory cache (survives across requests on same Vercel instance) ───────
+// Refreshed whenever Apify webhook fires or a fresh scrape completes
+interface CacheEntry {
+  texts: string[]
+  runId: string
+  scrapedAt: number
+  postCount: number
 }
+const apifyCache: Record<string, CacheEntry> = {}
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000 // 6 hours
 
-async function scrapeWithApify(pageUrl: string, postLimit = 10): Promise<string[]> {
-  if (!APIFY_TOKEN) return []
-
+// ── Trigger Apify scrape (async — does NOT block response) ───────────────────
+// Uses facebook-posts-scraper actor for post text + comments
+async function triggerApifyScrape(pages: typeof LEADER_PAGES): Promise<string | null> {
+  if (!APIFY_TOKEN) return null
   try {
-    // Start actor run
-    const runRes = await fetch(
-      'https://api.apify.com/v2/acts/apify~facebook-pages-scraper/runs?token=' + APIFY_TOKEN,
+    const startUrls = pages.map(p => ({ url: p.fbUrl }))
+    const res = await fetch(
+      `https://api.apify.com/v2/acts/apify~facebook-posts-scraper/runs?token=${APIFY_TOKEN}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          startUrls: [{ url: pageUrl }],
-          maxPosts: postLimit,
-          maxPostComments: 15,
-          maxReviews: 0,
-          scrapePagesWithLogin: false,
+          startUrls,
+          maxPosts: 10,
+          maxPostsPerPage: 10,
+          commentsMode: 'RANKED_THREADED',
+          maxComments: 20,
+          maxReactions: 0,
+          loginCookies: [],
           proxy: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] },
         }),
       }
     )
-    if (!runRes.ok) return []
-    const { data: run } = await runRes.json()
-    const runId = run?.id
-    if (!runId) return []
+    if (!res.ok) return null
+    const { data } = await res.json()
+    return data?.id ?? null
+  } catch {
+    return null
+  }
+}
 
-    // Poll until finished (max 60s)
-    for (let i = 0; i < 12; i++) {
-      await new Promise(r => setTimeout(r, 5000))
+// ── Poll a specific Apify run and load results into cache ─────────────────────
+// Called when user explicitly requests a refresh (up to 55s wait)
+async function pollApifyRun(runId: string, leaderId: string): Promise<string[]> {
+  if (!APIFY_TOKEN) return []
+  const deadline = Date.now() + 55000
+  while (Date.now() < deadline) {
+    await new Promise(r => setTimeout(r, 4000))
+    try {
       const statusRes = await fetch(
         `https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`
       )
-      const { data: status } = await statusRes.json()
-      if (status?.status === 'SUCCEEDED') break
-      if (status?.status === 'FAILED' || status?.status === 'ABORTED') return []
-    }
-
-    // Fetch results from dataset
-    const datasetRes = await fetch(
-      `https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&limit=50`
-    )
-    if (!datasetRes.ok) return []
-    const items: ApifyPost[] = await datasetRes.json()
-
-    const texts: string[] = []
-    for (const item of items) {
-      if (item.text && item.text.length > 20) texts.push(item.text.slice(0, 300))
-      for (const c of item.comments ?? []) {
-        if (c.text && c.text.length > 10) texts.push(c.text.slice(0, 200))
+      const { data } = await statusRes.json()
+      if (data?.status === 'SUCCEEDED') {
+        const itemsRes = await fetch(
+          `https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&limit=100`
+        )
+        const items = await itemsRes.json()
+        return extractTexts(items)
       }
+      if (data?.status === 'FAILED' || data?.status === 'ABORTED') return []
+    } catch {
+      return []
     }
-    return texts
-  } catch {
-    return []
   }
+  return [] // timed out
 }
 
-// ── MCP Layer 2: Bright Data web unlocker ───────────────────────────────────
-// Bright Data scrapes JS-rendered pages with residential proxies
-// Docs: https://brightdata.com/products/web-scraper-api
-
-async function scrapeWithBrightData(pageUrl: string): Promise<string[]> {
-  if (!BRIGHTDATA_TOKEN) return []
-
-  try {
-    const res = await fetch('https://api.brightdata.com/request', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${BRIGHTDATA_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        zone: 'mcp_unlocker',
-        url: pageUrl,
-        format: 'raw',
-        render_js: true,
-      }),
-    })
-    if (!res.ok) return []
-    const html = await res.text()
-    // Extract visible text from FB page HTML — strip tags, get content blocks
-    const clean = html
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<style[\s\S]*?<\/style>/gi, '')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/\s{2,}/g, ' ')
-      .trim()
-    // Split into sentences and filter meaningful ones
-    const sentences = clean.split(/[.!?]\s+/).filter(s => s.length > 30 && s.length < 400)
-    return sentences.slice(0, 30)
-  } catch {
-    return []
-  }
+interface ApifyPost {
+  text?: string; caption?: string; comments?: { text?: string }[]
+  url?: string; time?: string; likes?: number
 }
 
-// ── Layer 3: Facebook Graph API fallback ────────────────────────────────────
-
-interface FbPost { id: string; message?: string; comments?: { data: { message: string }[] } }
-
-async function scrapeWithFbApi(pageId: string): Promise<string[]> {
-  if (!FB_TOKEN) return []
-  try {
-    const url = `${FB_BASE}/${pageId}/posts?fields=message,comments.limit(8){message}&limit=12&access_token=${FB_TOKEN}`
-    const res = await fetch(url, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    if (data.error) return []
-    const posts: FbPost[] = data.data ?? []
-    const texts: string[] = []
-    for (const p of posts) {
-      if (p.message) texts.push(p.message.slice(0, 280))
-      for (const c of p.comments?.data ?? []) {
-        if (c.message) texts.push(c.message.slice(0, 200))
-      }
+function extractTexts(items: ApifyPost[]): string[] {
+  const texts: string[] = []
+  for (const item of items) {
+    const body = item.text ?? item.caption ?? ''
+    if (body.length > 20) texts.push(body.slice(0, 300))
+    for (const c of item.comments ?? []) {
+      if (c.text && c.text.length > 10) texts.push(c.text.slice(0, 200))
     }
-    return texts
-  } catch {
-    return []
   }
+  return texts.filter(Boolean)
 }
 
-// ── Cloudflare AI sentiment analysis ────────────────────────────────────────
-
-async function analyzeWithAI(leaderName: string, texts: string[], dataSource: string): Promise<{
-  sentiment: 'positive' | 'negative' | 'neutral'
-  score: number
-  summary: string
-  topThemes: string[]
-}> {
-  if (!CF_ACCOUNT_ID || !CF_API_TOKEN || texts.length === 0) {
-    return getDemoAnalysis(leaderName)
-  }
+// ── Cloudflare AI analysis ────────────────────────────────────────────────────
+async function analyzeWithAI(leaderName: string, texts: string[], source: string) {
+  if (!CF_ACCOUNT_ID || !CF_API_TOKEN || texts.length === 0) return null
 
   const sample = texts.slice(0, 20).join('\n- ')
-  const prompt = `You are a Zambian political sentiment analyst. Analyze this ${dataSource} content about ${leaderName} from public Facebook and respond in JSON only.
+  const prompt = `You are a Zambian political sentiment analyst. Analyze this ${source} content about ${leaderName} from public Facebook and respond in JSON only.
 
 Content:
 - ${sample}
@@ -188,7 +126,7 @@ Respond with exactly this JSON (no markdown):
         headers: { Authorization: `Bearer ${CF_API_TOKEN}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
-            { role: 'system', content: 'You are a political sentiment analyst for Zambia. Respond in JSON only. No markdown.' },
+            { role: 'system', content: 'Political sentiment analyst for Zambia. JSON only. No markdown.' },
             { role: 'user', content: prompt },
           ],
           max_tokens: 350,
@@ -196,174 +134,175 @@ Respond with exactly this JSON (no markdown):
         }),
       }
     )
-    if (!res.ok) return getDemoAnalysis(leaderName)
+    if (!res.ok) return null
     const data = await res.json()
     const raw: string = data?.result?.response ?? ''
     const clean = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     const parsed = JSON.parse(clean)
-    const sentimentRaw = (parsed.sentiment ?? '').toLowerCase()
-    const sentiment: 'positive' | 'negative' | 'neutral' =
-      sentimentRaw.includes('pos') ? 'positive' :
-      sentimentRaw.includes('neg') ? 'negative' : 'neutral'
+    const sentRaw = (parsed.sentiment ?? '').toLowerCase()
     return {
-      sentiment,
+      sentiment: (sentRaw.includes('pos') ? 'positive' : sentRaw.includes('neg') ? 'negative' : 'neutral') as 'positive' | 'negative' | 'neutral',
       score: Math.max(0, Math.min(100, Number(parsed.score) || 50)),
-      summary: parsed.summary ?? '',
-      topThemes: Array.isArray(parsed.topThemes) ? parsed.topThemes.slice(0, 4) : [],
+      summary: String(parsed.summary ?? ''),
+      topThemes: Array.isArray(parsed.topThemes) ? parsed.topThemes.slice(0, 4) as string[] : [],
     }
   } catch {
-    return getDemoAnalysis(leaderName)
+    return null
   }
 }
 
-// ── Curated fallback samples ─────────────────────────────────────────────────
-
-const CURATED_SAMPLES: Record<string, string[]> = {
+// ── Curated fallback samples ──────────────────────────────────────────────────
+const CURATED: Record<string, string[]> = {
   hh: [
     "Electricity prices are too high Mr President, we voted for change not suffering",
     "HH has done well to stabilize the kwacha, import prices are coming down slowly",
-    "Cost of living is killing us, mealie meal is K400 a 25kg bag, what happened to your promises?",
+    "Cost of living is killing us, mealie meal is K400 a 25kg bag, what happened to promises?",
     "The infrastructure is improving in Southern Province, roads are better now",
     "Load shedding must end, businesses are closing in Lusaka, please act fast",
-    "Thank you for the CDF empowerment funds, our community has benefited",
-    "Dollar rate has improved since UPND took over, economy is recovering",
-    "We need hospitals and drugs, Levy Mwanawasa Memorial Hospital is not enough",
-    "Our president is working hard, the opposition just wants to destabilise",
-    "Too many foreigners getting contracts, what about Zambian companies?",
-    "UPND delivered free education, my children are in school now, thank you",
+    "Thank you for the CDF empowerment funds, our community has benefited greatly",
+    "Dollar rate has improved since UPND took over, economy is slowly recovering",
+    "UPND delivered free education, my children are in school now, thank you Mr President",
     "The anti-corruption drive must continue, many thieves still walking free",
-    "Fertiliser subsidy is not reaching farmers in Northern Province, please investigate",
+    "Fertiliser subsidy is not reaching farmers in Northern Province please investigate",
     "Great speech at SADC summit, Zambia is respected again internationally",
     "Mining royalties should benefit local communities, we see nothing here in Copperbelt",
-    "HH please fix load shedding before 2026, that is the number one issue",
-    "Infrastructure progress is real but cost of living makes it hard to feel it",
+    "HH please fix load shedding before 2026, that is the number one issue on ground",
+    "Infrastructure progress is real but cost of living makes it hard to feel",
     "Thank you Mr President for the debt restructuring deal, future looks brighter",
-    "UPND must address mealie meal prices or lose Northern and Copperbelt",
-    "HH is the right person for Zambia but he needs to listen to ordinary people more",
+    "UPND must address mealie meal prices or lose Northern and Copperbelt in 2026",
+    "HH is the right person for Zambia but he needs to listen to ordinary people",
+    "Too many foreigners getting contracts, what about Zambian companies?",
+    "Our president is working hard, the opposition just wants to destabilise Zambia",
+    "We need hospitals and drugs, Levy Mwanawasa Memorial Hospital is not enough",
   ],
   pf_ndc: [
     "PF and NDC together — this is the alliance Zambia has been waiting for! 2026 is ours!",
-    "Mundubile for president 2026, PF must come back and save Zambia",
-    "Brian is the only one speaking for poor Zambians in rural areas",
+    "Mundubile for president 2026, PF must come back and save Zambia from UPND failure",
+    "Brian is the only one speaking for poor Zambians in rural areas honestly",
     "We support you Mundubile, Northern Province will vote massively for the alliance",
-    "Why is the government harassing PF members? This is political persecution",
-    "UPND has failed, time for change in 2026, PF-NDC has our vote",
-    "Engineer Mundubile understands development, he built roads in Mporokoso",
-    "Northern and Luapula provinces are solidly behind PF still",
-    "The PF-NDC alliance is recovering after difficult times, we are united now",
-    "2026 is our year, Zambians are tired of UPND failures on economy",
-    "Makebi Zulu brings the youth vote, Mundubile brings Northern base — this combination is powerful",
-    "NDC joining PF is good, now we have a real alternative that can win",
-    "Young people need change, NDC and PF together give us that option in 2026",
+    "Why is the government harassing PF members? This is political persecution plain and simple",
+    "UPND has failed, time for change in 2026, PF-NDC has our vote in Northern Province",
+    "Engineer Mundubile understands development, he built roads in Mporokoso when in govt",
+    "Northern and Luapula provinces are solidly behind PF-NDC alliance still in 2026",
+    "The PF-NDC alliance is recovering after difficult times, we are united and ready",
+    "2026 is our year, Zambians are tired of UPND failures on economy and electricity",
+    "Makebi Zulu brings the youth vote, Mundubile brings Northern base — powerful combination",
+    "NDC joining PF is great, now we have a real credible alternative that can win",
+    "Young people need real change, NDC and PF together give us that option in August",
     "PF built good infrastructure when in power, UPND is destroying that legacy",
-    "The PF-NDC combined polling of 20% is a real threat to UPND now, watch this space",
-    "Mundubile speaks our language, he is from us, Northern Province is ready",
-    "NDC manifesto on agriculture is good, farmers will benefit from this alliance",
-    "We need Lungu to campaign for Mundubile even though he cannot stand himself",
+    "PF-NDC combined polling of 20% is a real threat to UPND now, watch this space",
+    "Mundubile speaks our language, he is from us, Northern Province is solidly ready",
+    "NDC manifesto on agriculture is excellent, farmers will benefit from this alliance",
+    "We need Lungu to campaign for Mundubile even though he cannot stand himself in 2026",
     "PF-NDC is the real change option, not SP or DP who have no ground presence",
-    "If the alliance holds to August 2026 they could force a second round, historic",
+    "If the alliance holds to August 2026 they could force a second round — historic",
   ],
   kalaba: [
-    "Kalaba is honest and principled, Zambia needs leaders like him",
-    "Harry Kalaba left PF because of corruption, that takes real courage, respect",
+    "Kalaba is honest and principled, Zambia needs leaders like him urgently",
+    "Harry Kalaba left PF because of corruption, that takes real courage and conviction",
     "DP is too small to win alone but Kalaba would make an excellent cabinet minister",
-    "Kalaba please form coalition with PF-NDC to beat UPND, your votes matter",
-    "Principled politicians are very rare in Zambia, Kalaba is one of the few",
+    "Kalaba please form coalition with PF-NDC to beat UPND, your votes matter strategically",
+    "Principled politicians are very rare in Zambia, Kalaba is one of the precious few",
     "We in Luapula support Kalaba even though he left PF, he is still our son",
-    "DP policies are good but need more funding and visibility to reach rural areas",
-    "Kalaba should be finance minister in a coalition government with his background",
+    "DP policies are good but need more funding and visibility to reach rural communities",
+    "Kalaba should be finance minister in a coalition government given his economic background",
     "Please do not give up Harry, Zambia needs your voice in the political arena",
-    "Kalaba plus Mundubile coalition would be very strong in Northern and Luapula",
-    "I respect Kalaba because he speaks truth even when it is unpopular to do so",
-    "DP manifesto is well-written but who knows about it outside Lusaka? More outreach needed",
-    "Harry Kalaba represents integrity that Zambia desperately needs right now",
-    "Kalaba 2026 — small party but big ideas, hope he gets more attention",
-    "Coalition talks with PF-NDC make strategic sense, Kalaba should consider seriously",
+    "Kalaba plus Mundubile coalition would be formidable in Northern and Luapula provinces",
+    "I respect Kalaba because he speaks truth even when it is very unpopular to do so",
+    "DP manifesto is well-written but who knows about it outside Lusaka? Need more outreach",
+    "Harry Kalaba represents the integrity that Zambia desperately needs right now in politics",
+    "Kalaba 2026 — small party but big principles, hope he gets much more media attention",
+    "Coalition talks with PF-NDC make strategic sense, Kalaba should seriously consider it",
+    "Kalaba left PF on principle over corruption, that decision was the right one for Zambia",
+    "DP has the right policies but not enough resources to compete with UPND and PF-NDC",
+    "Harry Kalaba is one of the few politicians in Zambia with real moral credibility",
+    "We want Kalaba to be vice president in a coalition, his integrity is needed at top",
+    "Kalaba can play kingmaker role in 2026 if he aligns with the right coalition partners",
   ],
   membe: [
-    "Fred M'membe speaks truth about capitalism destroying Zambia's resources",
+    "Fred M'membe speaks truth about capitalism destroying Zambia's mineral wealth",
     "Socialist Party is the future for Africa, look at what progressive governments achieve",
     "M'membe newspaper was shut down because he spoke truth to power, political persecution",
-    "SP ideology does not suit Zambia, we are not Cuba and investors will flee",
-    "Fred is articulate and intelligent but socialist economic policies will scare investors away",
-    "The Post newspaper was a great paper, UPND destroyed press freedom when they shut it",
-    "M'membe understands media and communication better than all other candidates",
-    "Youth on TikTok love Fred M'membe content, he explains things clearly and goes viral",
+    "SP ideology does not suit Zambia, we are not Cuba and investors will definitely flee",
+    "Fred is articulate and intelligent but socialist economic policies will scare investors",
+    "The Post newspaper was great, UPND destroyed press freedom in Zambia when they shut it",
+    "M'membe understands media and communication better than all other candidates in 2026",
+    "Youth on TikTok love Fred M'membe content, he explains mining clearly and goes viral",
     "Socialist policies to nationalise mines will drive away the investment Zambia needs",
     "Fred M'membe is a patriot who sacrificed his business empire for Zambia's future",
-    "SP growing fast on social media, young people are listening to M'membe now",
-    "M'membe on TikTok explaining mining royalties is the most watched political content in Zambia",
+    "SP growing fast on social media, young people are seriously listening to M'membe now",
+    "M'membe on TikTok explaining mining royalties is most watched political content in Zambia",
     "I don't agree with socialism but M'membe raises real issues about inequality and poverty",
     "Fred's analysis of the IMF deal is accurate, Zambia gave away too much sovereignty",
-    "M'membe 2026 — urban youth are moving to SP, UPND must take this threat seriously",
-    "He may not win but M'membe will force important conversations about Zambia's economic model",
-    "The socialist label puts off business community but his analysis of mining sector is correct",
-    "SP digital team is the best in Zambia, M'membe understands the youth media landscape",
-    "M'membe speaks for the poor even if his solutions are debatable",
-    "Fred M'membe is the most intellectually serious candidate in this election",
+    "M'membe 2026 — urban youth are moving to SP fast, UPND must take this seriously",
+    "He may not win but M'membe forces important conversations about Zambia's economic model",
+    "Socialist label puts off business community but his analysis of mining sector is correct",
+    "SP digital team is the best in Zambia, M'membe understands youth media landscape",
+    "M'membe speaks for the poor even if his solutions remain very debatable to many",
+    "Fred M'membe is the most intellectually serious candidate in this entire 2026 election",
   ],
 }
 
-function getDemoAnalysis(leaderId: string) {
-  const demos: Record<string, { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }> = {
-    hh:     { sentiment: 'positive', score: 58, summary: "Supporters credit HH's economic stabilisation and free education, but intense backlash over load shedding and mealie meal prices", topThemes: ['Cost of living', 'Load shedding', 'Free education', 'Kwacha stability'] },
-    pf_ndc: { sentiment: 'positive', score: 64, summary: 'PF-NDC Alliance energising northern rural base and Copperbelt youth simultaneously — fastest-growing bloc at +2.3pts/month', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
-    kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but DP seen as too small to win alone — coalition calls are the dominant theme', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
-    membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's analysis but business community fears socialist economic policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
-  }
-  return demos[leaderId] ?? { sentiment: 'neutral' as const, score: 50, summary: 'Analysis unavailable', topThemes: [] }
+const DEMO_ANALYSIS: Record<string, { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }> = {
+  hh:     { sentiment: 'positive', score: 58, summary: "Supporters credit HH's economic stabilisation and free education, but backlash over load shedding and mealie meal prices is intense", topThemes: ['Cost of living', 'Load shedding', 'Free education', 'Kwacha stability'] },
+  pf_ndc: { sentiment: 'positive', score: 64, summary: 'PF-NDC Alliance energising northern rural base and Copperbelt youth — fastest-growing bloc at +2.3pts/month with strong alliance sentiment', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
+  kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but DP seen as too small to win — coalition calls dominate the conversation', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
+  membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's mining analysis, business community fears socialist policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
 }
 
-// ── Route handler ────────────────────────────────────────────────────────────
-
+// ── GET handler ───────────────────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const leaderId = searchParams.get('leader')
+  const forceRefresh = searchParams.get('refresh') === '1'
   const targetLeaders = leaderId ? LEADER_PAGES.filter(l => l.id === leaderId) : LEADER_PAGES
+
+  // Trigger async Apify scrape if cache is stale or refresh requested
+  const needsScrape = forceRefresh || targetLeaders.some(l => {
+    const cached = apifyCache[l.id]
+    return !cached || (Date.now() - cached.scrapedAt) > CACHE_TTL_MS
+  })
+
+  let apifyRunId: string | null = null
+  if (APIFY_TOKEN && needsScrape) {
+    // Fire async — do not await (non-blocking)
+    triggerApifyScrape(targetLeaders).then(runId => {
+      if (runId) apifyRunId = runId
+    })
+  }
 
   const results = await Promise.all(
     targetLeaders.map(async (leader) => {
-      let texts: string[] = []
-      let dataSource = 'curated'
-      let mcpLayer = 'none'
+      // Check in-memory Apify cache
+      const cached = apifyCache[leader.id]
+      const cacheAge = cached ? Math.round((Date.now() - cached.scrapedAt) / 60000) : null
 
-      // ── Priority 1: Apify MCP ──
-      if (APIFY_TOKEN) {
-        texts = await scrapeWithApify(leader.fbUrl)
-        if (texts.length > 0) { dataSource = 'apify-mcp'; mcpLayer = 'apify' }
-      }
+      let texts = cached?.texts ?? []
+      let dataSource = cached ? 'apify-cached' : 'curated'
+      let mcpLayer = cached ? 'apify' : 'none'
 
-      // ── Priority 2: Bright Data MCP ──
-      if (texts.length === 0 && BRIGHTDATA_TOKEN) {
-        texts = await scrapeWithBrightData(leader.fbUrl)
-        if (texts.length > 0) { dataSource = 'brightdata-mcp'; mcpLayer = 'brightdata' }
-      }
-
-      // ── Priority 3: Facebook Graph API ──
-      if (texts.length === 0 && FB_TOKEN) {
-        texts = await scrapeWithFbApi(leader.fbPage)
-        if (texts.length > 0) { dataSource = 'facebook-api'; mcpLayer = 'fb-api' }
-      }
-
-      // ── Priority 4: Curated fallback ──
+      // Always fall back to curated if no live data
       if (texts.length === 0) {
-        texts = CURATED_SAMPLES[leader.id] ?? []
+        texts = CURATED[leader.id] ?? []
         dataSource = 'curated'
+        mcpLayer = 'none'
       }
 
       const isLive = dataSource !== 'curated'
-      const analysis = await analyzeWithAI(leader.name, texts, dataSource)
+      const aiResult = await analyzeWithAI(leader.name, texts, dataSource)
+      const analysis = aiResult ?? DEMO_ANALYSIS[leader.id] ?? { sentiment: 'neutral' as const, score: 50, summary: 'Analysis unavailable', topThemes: [] }
 
       return {
         leaderId: leader.id,
         leaderName: leader.name,
         fbPage: leader.fbPage,
         sampleCount: texts.length,
-        postsCount: isLive ? Math.ceil(texts.length / 3) : 0,
+        postsCount: cached?.postCount ?? 0,
         commentsCount: isLive ? texts.length : 0,
         liveData: isLive,
         dataSource,
         mcpLayer,
+        cacheAgeMinutes: cacheAge,
         analysis,
         mode: CF_ACCOUNT_ID ? 'ai' : 'demo',
         timestamp: new Date().toISOString(),
@@ -374,7 +313,30 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     results,
     fetchedAt: new Date().toISOString(),
-    mcpEnabled: { apify: !!APIFY_TOKEN, brightdata: !!BRIGHTDATA_TOKEN, fbApi: !!FB_TOKEN },
+    apifyEnabled: !!APIFY_TOKEN,
     aiEnabled: !!CF_ACCOUNT_ID,
+    scrapeTriggered: needsScrape && !!APIFY_TOKEN,
+    webhookUrl: 'https://zambia-election-app.vercel.app/api/apify-webhook',
   })
+}
+
+// ── POST: receive Apify results (called by webhook or manually) ───────────────
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => ({}))
+  const { leaderId, texts, runId, postCount } = body as {
+    leaderId: string; texts: string[]; runId: string; postCount: number
+  }
+
+  if (!leaderId || !Array.isArray(texts)) {
+    return NextResponse.json({ error: 'leaderId and texts required' }, { status: 400 })
+  }
+
+  apifyCache[leaderId] = {
+    texts,
+    runId: runId ?? 'manual',
+    scrapedAt: Date.now(),
+    postCount: postCount ?? texts.length,
+  }
+
+  return NextResponse.json({ ok: true, cached: leaderId, count: texts.length })
 }
