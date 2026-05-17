@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // ── Credentials ─────────────────────────────────────────────────────────────
-const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID
-const CF_API_TOKEN  = process.env.CLOUDFLARE_API_TOKEN
-const CF_MODEL      = '@cf/meta/llama-3.1-8b-instruct'
-const APIFY_TOKEN   = process.env.APIFY_API_TOKEN
+const CF_ACCOUNT_ID     = process.env.CLOUDFLARE_ACCOUNT_ID
+const CF_API_TOKEN      = process.env.CLOUDFLARE_API_TOKEN
+const CF_MODEL          = '@cf/meta/llama-3.1-8b-instruct'
+const APIFY_TOKEN       = process.env.APIFY_API_TOKEN
+const AIRTABLE_TOKEN    = process.env.AIRTABLE_TOKEN
+const AIRTABLE_BASE_ID  = 'appEG17iTbwEvLYWU'
+const AIRTABLE_TABLE_ID = 'tblcwKbfCnT6Ig8oi' // Media Sentiment NLP table
 
 // ── Candidate Facebook pages ─────────────────────────────────────────────────
 const LEADER_PAGES = [
@@ -14,8 +17,8 @@ const LEADER_PAGES = [
   { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
 ]
 
-// ── In-memory cache (survives across requests on same Vercel instance) ───────
-// Refreshed whenever Apify webhook fires or a fresh scrape completes
+// ── In-memory cache (hot path — survives within same Vercel instance) ─────────
+// Airtable is the persistent cache across cold starts (written by apify-webhook)
 interface CacheEntry {
   texts: string[]
   runId: string
@@ -24,6 +27,32 @@ interface CacheEntry {
 }
 const apifyCache: Record<string, CacheEntry> = {}
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000 // 6 hours
+
+// ── Read Airtable for persisted Apify results (cold start recovery) ───────────
+async function loadFromAirtable(leaderId: string): Promise<CacheEntry | null> {
+  if (!AIRTABLE_TOKEN) return null
+  try {
+    const filter = encodeURIComponent(`FIND("${leaderId}", {Batch ID})`)
+    const res = await fetch(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}?filterByFormula=${filter}&sort[0][field]=Created&sort[0][direction]=desc&maxRecords=1`,
+      { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
+    )
+    if (!res.ok) return null
+    const { records } = await res.json() as { records: Array<{ fields: Record<string, unknown>; createdTime: string }> }
+    if (!records?.length) return null
+    const r = records[0]
+    const notes = String(r.fields['Notes'] ?? '')
+    const texts = notes ? notes.split(' | ').filter(Boolean) : []
+    return {
+      texts,
+      runId: String(r.fields['Batch ID'] ?? '').replace('APIFY-', ''),
+      scrapedAt: new Date(r.createdTime).getTime(),
+      postCount: texts.length,
+    }
+  } catch {
+    return null
+  }
+}
 
 // ── Trigger Apify scrape (async — does NOT block response) ───────────────────
 // Uses facebook-posts-scraper actor for post text + comments
@@ -273,15 +302,27 @@ export async function GET(req: NextRequest) {
 
   const results = await Promise.all(
     targetLeaders.map(async (leader) => {
-      // Check in-memory Apify cache
-      const cached = apifyCache[leader.id]
-      const cacheAge = cached ? Math.round((Date.now() - cached.scrapedAt) / 60000) : null
+      // 1. Check hot in-memory cache
+      let cached = apifyCache[leader.id]
+      const isFresh = cached && (Date.now() - cached.scrapedAt) < CACHE_TTL_MS
 
-      let texts = cached?.texts ?? []
-      let dataSource = cached ? 'apify-cached' : 'curated'
-      let mcpLayer = cached ? 'apify' : 'none'
+      // 2. On cold start (no in-memory data), recover from Airtable
+      if (!isFresh && AIRTABLE_TOKEN) {
+        const airtableEntry = await loadFromAirtable(leader.id)
+        if (airtableEntry && (Date.now() - airtableEntry.scrapedAt) < CACHE_TTL_MS) {
+          apifyCache[leader.id] = airtableEntry // repopulate in-memory
+          cached = airtableEntry
+        }
+      }
 
-      // Always fall back to curated if no live data
+      const validCached = apifyCache[leader.id]
+      const cacheAge = validCached ? Math.round((Date.now() - validCached.scrapedAt) / 60000) : null
+
+      let texts = validCached?.texts ?? []
+      let dataSource = validCached ? 'apify-cached' : 'curated'
+      let mcpLayer = validCached ? 'apify' : 'none'
+
+      // 3. Always fall back to curated if no live data
       if (texts.length === 0) {
         texts = CURATED[leader.id] ?? []
         dataSource = 'curated'
@@ -297,7 +338,7 @@ export async function GET(req: NextRequest) {
         leaderName: leader.name,
         fbPage: leader.fbPage,
         sampleCount: texts.length,
-        postsCount: cached?.postCount ?? 0,
+        postsCount: validCached?.postCount ?? 0,
         commentsCount: isLive ? texts.length : 0,
         liveData: isLive,
         dataSource,
