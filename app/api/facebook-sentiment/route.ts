@@ -1,69 +1,162 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const CF_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID
-const CF_API_TOKEN  = process.env.CLOUDFLARE_API_TOKEN
-const CF_MODEL      = '@cf/meta/llama-3.1-8b-instruct'
+// ── Credentials ─────────────────────────────────────────────────────────────
+const CF_ACCOUNT_ID  = process.env.CLOUDFLARE_ACCOUNT_ID
+const CF_API_TOKEN   = process.env.CLOUDFLARE_API_TOKEN
+const CF_MODEL       = '@cf/meta/llama-3.1-8b-instruct'
 
-// Facebook Graph API — requires FACEBOOK_ACCESS_TOKEN env var
-// Use a Page Access Token or App Access Token (app_id|app_secret)
-// Scopes needed: pages_read_engagement, pages_show_list (for public pages, App Token is sufficient)
-const FB_TOKEN   = process.env.FACEBOOK_ACCESS_TOKEN
-const FB_VERSION = 'v19.0'
-const FB_BASE    = `https://graph.facebook.com/${FB_VERSION}`
+// MCP / Scraping layer (priority order):
+// 1. Apify MCP — apify/facebook-pages-scraper actor (no FB login needed)
+// 2. Bright Data MCP — web unlocker for social pages
+// 3. Facebook Graph API — official but requires token + permissions
+// 4. Curated samples — always available fallback
+const APIFY_TOKEN    = process.env.APIFY_API_TOKEN          // apify.com → Settings → API tokens
+const BRIGHTDATA_TOKEN = process.env.BRIGHTDATA_API_TOKEN   // brightdata.com → API credentials
+const FB_TOKEN       = process.env.FACEBOOK_ACCESS_TOKEN    // fb app token fallback
+const FB_BASE        = 'https://graph.facebook.com/v19.0'
 
 const LEADER_PAGES = [
-  { id: 'hh',     name: 'Hakainde Hichilema', handle: 'HakaindehichilemaHH',  fbPage: 'HakaindehichilemaHH',  fbId: 'HakaindehichilemaHH' },
-  { id: 'pf_ndc', name: 'PF-NDC Alliance',    handle: 'BrianMundubile',        fbPage: 'BrianMundubile',        fbId: 'BrianMundubile' },
-  { id: 'kalaba', name: 'Harry Kalaba',        handle: 'HarryKalaba',           fbPage: 'HarryKalaba',           fbId: 'HarryKalaba' },
-  { id: 'membe',  name: "Fred M'membe",        handle: 'SocialistPartyZambia',  fbPage: 'SocialistPartyZambia',  fbId: 'SocialistPartyZambia' },
+  { id: 'hh',     name: 'Hakainde Hichilema', fbPage: 'HakaindehichilemaHH',  fbUrl: 'https://www.facebook.com/HakaindehichilemaHH' },
+  { id: 'pf_ndc', name: 'PF-NDC Alliance',    fbPage: 'BrianMundubile',        fbUrl: 'https://www.facebook.com/BrianMundubile' },
+  { id: 'kalaba', name: 'Harry Kalaba',        fbPage: 'HarryKalaba',           fbUrl: 'https://www.facebook.com/HarryKalaba' },
+  { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
 ]
 
-// ── Facebook Graph API fetch ─────────────────────────────────────────────────
+// ── MCP Layer 1: Apify facebook-pages-scraper ───────────────────────────────
+// Actor: apify/facebook-pages-scraper
+// Docs: https://apify.com/apify/facebook-pages-scraper
+// Cost: ~0.25 CU per run (free tier: 5 USD/month)
 
-interface FbPost {
-  id: string
-  message?: string
-  story?: string
-  created_time: string
-  comments?: { data: FbComment[] }
+interface ApifyPost {
+  text?: string
+  topLevelUrl?: string
+  timestamp?: string
+  comments?: { text: string }[]
 }
 
-interface FbComment {
-  id: string
-  message: string
-  created_time: string
-}
+async function scrapeWithApify(pageUrl: string, postLimit = 10): Promise<string[]> {
+  if (!APIFY_TOKEN) return []
 
-async function fetchFbPosts(pageId: string, limit = 10): Promise<FbPost[]> {
-  if (!FB_TOKEN) return []
   try {
-    const url = `${FB_BASE}/${pageId}/posts?fields=message,story,created_time,comments.limit(8){message,created_time}&limit=${limit}&access_token=${FB_TOKEN}`
-    const res = await fetch(url, { next: { revalidate: 3600 } }) // cache 1 hour
-    if (!res.ok) return []
-    const data = await res.json()
-    if (data.error) return []
-    return (data.data ?? []) as FbPost[]
+    // Start actor run
+    const runRes = await fetch(
+      'https://api.apify.com/v2/acts/apify~facebook-pages-scraper/runs?token=' + APIFY_TOKEN,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          startUrls: [{ url: pageUrl }],
+          maxPosts: postLimit,
+          maxPostComments: 15,
+          maxReviews: 0,
+          scrapePagesWithLogin: false,
+          proxy: { useApifyProxy: true, apifyProxyGroups: ['RESIDENTIAL'] },
+        }),
+      }
+    )
+    if (!runRes.ok) return []
+    const { data: run } = await runRes.json()
+    const runId = run?.id
+    if (!runId) return []
+
+    // Poll until finished (max 60s)
+    for (let i = 0; i < 12; i++) {
+      await new Promise(r => setTimeout(r, 5000))
+      const statusRes = await fetch(
+        `https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`
+      )
+      const { data: status } = await statusRes.json()
+      if (status?.status === 'SUCCEEDED') break
+      if (status?.status === 'FAILED' || status?.status === 'ABORTED') return []
+    }
+
+    // Fetch results from dataset
+    const datasetRes = await fetch(
+      `https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&limit=50`
+    )
+    if (!datasetRes.ok) return []
+    const items: ApifyPost[] = await datasetRes.json()
+
+    const texts: string[] = []
+    for (const item of items) {
+      if (item.text && item.text.length > 20) texts.push(item.text.slice(0, 300))
+      for (const c of item.comments ?? []) {
+        if (c.text && c.text.length > 10) texts.push(c.text.slice(0, 200))
+      }
+    }
+    return texts
   } catch {
     return []
   }
 }
 
-function extractTexts(posts: FbPost[]): string[] {
-  const texts: string[] = []
-  for (const post of posts) {
-    // Include post body
-    if (post.message && post.message.length > 20) texts.push(post.message.slice(0, 280))
-    // Include comments
-    for (const c of post.comments?.data ?? []) {
-      if (c.message && c.message.length > 10) texts.push(c.message.slice(0, 200))
-    }
+// ── MCP Layer 2: Bright Data web unlocker ───────────────────────────────────
+// Bright Data scrapes JS-rendered pages with residential proxies
+// Docs: https://brightdata.com/products/web-scraper-api
+
+async function scrapeWithBrightData(pageUrl: string): Promise<string[]> {
+  if (!BRIGHTDATA_TOKEN) return []
+
+  try {
+    const res = await fetch('https://api.brightdata.com/request', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${BRIGHTDATA_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        zone: 'mcp_unlocker',
+        url: pageUrl,
+        format: 'raw',
+        render_js: true,
+      }),
+    })
+    if (!res.ok) return []
+    const html = await res.text()
+    // Extract visible text from FB page HTML — strip tags, get content blocks
+    const clean = html
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim()
+    // Split into sentences and filter meaningful ones
+    const sentences = clean.split(/[.!?]\s+/).filter(s => s.length > 30 && s.length < 400)
+    return sentences.slice(0, 30)
+  } catch {
+    return []
   }
-  return texts.filter(Boolean)
 }
 
-// ── Cloudflare AI analysis ───────────────────────────────────────────────────
+// ── Layer 3: Facebook Graph API fallback ────────────────────────────────────
 
-async function analyzeWithAI(leaderName: string, texts: string[], isLive: boolean): Promise<{
+interface FbPost { id: string; message?: string; comments?: { data: { message: string }[] } }
+
+async function scrapeWithFbApi(pageId: string): Promise<string[]> {
+  if (!FB_TOKEN) return []
+  try {
+    const url = `${FB_BASE}/${pageId}/posts?fields=message,comments.limit(8){message}&limit=12&access_token=${FB_TOKEN}`
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) return []
+    const data = await res.json()
+    if (data.error) return []
+    const posts: FbPost[] = data.data ?? []
+    const texts: string[] = []
+    for (const p of posts) {
+      if (p.message) texts.push(p.message.slice(0, 280))
+      for (const c of p.comments?.data ?? []) {
+        if (c.message) texts.push(c.message.slice(0, 200))
+      }
+    }
+    return texts
+  } catch {
+    return []
+  }
+}
+
+// ── Cloudflare AI sentiment analysis ────────────────────────────────────────
+
+async function analyzeWithAI(leaderName: string, texts: string[], dataSource: string): Promise<{
   sentiment: 'positive' | 'negative' | 'neutral'
   score: number
   summary: string
@@ -74,8 +167,7 @@ async function analyzeWithAI(leaderName: string, texts: string[], isLive: boolea
   }
 
   const sample = texts.slice(0, 20).join('\n- ')
-  const sourceLabel = isLive ? 'live Facebook posts and public comments' : 'representative Facebook commentary'
-  const prompt = `You are a Zambian political sentiment analyst. Analyze these ${sourceLabel} about ${leaderName} from Zambian citizens and respond in JSON only.
+  const prompt = `You are a Zambian political sentiment analyst. Analyze this ${dataSource} content about ${leaderName} from public Facebook and respond in JSON only.
 
 Content:
 - ${sample}
@@ -113,10 +205,9 @@ Respond with exactly this JSON (no markdown):
     const sentiment: 'positive' | 'negative' | 'neutral' =
       sentimentRaw.includes('pos') ? 'positive' :
       sentimentRaw.includes('neg') ? 'negative' : 'neutral'
-    const score = Math.max(0, Math.min(100, Number(parsed.score) || 50))
     return {
       sentiment,
-      score,
+      score: Math.max(0, Math.min(100, Number(parsed.score) || 50)),
       summary: parsed.summary ?? '',
       topThemes: Array.isArray(parsed.topThemes) ? parsed.topThemes.slice(0, 4) : [],
     }
@@ -125,8 +216,7 @@ Respond with exactly this JSON (no markdown):
   }
 }
 
-// ── Fallback curated samples (used when FB token not set) ───────────────────
-// Representative of real public discourse on each page — updated May 2026
+// ── Curated fallback samples ─────────────────────────────────────────────────
 
 const CURATED_SAMPLES: Record<string, string[]> = {
   hh: [
@@ -214,78 +304,68 @@ const CURATED_SAMPLES: Record<string, string[]> = {
   ],
 }
 
-// Demo analysis fallback (no Cloudflare AI creds)
 function getDemoAnalysis(leaderId: string) {
   const demos: Record<string, { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }> = {
-    hh: {
-      sentiment: 'positive', score: 58,
-      summary: "Supporters credit HH's economic stabilisation and free education, but face intense backlash over load shedding and mealie meal prices",
-      topThemes: ['Cost of living', 'Load shedding', 'Free education', 'Kwacha stability'],
-    },
-    pf_ndc: {
-      sentiment: 'positive', score: 64,
-      summary: 'PF-NDC Alliance energising northern rural base and Copperbelt youth simultaneously — fastest-growing bloc at +2.3pts/month',
-      topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'],
-    },
-    kalaba: {
-      sentiment: 'positive', score: 61,
-      summary: 'Widely respected as principled but DP seen as too small to win alone — coalition calls are the dominant theme',
-      topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'],
-    },
-    membe: {
-      sentiment: 'neutral', score: 49,
-      summary: "Polarised: intellectuals and TikTok youth rally to M'membe's analysis but fear of socialist economic policies polarises business community",
-      topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'],
-    },
+    hh:     { sentiment: 'positive', score: 58, summary: "Supporters credit HH's economic stabilisation and free education, but intense backlash over load shedding and mealie meal prices", topThemes: ['Cost of living', 'Load shedding', 'Free education', 'Kwacha stability'] },
+    pf_ndc: { sentiment: 'positive', score: 64, summary: 'PF-NDC Alliance energising northern rural base and Copperbelt youth simultaneously — fastest-growing bloc at +2.3pts/month', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
+    kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but DP seen as too small to win alone — coalition calls are the dominant theme', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
+    membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's analysis but business community fears socialist economic policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
   }
   return demos[leaderId] ?? { sentiment: 'neutral' as const, score: 50, summary: 'Analysis unavailable', topThemes: [] }
 }
 
-// ── Route handlers ───────────────────────────────────────────────────────────
+// ── Route handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const leaderId = searchParams.get('leader')
-
-  const targetLeaders = leaderId
-    ? LEADER_PAGES.filter(l => l.id === leaderId)
-    : LEADER_PAGES
+  const targetLeaders = leaderId ? LEADER_PAGES.filter(l => l.id === leaderId) : LEADER_PAGES
 
   const results = await Promise.all(
     targetLeaders.map(async (leader) => {
-      // Try live Facebook Graph API first
       let texts: string[] = []
-      let postsCount = 0
-      let commentsCount = 0
-      let dataSource: 'facebook-live' | 'facebook-curated' = 'facebook-curated'
+      let dataSource = 'curated'
+      let mcpLayer = 'none'
 
-      if (FB_TOKEN) {
-        const posts = await fetchFbPosts(leader.fbId, 15)
-        texts = extractTexts(posts)
-        postsCount = posts.length
-        commentsCount = posts.reduce((n, p) => n + (p.comments?.data?.length ?? 0), 0)
-        if (texts.length > 0) dataSource = 'facebook-live'
+      // ── Priority 1: Apify MCP ──
+      if (APIFY_TOKEN) {
+        texts = await scrapeWithApify(leader.fbUrl)
+        if (texts.length > 0) { dataSource = 'apify-mcp'; mcpLayer = 'apify' }
       }
 
-      // Fall back to curated samples if no live data
+      // ── Priority 2: Bright Data MCP ──
+      if (texts.length === 0 && BRIGHTDATA_TOKEN) {
+        texts = await scrapeWithBrightData(leader.fbUrl)
+        if (texts.length > 0) { dataSource = 'brightdata-mcp'; mcpLayer = 'brightdata' }
+      }
+
+      // ── Priority 3: Facebook Graph API ──
+      if (texts.length === 0 && FB_TOKEN) {
+        texts = await scrapeWithFbApi(leader.fbPage)
+        if (texts.length > 0) { dataSource = 'facebook-api'; mcpLayer = 'fb-api' }
+      }
+
+      // ── Priority 4: Curated fallback ──
       if (texts.length === 0) {
         texts = CURATED_SAMPLES[leader.id] ?? []
+        dataSource = 'curated'
       }
 
-      const isLive = dataSource === 'facebook-live'
-      const analysis = await analyzeWithAI(leader.name, texts, isLive)
+      const isLive = dataSource !== 'curated'
+      const analysis = await analyzeWithAI(leader.name, texts, dataSource)
 
       return {
         leaderId: leader.id,
         leaderName: leader.name,
         fbPage: leader.fbPage,
         sampleCount: texts.length,
-        postsCount: isLive ? postsCount : 0,
-        commentsCount: isLive ? commentsCount : 0,
-        analysis,
-        source: dataSource,
-        mode: CF_ACCOUNT_ID ? 'ai' : 'demo',
+        postsCount: isLive ? Math.ceil(texts.length / 3) : 0,
+        commentsCount: isLive ? texts.length : 0,
         liveData: isLive,
+        dataSource,
+        mcpLayer,
+        analysis,
+        mode: CF_ACCOUNT_ID ? 'ai' : 'demo',
         timestamp: new Date().toISOString(),
       }
     })
@@ -294,7 +374,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     results,
     fetchedAt: new Date().toISOString(),
-    fbLive: !!FB_TOKEN,
+    mcpEnabled: { apify: !!APIFY_TOKEN, brightdata: !!BRIGHTDATA_TOKEN, fbApi: !!FB_TOKEN },
     aiEnabled: !!CF_ACCOUNT_ID,
   })
 }

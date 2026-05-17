@@ -22,7 +22,7 @@ type FbLeaderSentiment = {
   leaderId: string; leaderName: string; fbPage: string; sampleCount: number
   postsCount: number; commentsCount: number; liveData: boolean
   analysis: { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }
-  source: string; mode: string; timestamp: string
+  source: string; mcpLayer: string; mode: string; timestamp: string
 }
 
 type NlpHeadline = {
@@ -793,9 +793,11 @@ export default function Dashboard() {
                         </div>
                       ))}
                     </div>
-                    <div style={{ fontSize: 9, color: '#444', marginTop: 10, fontFamily: 'monospace', display: 'flex', justifyContent: 'space-between' }}>
-                      <span>{fb.sampleCount} texts analysed</span>
-                      <span>{fb.mode === 'ai' ? '✓ AI' : '◎ sample'}</span>
+                    <div style={{ fontSize: 9, color: '#444', marginTop: 10, fontFamily: 'monospace', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{fb.sampleCount} texts</span>
+                      <span style={{ padding: '1px 5px', borderRadius: 3, background: fb.mcpLayer === 'apify' ? '#F5C40020' : fb.mcpLayer === 'brightdata' ? '#00C9A720' : fb.mcpLayer === 'fb-api' ? '#1877F220' : '#33333330', color: fb.mcpLayer === 'apify' ? '#F5C400' : fb.mcpLayer === 'brightdata' ? '#00C9A7' : fb.mcpLayer === 'fb-api' ? '#1877F2' : '#555' }}>
+                        {fb.mcpLayer === 'apify' ? '⚡ Apify MCP' : fb.mcpLayer === 'brightdata' ? '⚡ BrightData MCP' : fb.mcpLayer === 'fb-api' ? 'FB API' : '◎ curated'}
+                      </span>
                     </div>
                   </div>
                 )
@@ -807,7 +809,7 @@ export default function Dashboard() {
             </div>
           )}
           <div style={{ marginTop: 12, fontSize: 9, color: '#444', fontFamily: 'monospace', borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
-            Source: Facebook Graph API (public pages) · To enable live data: set FACEBOOK_ACCESS_TOKEN env var in Vercel · Analysis: Cloudflare AI llama-3.1-8b
+            MCP priority: Apify → BrightData → FB Graph API → curated samples · Analysis: Cloudflare AI llama-3.1-8b · Set APIFY_API_TOKEN in Vercel to enable live scraping
           </div>
         </div>
 
