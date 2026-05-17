@@ -727,7 +727,7 @@ export default function Dashboard() {
 
         {/* ── FACEBOOK SENTIMENT ────────────────────────────── */}
         <SectionLabel layer="SOCIAL MEDIA" title="Facebook Public Page Monitoring — AI Sentiment Analysis"
-          sub="Fetches live posts & comments from each candidate's public Facebook page · AI-classified by Cloudflare · Refreshes on demand" />
+          sub="Fetches live posts & comments from each candidate's public Facebook page · AI-classified sentiment analysis · Refreshes on demand" />
         <div style={{ background: C.card, border: `1px solid #1877F2`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -809,7 +809,7 @@ export default function Dashboard() {
             </div>
           )}
           <div style={{ marginTop: 12, fontSize: 9, color: '#444', fontFamily: 'monospace', borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
-            MCP priority: Apify → BrightData → FB Graph API → curated samples · Analysis: Cloudflare AI llama-3.1-8b · Set APIFY_API_TOKEN in Vercel to enable live scraping
+            MCP priority: Apify → BrightData → FB Graph API → curated samples · AI sentiment analysis · Set APIFY_API_TOKEN in Vercel to enable live scraping
           </div>
         </div>
 
