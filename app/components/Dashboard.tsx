@@ -631,6 +631,42 @@ export default function Dashboard() {
       color: C.zg,
     },
   ]
+  const undecidedConversion = [
+    {
+      candidate: 'HH / UPND',
+      pool: 'Urban cost-of-living undecided',
+      path: 'Convert through measurable electricity recovery, mealie meal price proof, and local delivery evidence in Lusaka/Copperbelt.',
+      proof: 'Needs +2.8 pts to clear the 50%+1 gate from the current 47.2% baseline.',
+      color: C.upnd,
+    },
+    {
+      candidate: 'Mundubile-Makebi',
+      pool: 'PF-leaning but uncertain northern/eastern voters',
+      path: 'Convert through ticket clarity, alliance discipline, Bemba/Nyanja radio reach, and a credible jobs/cost plan that is not only PF nostalgia.',
+      proof: 'Trend is +2.3 pts/month, but formal vehicle/ticket uncertainty caps undecided conversion.',
+      color: C.pf,
+    },
+    {
+      candidate: 'Kalaba / CF Orange',
+      pool: 'Integrity-first and coalition-minded undecided',
+      path: 'Convert by showing a realistic route to influence: coalition terms, Luapula/Eastern organisation, and a visible reform bargain.',
+      proof: 'At 3-4%, he matters more as first-round spoiler/runoff-transfer actor than standalone frontrunner.',
+      color: C.dp,
+    },
+    {
+      candidate: "M'membe / SP",
+      pool: 'Youth and mining-inequality undecided',
+      path: 'Convert by translating resource-nationalism into practical Copperbelt jobs, royalties, contractor payments and small-business policy.',
+      proof: 'Social velocity is real, but ideological risk limits older/moderate voter transfer.',
+      color: C.sp,
+    },
+  ]
+  const classificationRows = [
+    { label: 'Lean UPND', why: 'HH leads nationally and has strong Southern/Western/North-Western anchors, but sits below the 50%+1 first-round gate.', evidence: '47.2% baseline, +26.9 pt lead over Mundubile-Makebi, 2.8 pt threshold gap.', color: C.upnd },
+    { label: 'Runoff Risk: High', why: 'A lead is not enough in Zambia; the model requires more than 50% of valid votes cast before calling a first-round majority path.', evidence: 'Status quo scenario remains below 50%; undecided/other pool is 24.6%.', color: C.warn },
+    { label: 'Mundubile-Makebi Opposition Lane', why: 'Classified as a consolidated lane because PF-linked northern/eastern machinery and Makebi/Pamodzi transfer potential are modelled together until ECZ filings settle.', evidence: '20.3% baseline, +2.3 pts/month trend, Northern/Luapula/Muchinga strength.', color: C.pf },
+    { label: 'News Signal', why: 'News is treated as corroboration and event pressure, not polling. Stories must map to issue, province, candidate and threshold impact.', evidence: 'ZNBC, News Diggers, Lusaka Times, The Mast, Zambian Observer, GDELT-style events.', color: C.teal },
+  ]
 
   return (
     <div
@@ -907,6 +943,37 @@ export default function Dashboard() {
             <div style={{ marginTop: 12, padding: '9px 11px', borderRadius: 8, background: `${C.warn}10`, border: `1px solid ${C.warn}35`, fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
               Zambia adjustment: live results must be corrected for rural/urban reporting lag because early urban batches can create false momentum.
             </div>
+          </div>
+        </div>
+
+        <SectionLabel layer="UNDECIDED VOTERS" title="Undecided Conversion + Classification Reasons"
+          sub="How each candidate can move undecided voters, and why the model classifies lanes as Lean, Runoff Risk, Opposition Lane or News Signal" />
+        <div className="undecided-model" style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 14, marginBottom: 16 }}>
+          <div style={{ background: 'rgba(14,23,36,.92)', border: `1px solid ${C.gold}55`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 950, letterSpacing: 1, marginBottom: 10 }}>UNDECIDED PATHWAYS</div>
+            <div className="undecided-model__cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
+              {undecidedConversion.map(item => (
+                <div key={item.candidate} className="card-hover" style={{ border: `1px solid ${item.color}55`, background: `${item.color}0D`, borderRadius: 8, padding: '12px 11px' }}>
+                  <div style={{ fontSize: 12, color: item.color, fontWeight: 900, marginBottom: 5 }}>{item.candidate}</div>
+                  <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, marginBottom: 6 }}>{item.pool.toUpperCase()}</div>
+                  <div style={{ fontSize: 11, color: C.text, lineHeight: 1.55, marginBottom: 8 }}>{item.path}</div>
+                  <div style={{ borderTop: `1px solid ${item.color}35`, paddingTop: 7, fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{item.proof}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: 'rgba(4,9,13,.72)', border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+            <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 950, letterSpacing: 1, marginBottom: 10 }}>WHY CLASSIFIED THIS WAY</div>
+            {classificationRows.map((row, idx) => (
+              <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '22px 1fr', gap: 9, padding: '9px 0', borderTop: idx === 0 ? 'none' : `1px solid ${C.line}` }}>
+                <div style={{ width: 22, height: 22, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${row.color}20`, color: row.color, fontFamily: 'monospace', fontSize: 10, fontWeight: 900 }}>{idx + 1}</div>
+                <div>
+                  <div style={{ fontSize: 12, color: row.color, fontWeight: 900, marginBottom: 4 }}>{row.label}</div>
+                  <div style={{ fontSize: 11, color: C.text, lineHeight: 1.5 }}>{row.why}</div>
+                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.45, marginTop: 4 }}>{row.evidence}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
