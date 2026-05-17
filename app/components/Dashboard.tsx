@@ -366,6 +366,7 @@ export default function Dashboard() {
   const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
   const [showQuotes, setShowQuotes]   = useState(false)
   const [activeLens, setActiveLens] = useState<'energy' | 'cost' | 'youth' | 'copperbelt' | 'opposition'>('energy')
+  const [projectionMode, setProjectionMode] = useState<'intel' | 'electiondesk' | 'fusion'>('electiondesk')
   const [airtableStatus, setAirtableStatus] = useState('LIVE')
   const [vercelStatus, setVercelStatus]     = useState('LIVE')
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
@@ -519,6 +520,42 @@ export default function Dashboard() {
     },
   ]
   const selectedLens = campaignLenses.find(lens => lens.id === activeLens) ?? campaignLenses[0]
+  const projectionModes = [
+    {
+      id: 'intel' as const,
+      label: 'CIA-style OSINT',
+      call: 'UPND advantage, contested downside',
+      confidence: 68,
+      color: C.teal,
+      method: 'Key Judgments, confidence levels, alternative hypotheses and indicator watchlists.',
+      projection: 'HH remains the best-positioned candidate if economic irritation does not consolidate into a single opposition vehicle.',
+      triggers: ['Opposition alliance legal clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
+      caveat: 'Analytic confidence is moderate because social-platform signals are noisy and not a substitute for verified polling.',
+    },
+    {
+      id: 'electiondesk' as const,
+      label: 'CNN-style Desk',
+      call: 'Lean UPND',
+      confidence: 72,
+      color: C.gold,
+      method: 'Projection gates: current lead, province path, remaining undecided pool, turnout assumptions and confidence threshold.',
+      projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga and Copperbelt watched as opposition pickup lanes.',
+      triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile/Tonse below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
+      caveat: 'Election-desk language here is modeled. It is not a media network call and not an ECZ result.',
+    },
+    {
+      id: 'fusion' as const,
+      label: 'Palantir-style Fusion',
+      call: 'Incumbent path intact',
+      confidence: 74,
+      color: C.ndc,
+      method: 'Fuses voter register, province leans, economy, OSINT, platform sentiment, issue risk and scenario deltas.',
+      projection: 'The integrated graph points to an incumbent path through Lusaka, Southern, Western and North-Western, with Copperbelt as the decisive stress test.',
+      triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Field-event and media spike matching'],
+      caveat: 'Fusion output is only as strong as source freshness, labels and missing-data handling.',
+    },
+  ]
+  const selectedProjection = projectionModes.find(mode => mode.id === projectionMode) ?? projectionModes[1]
 
   return (
     <div
@@ -694,6 +731,65 @@ export default function Dashboard() {
         </div>
 
         {/* ── CHARTS ROW 1 ─────────────────────────────────── */}
+        <SectionLabel layer="PROJECTION DESK" title="Intelligence + Election Desk Projection"
+          sub="Open-source analytic layer inspired by intelligence estimates, election-night desks and data-fusion platforms" />
+        <div className="projection-desk" style={{ background: 'linear-gradient(135deg, rgba(4,9,13,.96), rgba(12,25,40,.94))', border: `1px solid ${selectedProjection.color}66`, borderRadius: 10, padding: 16, marginBottom: 16, display: 'grid', gridTemplateColumns: '300px minmax(0,1fr) 360px', gap: 14 }}>
+          <div style={{ display: 'grid', gap: 8 }}>
+            {projectionModes.map(modeItem => {
+              const active = modeItem.id === projectionMode
+              return (
+                <button key={modeItem.id} onClick={() => setProjectionMode(modeItem.id)}
+                  style={{ padding: '12px 13px', borderRadius: 8, border: `1px solid ${active ? modeItem.color : C.line}`, background: active ? `${modeItem.color}1F` : 'rgba(18,28,44,.64)', color: active ? modeItem.color : C.text, cursor: 'pointer', textAlign: 'left' }}>
+                  <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 900, marginBottom: 5 }}>{modeItem.label.toUpperCase()}</div>
+                  <div style={{ fontSize: 12, color: active ? C.text : C.muted, lineHeight: 1.4 }}>{modeItem.call}</div>
+                </button>
+              )
+            })}
+          </div>
+
+          <div style={{ border: `1px solid ${selectedProjection.color}33`, borderRadius: 8, padding: '14px 16px', background: 'rgba(14,23,36,.62)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 10, color: selectedProjection.color, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>CURRENT ANALYTIC CALL</div>
+                <div style={{ fontSize: 26, fontWeight: 950, color: C.text, lineHeight: 1.1 }}>{selectedProjection.call}</div>
+              </div>
+              <div style={{ minWidth: 132, textAlign: 'right' }}>
+                <div style={{ fontSize: 10, color: C.muted }}>Confidence</div>
+                <div style={{ fontSize: 30, color: selectedProjection.color, fontWeight: 950 }}>{selectedProjection.confidence}%</div>
+              </div>
+            </div>
+            <div style={{ height: 10, background: C.line, borderRadius: 999, overflow: 'hidden', marginBottom: 14 }}>
+              <div style={{ width: `${selectedProjection.confidence}%`, height: '100%', background: `linear-gradient(90deg, ${selectedProjection.color}, ${C.gold})` }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 14 }}>
+              <div>
+                <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, marginBottom: 6 }}>METHOD</div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65 }}>{selectedProjection.method}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: selectedProjection.color, fontFamily: 'monospace', fontWeight: 900, marginBottom: 6 }}>PROJECTION</div>
+                <div style={{ fontSize: 12, color: C.text, lineHeight: 1.65 }}>{selectedProjection.projection}</div>
+              </div>
+            </div>
+            <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.line}`, fontSize: 10, color: C.muted, lineHeight: 1.5 }}>
+              <span style={{ color: C.warn, fontWeight: 900 }}>Caveat:</span> {selectedProjection.caveat}
+            </div>
+          </div>
+
+          <div style={{ border: `1px solid ${C.line}`, borderRadius: 8, padding: '14px 16px', background: 'rgba(6,18,12,.5)' }}>
+            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1, marginBottom: 10 }}>WATCH INDICATORS</div>
+            {selectedProjection.triggers.map((trigger, idx) => (
+              <div key={trigger} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 8, alignItems: 'start', padding: '8px 0', borderTop: idx === 0 ? 'none' : `1px solid ${C.line}` }}>
+                <div style={{ width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${selectedProjection.color}20`, color: selectedProjection.color, fontSize: 10, fontWeight: 900, fontFamily: 'monospace' }}>{idx + 1}</div>
+                <div style={{ fontSize: 12, color: C.text, lineHeight: 1.45 }}>{trigger}</div>
+              </div>
+            ))}
+            <div style={{ marginTop: 12, padding: '10px 12px', borderRadius: 8, background: `${selectedProjection.color}12`, border: `1px solid ${selectedProjection.color}33`, fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+              Projection rule: never call a race from sentiment alone. Require province path, turnout assumptions, undecided compression and official-result flow.
+            </div>
+          </div>
+        </div>
+
         <SectionLabel layer="TRENDS" title="20-Month Support Model — Jan 2025 to Aug 2026"
           sub="Scenario model · Jul–Aug 2026 are projected estimates · not ECZ polling ▸" />
         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 16 }}>
