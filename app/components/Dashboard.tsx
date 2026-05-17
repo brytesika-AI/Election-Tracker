@@ -19,6 +19,7 @@ const C = {
 }
 
 const VICTORIA_FALLS_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/5/50/Zambia_Victoria_Falls.jpg'
+const ZAMBIA_EAGLE_IMAGE = 'https://commons.wikimedia.org/wiki/Special:FilePath/African%20fish%20eagle%2C%20South%20Luangwa%20National%20Park%20%2851871517311%29.jpg?width=640'
 
 type FbLeaderSentiment = {
   leaderId: string; leaderName: string; fbPage: string; sampleCount: number
@@ -48,33 +49,20 @@ type NlpResult = {
 // ── Zambia Fish Eagle SVG ─────────────────────────────────
 function ZambiaEagle({ size = 44 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Body */}
-      <ellipse cx="50" cy="58" rx="18" ry="22" fill="#8B4513" />
-      {/* White chest */}
-      <ellipse cx="50" cy="62" rx="11" ry="14" fill="#F5F5DC" />
-      {/* Head */}
-      <ellipse cx="50" cy="34" rx="12" ry="12" fill="#F5F5DC" />
-      {/* Eye */}
-      <circle cx="54" cy="32" r="2.5" fill="#E07B00" />
-      <circle cx="54" cy="32" r="1.2" fill="#000" />
-      {/* Beak */}
-      <path d="M58 36 L66 40 L58 42 Z" fill="#E07B00" />
-      {/* Left wing spread */}
-      <path d="M32 55 C20 45, 8 40, 4 50 C8 55, 20 58, 32 60 Z" fill="#8B4513" />
-      <path d="M32 55 C18 42, 10 35, 6 42 C12 48, 22 52, 32 58 Z" fill="#5C2D0A" />
-      {/* Right wing spread */}
-      <path d="M68 55 C80 45, 92 40, 96 50 C92 55, 80 58, 68 60 Z" fill="#8B4513" />
-      <path d="M68 55 C82 42, 90 35, 94 42 C88 48, 78 52, 68 58 Z" fill="#5C2D0A" />
-      {/* Tail */}
-      <path d="M40 78 L50 90 L60 78 L55 76 L50 82 L45 76 Z" fill="#8B4513" />
-      {/* Talons */}
-      <path d="M44 80 L40 88 M44 80 L43 89 M44 80 L46 88" stroke="#E07B00" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M56 80 L60 88 M56 80 L57 89 M56 80 L54 88" stroke="#E07B00" strokeWidth="1.5" strokeLinecap="round" />
-      {/* Wing highlights */}
-      <path d="M32 55 C24 50, 16 46, 12 48" stroke="#E07B00" strokeWidth="1" opacity="0.6" />
-      <path d="M68 55 C76 50, 84 46, 88 48" stroke="#E07B00" strokeWidth="1" opacity="0.6" />
-    </svg>
+    <img
+      src={ZAMBIA_EAGLE_IMAGE}
+      alt="African fish eagle in South Luangwa National Park"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        objectFit: 'cover',
+        objectPosition: 'center 36%',
+        border: `2px solid ${C.gold}`,
+        boxShadow: '0 8px 22px rgba(0,0,0,.38)',
+        background: '#06120B',
+      }}
+    />
   )
 }
 
@@ -126,7 +114,7 @@ function HeritageHero({ countdown }: { countdown: { days: number; hours: number;
         </div>
       </div>
       <div className="heritage-hero__attribution">
-        Victoria Falls image: Zambia Tourism / Wikimedia Commons, CC BY-SA 4.0
+        Victoria Falls image: Zambia Tourism / Wikimedia Commons. Eagle image: South Luangwa African fish eagle, I&apos;ve Got It On Film! / CC BY 2.0
       </div>
     </section>
   )
