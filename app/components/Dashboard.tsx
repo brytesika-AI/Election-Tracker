@@ -18,6 +18,8 @@ const C = {
   teal: '#00C9A7', warn: '#FF3B30',
 }
 
+const VICTORIA_FALLS_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/5/50/Zambia_Victoria_Falls.jpg'
+
 type FbLeaderSentiment = {
   leaderId: string; leaderName: string; fbPage: string; sampleCount: number
   postsCount: number; commentsCount: number; liveData: boolean
@@ -91,6 +93,45 @@ function ZambiaFlag({ size = 40 }: { size?: number }) {
 }
 
 // ── Countdown ────────────────────────────────────────────
+function HeritageHero({ countdown }: { countdown: { days: number; hours: number; minutes: number } }) {
+  return (
+    <section
+      className="heritage-hero"
+      style={{
+        backgroundImage: `linear-gradient(90deg, rgba(3,12,9,.94) 0%, rgba(6,18,23,.83) 45%, rgba(6,12,20,.72) 100%), url(${VICTORIA_FALLS_IMAGE})`,
+      }}
+    >
+      <div className="heritage-hero__glow" />
+      <div className="heritage-hero__content">
+        <div className="heritage-hero__copy">
+          <div className="heritage-hero__kicker">MOSI-OA-TUNYA INTELLIGENCE ROOM</div>
+          <h2>Zambia 2026 Election Pulse</h2>
+          <p>
+            A national campaign dashboard grounded in ECZ facts, open intelligence, province-level signals, and the visual language of Zambia.
+          </p>
+          <div className="heritage-hero__chips">
+            <span>Victoria Falls backdrop</span>
+            <span>Fish eagle mark</span>
+            <span>Flag palette</span>
+            <span>Province intelligence</span>
+          </div>
+        </div>
+        <div className="heritage-hero__eagle" aria-hidden="true">
+          <ZambiaEagle size={142} />
+          <div>
+            <span>Election Day</span>
+            <strong>{countdown.days}d {countdown.hours}h {countdown.minutes}m</strong>
+            <small>13 August 2026</small>
+          </div>
+        </div>
+      </div>
+      <div className="heritage-hero__attribution">
+        Victoria Falls image: Zambia Tourism / Wikimedia Commons, CC BY-SA 4.0
+      </div>
+    </section>
+  )
+}
+
 function useCountdown(targetDate: string) {
   const [diff, setDiff] = useState({ days: 0, hours: 0, minutes: 0 })
   useEffect(() => {
@@ -436,14 +477,20 @@ export default function Dashboard() {
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg }}>
+    <div
+      className="zambia-shell"
+      style={{
+        minHeight: '100vh',
+        backgroundImage: `radial-gradient(circle at 14% 8%, rgba(25,138,0,.22), transparent 30%), radial-gradient(circle at 88% 14%, rgba(224,123,0,.18), transparent 32%), linear-gradient(180deg, rgba(6,12,20,.94), rgba(4,9,13,.98)), url(${VICTORIA_FALLS_IMAGE})`,
+      }}
+    >
 
       {/* ── HEADER ─────────────────────────────────────── */}
-      <header style={{ background: '#000', borderBottom: `4px solid ${C.zo}`, position: 'sticky', top: 0, zIndex: 100 }}>
+      <header className="zambia-header" style={{ borderBottom: `4px solid ${C.zo}`, position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 64 }}>
 
           {/* Eagle + Brand */}
-          <div style={{ background: C.zg, padding: '10px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 200 }}>
+          <div style={{ background: 'linear-gradient(135deg,#198A00,#0F5F12)', padding: '10px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 200, boxShadow: 'inset -1px 0 0 rgba(245,196,0,.25)' }}>
             <ZambiaEagle size={48} />
             <div>
               <div style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 13, color: 'white', letterSpacing: 1, lineHeight: 1.2 }}>SENTIMENT</div>
@@ -453,7 +500,7 @@ export default function Dashboard() {
           </div>
 
           {/* Title */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 20px' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 20px', background: 'linear-gradient(90deg, rgba(10,10,10,.76), rgba(11,29,22,.58))' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <ZambiaFlag size={32} />
               <div>
@@ -468,7 +515,7 @@ export default function Dashboard() {
           </div>
 
           {/* Countdown */}
-          <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right', flexShrink: 0 }}>
+          <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right', flexShrink: 0, background: 'rgba(0,0,0,.36)' }}>
             <div style={{ fontSize: 7, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>ELECTION COUNTDOWN</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: C.warn, fontFamily: 'monospace' }}>{countdown.days}d {countdown.hours}h {countdown.minutes}m</div>
             <div style={{ fontSize: 8, color: C.muted }}>13 August 2026</div>
@@ -528,6 +575,8 @@ export default function Dashboard() {
       </div>
 
       <div style={{ padding: '16px 20px 40px', maxWidth: 1800, margin: '0 auto' }}>
+        <HeritageHero countdown={countdown} />
+
         <div style={{ background: '#0B1220', border: `1px solid ${C.gold}`, borderLeft: `5px solid ${C.gold}`, borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ fontSize: 24, fontWeight: 900, color: C.gold, lineHeight: 1 }}>2026</div>
           <div style={{ flex: 1 }}>

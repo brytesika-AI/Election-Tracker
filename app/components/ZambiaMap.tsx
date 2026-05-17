@@ -210,21 +210,21 @@ export default function ZambiaMap() {
   const selectedProv = selected ? ELECTION_DATA.provinces.find(p => p.name === selected) : null
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 16, alignItems: 'stretch' }}>
+    <div className="zambia-map-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 16, alignItems: 'stretch' }}>
 
       {/* ── Broadcast-style Leaflet Map ── */}
-      <div style={{ background: '#07111F', borderRadius: 10, padding: 0, border: `1px solid ${C.line}`, overflow: 'hidden', position: 'relative', boxShadow: '0 16px 36px rgba(0,0,0,.35)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'linear-gradient(90deg,#0A1626,#111827)', borderBottom: `1px solid ${C.line}` }}>
+      <div style={{ background: 'linear-gradient(180deg,#07111F,#06120B)', borderRadius: 10, padding: 0, border: `1px solid ${C.gold}55`, overflow: 'hidden', position: 'relative', boxShadow: '0 16px 36px rgba(0,0,0,.35)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'linear-gradient(90deg,#0A2A16,#0A1626 58%,#2B1206)', borderBottom: `1px solid ${C.gold}33` }}>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 900, color: '#E5E7EB', letterSpacing: 1.2, fontFamily: 'monospace' }}>ZAMBIA ELECTION MAP</div>
-            <div style={{ fontSize: 18, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1 }}>2026 province support model</div>
+            <div style={{ fontSize: 10, fontWeight: 900, color: C.gold, letterSpacing: 1.2, fontFamily: 'monospace' }}>ZAMBIA ELECTION MAP</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1 }}>Mosi-oa-Tunya province support model</div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 11, color: C.muted }}>ECZ certified register</div>
             <div style={{ fontSize: 18, fontWeight: 900, color: C.text }}>8,786,300</div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderBottom: `1px solid ${C.line}` }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderBottom: `1px solid ${C.gold}22`, background: 'rgba(6,18,12,.72)' }}>
           {[
             ['UPND model leads', ELECTION_DATA.provinces.filter(p => p.lean === 'UPND').length, C.upnd],
             ['Opposition model leads', ELECTION_DATA.provinces.filter(p => p.lean === 'PF').length, C.pf],
@@ -249,7 +249,7 @@ export default function ZambiaMap() {
         )}
 
         {/* Legend */}
-        <div style={{ display: 'flex', gap: 16, marginTop: 10, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 16, marginTop: 10, padding: '0 12px 12px', flexWrap: 'wrap' }}>
           {[
             ['UPND Lead', C.upnd],
             ['Opposition Lead', C.pf],
@@ -267,7 +267,7 @@ export default function ZambiaMap() {
       </div>
 
       {/* ── Province Detail Panel ── */}
-      <div style={{ background: '#0B1220', borderRadius: 10, padding: 16, border: `1px solid ${C.line}`, minHeight: 470, boxShadow: '0 16px 36px rgba(0,0,0,.25)' }}>
+      <div style={{ background: 'linear-gradient(180deg, rgba(11,31,17,.95), rgba(11,18,32,.96))', borderRadius: 10, padding: 16, border: `1px solid ${C.gold}44`, minHeight: 470, boxShadow: '0 16px 36px rgba(0,0,0,.25)' }}>
         {selectedProv ? (
           <>
             <div style={{ fontWeight: 900, fontSize: 16, color: leanColor(selectedProv.lean), marginBottom: 6 }}>
