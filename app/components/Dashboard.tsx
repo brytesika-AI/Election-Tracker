@@ -1,0 +1,1038 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import {
+  LineChart, Line, BarChart, Bar, RadarChart, Radar, PolarGrid,
+  PolarAngleAxis, PolarRadiusAxis, PieChart, Pie, Cell,
+  XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine
+} from 'recharts'
+import { ELECTION_DATA, JudgeVerdict } from '@/app/lib/data'
+import ZambiaMap from '@/app/components/ZambiaMap'
+
+// ── Palette ──────────────────────────────────────────────
+const C = {
+  zg: '#198A00', zr: '#CC0000', zo: '#E07B00', zbk: '#0A0A0A',
+  upnd: '#FF6B00', pf: '#CC0000', ndc: '#0077E6', dp: '#27AE60', sp: '#E74C3C',
+  bg: '#060C14', card: '#0E1724', card2: '#121C2C', line: '#1C2A3A',
+  text: '#E2E8F0', muted: '#7A8FA6', gold: '#F5C400',
+  teal: '#00C9A7', warn: '#FF3B30',
+}
+
+type FbLeaderSentiment = {
+  leaderId: string; leaderName: string; fbPage: string; sampleCount: number
+  postsCount: number; commentsCount: number; liveData: boolean
+  analysis: { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }
+  source: string; mode: string; timestamp: string
+}
+
+type NlpHeadline = {
+  headline: string; source: string; url: string; timestamp: string
+  sentiment_score: number; sentiment_class: 'positive' | 'negative' | 'neutral'; score_display: number
+}
+
+type NlpResult = {
+  results: NlpHeadline[]
+  summary: { total: number; positive: number; negative: number; neutral: number; avgCompound: number; avgDisplayScore: number; overallSentiment: string }
+  engine: string; lexiconSize: number; processedAt: string
+}
+
+// ── Zambia Fish Eagle SVG ─────────────────────────────────
+function ZambiaEagle({ size = 44 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Body */}
+      <ellipse cx="50" cy="58" rx="18" ry="22" fill="#8B4513" />
+      {/* White chest */}
+      <ellipse cx="50" cy="62" rx="11" ry="14" fill="#F5F5DC" />
+      {/* Head */}
+      <ellipse cx="50" cy="34" rx="12" ry="12" fill="#F5F5DC" />
+      {/* Eye */}
+      <circle cx="54" cy="32" r="2.5" fill="#E07B00" />
+      <circle cx="54" cy="32" r="1.2" fill="#000" />
+      {/* Beak */}
+      <path d="M58 36 L66 40 L58 42 Z" fill="#E07B00" />
+      {/* Left wing spread */}
+      <path d="M32 55 C20 45, 8 40, 4 50 C8 55, 20 58, 32 60 Z" fill="#8B4513" />
+      <path d="M32 55 C18 42, 10 35, 6 42 C12 48, 22 52, 32 58 Z" fill="#5C2D0A" />
+      {/* Right wing spread */}
+      <path d="M68 55 C80 45, 92 40, 96 50 C92 55, 80 58, 68 60 Z" fill="#8B4513" />
+      <path d="M68 55 C82 42, 90 35, 94 42 C88 48, 78 52, 68 58 Z" fill="#5C2D0A" />
+      {/* Tail */}
+      <path d="M40 78 L50 90 L60 78 L55 76 L50 82 L45 76 Z" fill="#8B4513" />
+      {/* Talons */}
+      <path d="M44 80 L40 88 M44 80 L43 89 M44 80 L46 88" stroke="#E07B00" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M56 80 L60 88 M56 80 L57 89 M56 80 L54 88" stroke="#E07B00" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Wing highlights */}
+      <path d="M32 55 C24 50, 16 46, 12 48" stroke="#E07B00" strokeWidth="1" opacity="0.6" />
+      <path d="M68 55 C76 50, 84 46, 88 48" stroke="#E07B00" strokeWidth="1" opacity="0.6" />
+    </svg>
+  )
+}
+
+// ── Zambia Flag strip ─────────────────────────────────────
+function ZambiaFlag({ size = 40 }: { size?: number }) {
+  return (
+    <div style={{ display: 'flex', width: size * 1.5, height: size, borderRadius: 3, overflow: 'hidden', border: '1px solid #1C2A3A', flexShrink: 0 }}>
+      <div style={{ flex: 3, background: '#198A00' }} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, background: '#0A0A0A' }} />
+        <div style={{ flex: 1, background: '#CC0000' }} />
+        <div style={{ flex: 1, background: '#E07B00' }} />
+      </div>
+    </div>
+  )
+}
+
+// ── Countdown ────────────────────────────────────────────
+function useCountdown(targetDate: string) {
+  const [diff, setDiff] = useState({ days: 0, hours: 0, minutes: 0 })
+  useEffect(() => {
+    const calc = () => {
+      const ms = new Date(targetDate).getTime() - Date.now()
+      if (ms <= 0) return
+      setDiff({ days: Math.floor(ms / 86400000), hours: Math.floor((ms % 86400000) / 3600000), minutes: Math.floor((ms % 3600000) / 60000) })
+    }
+    calc(); const id = setInterval(calc, 60000); return () => clearInterval(id)
+  }, [targetDate])
+  return diff
+}
+
+// ── KPI Card ─────────────────────────────────────────────
+function KpiCard({ label, value, sub, trend, borderColor }: { label: string; value: string; sub: string; trend?: string; borderColor: string }) {
+  return (
+    <div className="card-hover rounded-lg p-4 text-center" style={{ background: C.card2, border: `2px solid ${borderColor}` }}>
+      <div style={{ fontSize: 10, fontFamily: 'monospace', color: C.muted, fontWeight: 700, letterSpacing: 1, marginBottom: 8 }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 900, color: borderColor, marginBottom: 5 }}>{value}</div>
+      <div style={{ fontSize: 11, color: C.muted }}>{sub}</div>
+      {trend && <div style={{ fontSize: 11, fontWeight: 700, color: borderColor, marginTop: 5 }}>{trend}</div>}
+    </div>
+  )
+}
+
+// ── Party Badge ──────────────────────────────────────────
+function PartyBadge({ party, color }: { party: string; color: string }) {
+  return (
+    <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 12, fontSize: 9, fontWeight: 800, fontFamily: 'monospace', background: `${color}22`, color, border: `1px solid ${color}` }}>
+      {party}
+    </span>
+  )
+}
+
+// ── Quoted Post ───────────────────────────────────────────
+function QuotedPost({ text, src, color }: { text: string; src: string; color: string }) {
+  return (
+    <div style={{ background: `${color}08`, border: `1px solid ${color}22`, borderLeft: `3px solid ${color}`, borderRadius: 6, padding: '10px 12px', marginBottom: 8 }}>
+      <div style={{ fontSize: 11, color: C.text, lineHeight: 1.7, fontStyle: 'italic', marginBottom: 6 }}>&ldquo;{text}&rdquo;</div>
+      <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>— {src}</div>
+    </div>
+  )
+}
+
+// ── Figure Card ──────────────────────────────────────────
+function CandidatePhoto({ photo, shortName, color, size = 80 }: { photo?: string; shortName: string; color: string; size?: number }) {
+  const [imgError, setImgError] = useState(false)
+  if (photo && !imgError) {
+    return (
+      <img
+        src={photo}
+        alt={shortName}
+        onError={() => setImgError(true)}
+        style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: `3px solid ${color}`, display: 'block', margin: '0 auto' }}
+      />
+    )
+  }
+  return (
+    <div style={{ width: size, height: size, borderRadius: '50%', border: `3px solid ${color}`, background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', fontSize: size * 0.28, fontWeight: 900, color }}>
+      {shortName}
+    </div>
+  )
+}
+
+function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0]; rank: number; showQuotes: boolean }) {
+  const aiColor = f.aiScore >= 60 ? C.teal : f.aiScore >= 30 ? C.gold : C.warn
+  return (
+    <div className="card-hover rounded-xl" style={{ background: C.card, border: `2px solid ${f.color}`, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      {/* Coloured top bar */}
+      <div style={{ height: 5, background: f.color, width: '100%' }} />
+
+      <div style={{ padding: '16px 16px 12px' }}>
+        {rank === 1 && (
+          <div style={{ position: 'absolute', top: 14, right: 12, background: C.zg, color: 'white', fontSize: 9, fontFamily: 'monospace', fontWeight: 800, padding: '3px 10px', borderRadius: 10 }}>INCUMBENT</div>
+        )}
+
+        {/* Photo */}
+        <div style={{ marginBottom: 12 }}>
+          <CandidatePhoto photo={('photo' in f ? (f as {photo?: string}).photo : undefined)} shortName={f.shortName} color={f.color} size={80} />
+        </div>
+
+        <div style={{ fontWeight: 800, fontSize: 15, color: f.color, textAlign: 'center', marginBottom: 5 }}>{f.name}</div>
+        <div style={{ textAlign: 'center', marginBottom: 6 }}><PartyBadge party={f.party} color={f.color} /></div>
+        <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', lineHeight: 1.4, marginBottom: 12 }}>{f.role}</div>
+
+        {/* Poll bar */}
+        <div style={{ marginBottom: 4 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: C.muted, marginBottom: 4 }}>
+            <span>National Poll</span>
+            <span style={{ fontWeight: 800, color: f.color, fontSize: 14 }}>{f.poll.toFixed(1)}%</span>
+          </div>
+          <div style={{ background: C.line, borderRadius: 4, height: 10, position: 'relative', overflow: 'hidden' }}>
+            <div className="bar-fill" style={{ width: `${(f.poll / 65) * 100}%`, height: '100%', background: f.color, opacity: 0.9 }} />
+          </div>
+        </div>
+
+        <div style={{ fontSize: 11, fontWeight: 700, color: f.trend >= 0 ? C.teal : C.warn, textAlign: 'center', marginBottom: 12 }}>
+          {f.trend >= 0 ? '▲' : '▼'} {f.trend >= 0 ? '+' : ''}{f.trend.toFixed(1)} pts/month trend
+        </div>
+
+        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.7, marginBottom: 10 }}>
+          <div>📍 <span style={{ color: C.teal }}>{f.stronghold}</span></div>
+          <div>⚠ <span style={{ color: C.warn }}>{f.weakness}</span></div>
+        </div>
+
+        {/* AI Win Probability */}
+        <div style={{ background: `${C.card2}`, borderRadius: 6, padding: '8px 10px', marginBottom: 10 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+            <span style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>AI Win Probability</span>
+            <span style={{ fontSize: 14, fontWeight: 900, color: aiColor }}>{f.aiScore}%</span>
+          </div>
+          <div style={{ background: C.line, borderRadius: 3, height: 8, overflow: 'hidden' }}>
+            <div className="bar-fill" style={{ width: `${f.aiScore}%`, height: '100%', background: aiColor }} />
+          </div>
+        </div>
+
+        {/* AI Narrative */}
+        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6, borderTop: `1px solid ${C.line}`, paddingTop: 10, marginBottom: showQuotes ? 12 : 0, fontStyle: 'italic' }}>
+          {f.narrative}
+        </div>
+
+        {/* Quoted social posts */}
+        {showQuotes && f.quotedPosts && (
+          <div>
+            <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 8 }}>💬 PUBLIC POSTS SAMPLE</div>
+            {f.quotedPosts.map((p, i) => <QuotedPost key={i} text={p.text} src={p.src} color={f.color} />)}
+          </div>
+        )}
+
+        <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace', marginTop: 10 }}>{f.socialHandle}</div>
+      </div>
+    </div>
+  )
+}
+
+// ── Judge Card ────────────────────────────────────────────
+function JudgeCard({ v, loading }: { v: JudgeVerdict | null; loading: boolean }) {
+  const verdictColor = v?.verdict === 'VALIDATED' ? C.teal : v?.verdict === 'CAUTION' ? C.gold : C.warn
+  return (
+    <div className="card-hover rounded-xl p-4" style={{ background: C.card, border: `2px solid ${verdictColor || C.line}` }}>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+          <div className="spin" style={{ width: 32, height: 32, margin: '0 auto 12px', borderRadius: '50%', border: `3px solid ${C.line}`, borderTopColor: C.zg }} />
+          <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace' }}>AI ANALYSIS IN PROGRESS...</div>
+        </div>
+      ) : v ? (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${verdictColor}20`, border: `2px solid ${verdictColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+              {v.judgeId === 'data' ? '🔬' : v.judgeId === 'strategy' ? '🎯' : '📡'}
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 14, color: verdictColor, fontFamily: 'monospace' }}>{v.judgeName}</div>
+              <div style={{ fontSize: 11, color: C.muted }}>
+                {v.judgeId === 'data' ? 'Data Integrity Validator' : v.judgeId === 'strategy' ? 'Campaign Strategy Evaluator' : 'Sentiment Verification Agent'}
+              </div>
+            </div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <span style={{ padding: '4px 16px', borderRadius: 12, fontSize: 11, fontWeight: 900, fontFamily: 'monospace', background: `${verdictColor}22`, color: verdictColor, border: `1px solid ${verdictColor}` }}>{v.verdict}</span>
+            <span style={{ fontSize: 11, color: C.muted, marginLeft: 10 }}>{v.confidence}% confidence</span>
+          </div>
+          <div style={{ background: C.line, borderRadius: 2, height: 6, marginBottom: 10, overflow: 'hidden' }}>
+            <div style={{ width: `${v.confidence}%`, height: '100%', background: verdictColor, transition: 'width 1s' }} />
+          </div>
+          <p style={{ fontSize: 12, color: C.text, lineHeight: 1.65, marginBottom: 12, opacity: 0.9 }}>{v.summary}</p>
+          <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+            {v.findings.map((f, i) => (
+              <div key={i} style={{ fontSize: 11, color: C.muted, lineHeight: 1.9, paddingLeft: 14, position: 'relative' }}>
+                <span style={{ position: 'absolute', left: 0, color: verdictColor }}>▸</span>{f}
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 10, color: '#555', marginTop: 10, fontFamily: 'monospace' }}>{new Date(v.timestamp).toLocaleString()}</div>
+        </>
+      ) : null}
+    </div>
+  )
+}
+
+// ── Section Label ─────────────────────────────────────────
+function SectionLabel({ layer, title, sub }: { layer: string; title: string; sub: string }) {
+  return (
+    <div style={{ marginBottom: 14, marginTop: 28 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+        <div style={{ width: 4, height: 22, background: C.gold, borderRadius: 2, flexShrink: 0 }} />
+        <div>
+          <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11, color: C.gold, letterSpacing: 1 }}>{layer}</span>
+          <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 14, color: C.text, marginLeft: 10 }}>{title}</span>
+        </div>
+      </div>
+      <div style={{ fontSize: 11, color: C.muted, marginLeft: 14 }}>{sub}</div>
+    </div>
+  )
+}
+
+// ── Chart Card ────────────────────────────────────────────
+function ChartCard({ title, sub, children }: { title: string; sub: string; children: React.ReactNode }) {
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px' }}>
+      <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>{title}</div>
+      <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>{sub}</div>
+      {children}
+    </div>
+  )
+}
+
+// ── MCPBadge ──────────────────────────────────────────────
+function McpBadge({ label, status, color }: { label: string; status: string; color: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '3px 10px', borderRadius: 4, background: `${color}12`, border: `1px solid ${color}40` }}>
+      <div className="pulse" style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />
+      <span style={{ fontSize: 8, fontFamily: 'monospace', color, fontWeight: 700 }}>{label}</span>
+      <span style={{ fontSize: 8, fontFamily: 'monospace', color: C.muted }}>{status}</span>
+    </div>
+  )
+}
+
+// ── Main Dashboard ────────────────────────────────────────
+export default function Dashboard() {
+  const [verdicts, setVerdicts]       = useState<JudgeVerdict[]>([])
+  const [judgeLoading, setJudgeLoading] = useState(false)
+  const [judgeMode, setJudgeMode]     = useState<'idle' | 'demo' | 'ai'>('idle')
+  const [fbSentiment, setFbSentiment] = useState<FbLeaderSentiment[]>([])
+  const [fbLoading, setFbLoading]     = useState(false)
+  const [refreshing, setRefreshing]   = useState(false)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
+  const [showQuotes, setShowQuotes]   = useState(false)
+  const [airtableStatus, setAirtableStatus] = useState('LIVE')
+  const [vercelStatus, setVercelStatus]     = useState('LIVE')
+  const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
+  const [nlpLoading, setNlpLoading]         = useState(false)
+  const countdown = useCountdown(ELECTION_DATA.electionDate)
+
+  const fetchNlpSentiment = useCallback(async () => {
+    setNlpLoading(true)
+    try {
+      const res = await fetch('/api/nlp-sentiment')
+      const json = await res.json()
+      setNlpData(json)
+    } catch { /* keep existing */ } finally { setNlpLoading(false) }
+  }, [])
+
+  const fetchFbSentiment = useCallback(async () => {
+    setFbLoading(true)
+    try {
+      const res = await fetch('/api/facebook-sentiment')
+      const json = await res.json()
+      setFbSentiment(json.results ?? [])
+    } catch { /* keep existing */ } finally { setFbLoading(false) }
+  }, [])
+
+  const callJudges = useCallback(async () => {
+    setJudgeLoading(true); setVerdicts([])
+    try {
+      const res = await fetch('/api/ai-judges', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+      const json = await res.json()
+      setVerdicts(json.verdicts)
+      setJudgeMode(json.mode === 'ai' ? 'ai' : 'demo')
+    } catch { setJudgeMode('demo') } finally { setJudgeLoading(false) }
+  }, [])
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true)
+    await Promise.all([fetchFbSentiment()])
+    setLastUpdated(new Date()); setRefreshing(false)
+  }, [fetchFbSentiment])
+
+  useEffect(() => {
+    setLastUpdated(new Date())
+    fetchFbSentiment()
+    fetchNlpSentiment()
+    // Check Vercel health
+    fetch('/api/vercel-health').then(r => r.json()).then(d => setVercelStatus(d.status)).catch(() => {})
+    // Check Airtable
+    fetch('/api/airtable-data').then(r => r.json()).then(d => setAirtableStatus(d.source === 'airtable' ? 'SYNCED' : 'STATIC')).catch(() => {})
+  }, [fetchFbSentiment, fetchNlpSentiment])
+
+  // ── Chart data ──────────────────────────────────────────
+  const projFrom = ELECTION_DATA.projectedFromIndex ?? 18
+  const timelineData = ELECTION_DATA.months.map((m, i) => ({
+    month: m,
+    'HH (UPND)':       ELECTION_DATA.upndTrend[i],
+    'PF-NDC Alliance': ELECTION_DATA.allianceTrend[i],
+    'Kalaba (DP)':     ELECTION_DATA.kalabaTrend[i],
+    "M'membe (SP)":    ELECTION_DATA.membeTrend[i],
+    projected: i >= projFrom,
+  }))
+
+  const pollData = [
+    { name: 'HH (UPND)',         value: 47.2, color: C.upnd },
+    { name: 'PF-NDC Alliance',   value: 20.3, color: C.pf   },
+    { name: "M'membe (SP)",      value: 4.1,  color: C.sp   },
+    { name: 'Kalaba (DP)',       value: 3.8,  color: C.dp   },
+    { name: 'Undecided/Other',   value: 24.6, color: C.muted},
+  ]
+
+  const platData = ELECTION_DATA.platforms.map((p, i) => ({
+    platform: p,
+    Positive: ELECTION_DATA.platPositive[i],
+    Negative: ELECTION_DATA.platNegative[i],
+    Neutral:  ELECTION_DATA.platNeutral[i],
+  }))
+
+  const issueData = ELECTION_DATA.issues.map(is => ({
+    issue: is.label.length > 12 ? is.label.substring(0, 12) : is.label,
+    UPND: is.upnd, PF: is.pf,
+  }))
+
+  const simData = ELECTION_DATA.scenarios.map(s => ({ label: s.label, 'Vote %': s.value, color: s.color, desc: s.desc }))
+  const provData = ELECTION_DATA.provinces.map(p => ({
+    name: p.name, 'Voters (K)': Math.round(p.voters / 1000),
+    color: p.lean === 'UPND' ? C.upnd : p.lean === 'PF' ? C.pf : C.gold,
+  }))
+
+  const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
+
+  return (
+    <div style={{ minHeight: '100vh', background: C.bg }}>
+
+      {/* ── HEADER ─────────────────────────────────────── */}
+      <header style={{ background: '#000', borderBottom: `4px solid ${C.zo}`, position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 64 }}>
+
+          {/* Eagle + Brand */}
+          <div style={{ background: C.zg, padding: '10px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 200 }}>
+            <ZambiaEagle size={48} />
+            <div>
+              <div style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 13, color: 'white', letterSpacing: 1, lineHeight: 1.2 }}>SENTIMENT</div>
+              <div style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 13, color: 'white', letterSpacing: 1, lineHeight: 1.2 }}>COMMAND</div>
+              <div style={{ fontSize: 7, color: '#CCFFCC', fontFamily: 'monospace', letterSpacing: 2, marginTop: 2 }}>ZAMBIA 2026</div>
+            </div>
+          </div>
+
+          {/* Title */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <ZambiaFlag size={32} />
+              <div>
+                <h1 style={{ fontSize: 15, fontWeight: 900, color: 'white', fontFamily: 'monospace', letterSpacing: 0.5 }}>
+                  🦅 ZAMBIA ELECTION INTELLIGENCE · HH vs MUNDUBILE · KALABA · M&#39;MEMBE · LIVE
+                </h1>
+                <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>
+                  Powered by @BryteSikaStrategy · Facebook · Twitter/X · Lusaka Times · Zambian Observer · ZNBC
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Countdown */}
+          <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right', flexShrink: 0 }}>
+            <div style={{ fontSize: 7, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>ELECTION COUNTDOWN</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: C.warn, fontFamily: 'monospace' }}>{countdown.days}d {countdown.hours}h {countdown.minutes}m</div>
+            <div style={{ fontSize: 8, color: C.muted }}>13 August 2026</div>
+          </div>
+
+          {/* Flag bar */}
+          <div style={{ display: 'flex', width: 48 }}>
+            <div style={{ flex: 3, background: C.zg }} />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ flex: 1, background: '#0A0A0A' }} />
+              <div style={{ flex: 1, background: C.zr }} />
+              <div style={{ flex: 1, background: C.zo }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Gold ticker */}
+        <div style={{ background: C.gold, overflow: 'hidden', padding: '3px 0' }}>
+          <div className="ticker-wrap">
+            <span className="ticker-inner" style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11, color: '#000' }}>
+              &nbsp;&nbsp; LIVE · ZAMBIA 2026 ELECTION · 13 AUG 2026 · HH: 47.2% · PF-NDC ALLIANCE: 20.3% · M&#39;MEMBE: 4.1% · KALABA: 3.8% · VOTERS: 8,700,000 ECZ · 156 CONSTITUENCIES ·
+              AI CONFIDENCE: 84% · PF-NDC SURGE +2.3pts/mo ⚠ · INFLATION: 6.8% · BoZ RATE: 13.25% · SOURCES: FACEBOOK · TWITTER/X · LUSAKA TIMES · ZAMBIAN OBSERVER · ZNBC · AIRTABLE LIVE DATA · &nbsp;&nbsp;
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* ── CONTROL BAR ─────────────────────────────────── */}
+      <div style={{ background: C.card2, borderBottom: `1px solid ${C.line}`, padding: '8px 24px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div className="pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: C.teal, flexShrink: 0 }} />
+        <span style={{ fontFamily: 'monospace', fontSize: 10, color: C.teal }}>
+          {lastUpdated ? `Updated: ${lastUpdated.toLocaleString()}` : 'Loading...'}
+        </span>
+        <button onClick={handleRefresh} disabled={refreshing}
+          style={{ padding: '5px 14px', background: C.zg, color: 'white', border: 'none', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
+          {refreshing ? '...' : '⟳ REFRESH'}
+        </button>
+        <button onClick={() => setMode(m => m === 'daily' ? 'weekly' : 'daily')}
+          style={{ padding: '5px 14px', background: C.gold, color: '#000', border: 'none', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
+          {mode === 'daily' ? 'DAILY MODE' : 'WEEKLY MODE'}
+        </button>
+        <button onClick={() => setShowQuotes(q => !q)}
+          style={{ padding: '5px 14px', background: showQuotes ? '#1877F2' : C.card, color: showQuotes ? 'white' : C.muted, border: `1px solid #1877F2`, borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
+          {showQuotes ? '💬 HIDE POSTS' : '💬 SHOW POSTS'}
+        </button>
+        {judgeMode !== 'idle' && (
+          <span style={{ fontSize: 9, fontFamily: 'monospace', color: judgeMode === 'ai' ? C.teal : C.gold }}>
+            {judgeMode === 'ai' ? '✓ AI ACTIVE' : '◎ DEMO MODE'}
+          </span>
+        )}
+        {/* MCP Status badges */}
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+          <McpBadge label="VERCEL" status={vercelStatus} color={C.teal} />
+          <McpBadge label="AIRTABLE" status={airtableStatus} color="#18BFFF" />
+          <McpBadge label="AI ENGINE" status="ACTIVE" color={C.zo} />
+        </div>
+      </div>
+
+      <div style={{ padding: '16px 20px 40px', maxWidth: 1800, margin: '0 auto' }}>
+
+        {/* ── KPI ROW ─────────────────────────────────────── */}
+        <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
+          sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
+          <KpiCard label="HH NATIONAL LEAD" value="+26.9 pts" sub="vs PF-NDC Alliance (20.3%)" trend="▲ Narrowing — monitor" borderColor={C.teal} />
+          <KpiCard label="DAYS TO ELECTION" value={`${countdown.days}d`} sub="13 August 2026" trend={`${countdown.hours}h ${countdown.minutes}m remaining`} borderColor={C.gold} />
+          <KpiCard label="REGISTERED VOTERS" value="8,700,000" sub="ECZ Confirmed 2026" trend="▲ +29% vs 2021" borderColor={C.ndc} />
+          <KpiCard label="PF-NDC ALLIANCE" value="+2.3 pts/mo" sub="Combined opposition surge" trend="⚠ ALERT — MONITOR" borderColor={C.warn} />
+          <KpiCard label="AI CONFIDENCE" value="84%" sub="Multi-source validated" trend="Intelligence Active" borderColor={C.zg} />
+        </div>
+
+        {/* ── FIGURE CARDS ─── HH vs Opposition ────────────── */}
+        <SectionLabel layer="CANDIDATES" title="Candidate Profiles — HH vs Opposition"
+          sub="AI-scored profiles for all 5 candidates · Polling, trend, strongholds, and public narrative analysis" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
+          {ELECTION_DATA.figures.map((f, i) => <FigureCard key={f.id} f={f} rank={i + 1} showQuotes={showQuotes} />)}
+        </div>
+
+        {/* ── PAST PRESIDENTS ──────────────────────────────── */}
+        <SectionLabel layer="HISTORY" title="Zambia Heads of State 1964–2026"
+          sub="Historical context — understanding past presidents helps decode current voter loyalties" />
+        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 8, padding: '14px 18px', marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 10 }}>
+            {ELECTION_DATA.presidents.map(p => (
+              <div key={p.initials} className="card-hover" style={{ textAlign: 'center', padding: '14px 8px', borderRadius: 8, background: C.card2, border: `1px solid ${p.color}22` }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', margin: '0 auto 10px', border: `2px solid ${p.color}`, background: `${p.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 900, color: p.color }}>{p.initials}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{p.name}</div>
+                <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace', marginBottom: 6 }}>{p.years}</div>
+                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 8, background: `${p.color}20`, color: p.color, fontFamily: 'monospace', fontWeight: 700 }}>{p.party}</span>
+                <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>{p.note}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── CHARTS ROW 1 ─────────────────────────────────── */}
+        <SectionLabel layer="TRENDS" title="20-Month Poll Trajectory — Jan 2025 to Aug 2026"
+          sub="18 months historical · Jul–Aug 2026 are AI-projected forward estimates based on trend rates ▸" />
+        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 16 }}>
+          <ChartCard title="HH vs Opposition — Polling Trajectory + Forecast" sub="18 months historical · Jul–Aug 2026 projected from trend rates · ▸ = AI forecast zone">
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={timelineData}>
+                <XAxis dataKey="month" tick={{ fontSize: 8, fill: C.muted }} />
+                <YAxis tick={{ fontSize: 8, fill: C.muted }} tickFormatter={v => v + '%'} domain={[0, 60]} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v) => typeof v === 'number' ? v.toFixed(1) + '%' : v} />
+                <Legend wrapperStyle={{ fontSize: 9 }} />
+                <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" strokeWidth={0.8} />
+                <ReferenceLine x="Jul'26▸" stroke={C.gold} strokeDasharray="4 3" strokeWidth={1.2} label={{ value: 'PROJECTED ▸', fill: C.gold, fontSize: 9, position: 'top' }} />
+                <Line type="monotone" dataKey="HH (UPND)"       stroke={C.upnd} strokeWidth={3}   dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="PF-NDC Alliance"  stroke={C.pf}   strokeWidth={2.5} dot={{ r: 2.5 }} strokeDasharray="5 3" />
+                <Line type="monotone" dataKey="Kalaba (DP)"      stroke={C.dp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="3 2" />
+                <Line type="monotone" dataKey="M'membe (SP)"     stroke={C.sp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="2 3" />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <ChartCard title="National Poll Share — May 2026" sub="AI-aggregated estimate · ECZ voter universe: 8,700,000 · PF-NDC shown as combined alliance">
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Pie data={pollData} dataKey="value" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2} label={({ value }) => `${value.toFixed(1)}%`} labelLine={false}>
+                  {pollData.map((entry, i) => <Cell key={i} fill={entry.color} stroke={C.bg} strokeWidth={2} />)}
+                </Pie>
+                <Tooltip contentStyle={tooltipStyle} formatter={(v) => typeof v === 'number' ? v.toFixed(1) + '%' : v} />
+                <Legend wrapperStyle={{ fontSize: 8 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        {/* ── CHARTS ROW 2 ─────────────────────────────────── */}
+        <SectionLabel layer="SENTIMENT" title="What Voters Are Saying — By Platform & Issue"
+          sub="How positive or negative people are about UPND on each platform, and which issues drive their views" />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
+          <ChartCard title="PLATFORM SENTIMENT — UPND (30 DAYS)" sub="Facebook, Twitter/X, Lusaka Times, Observer, ZNBC, WhatsApp Groups">
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={platData}>
+                <XAxis dataKey="platform" tick={{ fontSize: 8, fill: C.muted }} />
+                <YAxis tick={{ fontSize: 8, fill: C.muted }} tickFormatter={v => v + '%'} domain={[0, 80]} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v) => typeof v === 'number' ? v + '%' : v} />
+                <Legend wrapperStyle={{ fontSize: 9 }} />
+                <Bar dataKey="Positive" fill={C.teal}  radius={[3,3,0,0]} />
+                <Bar dataKey="Negative" fill={C.warn}  radius={[3,3,0,0]} />
+                <Bar dataKey="Neutral"  fill={C.muted} radius={[3,3,0,0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <ChartCard title="VOTER ISSUE RADAR — HH (UPND) vs PF" sub="0-100 AI sentiment scale per policy area">
+            <ResponsiveContainer width="100%" height={220}>
+              <RadarChart data={issueData} cx="50%" cy="50%" outerRadius={80}>
+                <PolarGrid stroke={C.line} />
+                <PolarAngleAxis dataKey="issue" tick={{ fontSize: 7.5, fill: C.muted }} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 7, fill: C.line }} />
+                <Radar name="HH/UPND" dataKey="UPND" stroke={C.upnd} fill={C.upnd} fillOpacity={0.25} strokeWidth={2} />
+                <Radar name="PF-NDC Alliance" dataKey="PF" stroke={C.pf} fill={C.pf} fillOpacity={0.15} strokeWidth={1.5} />
+                <Legend wrapperStyle={{ fontSize: 9 }} />
+                <Tooltip contentStyle={tooltipStyle} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        {/* ── PROVINCIAL & SIMULATION ──────────────────────── */}
+        <SectionLabel layer="PROVINCES & SCENARIOS" title="Where Voters Are — and What Could Change the Result"
+          sub="Province-by-province voter breakdown · Simulated HH vote share if key policies are delivered" />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
+          <ChartCard title="VOTER REGISTER & PARTY LEAD BY PROVINCE" sub="ECZ 2025 estimates · Orange = contested · Green = UPND · Red = PF">
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={provData} layout="vertical">
+                <XAxis type="number" tick={{ fontSize: 8, fill: C.muted }} tickFormatter={v => v + 'K'} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 8, fill: C.muted }} width={70} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="Voters (K)" radius={[0,3,3,0]}>
+                  {provData.map((p, i) => <Cell key={i} fill={p.color} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <ChartCard title="SCENARIO MODELLING — HH VOTE PROJECTION" sub="Majority threshold: 50% · Baseline: 47.2%">
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={simData}>
+                <XAxis dataKey="label" tick={{ fontSize: 8, fill: C.muted }} />
+                <YAxis tick={{ fontSize: 8, fill: C.muted }} tickFormatter={v => v + '%'} domain={[42, 66]} />
+                <Tooltip contentStyle={tooltipStyle}
+                  content={({ active, payload }) => active && payload?.length ? (
+                    <div style={{ ...tooltipStyle, padding: '8px 12px' }}>
+                      <div style={{ fontWeight: 700, color: C.text }}>{payload[0].payload.label}</div>
+                      <div style={{ color: payload[0].payload.color, fontSize: 14, fontWeight: 900 }}>{(payload[0].value as number).toFixed(1)}%</div>
+                      <div style={{ fontSize: 9, color: C.muted, maxWidth: 180 }}>{payload[0].payload.desc}</div>
+                    </div>
+                  ) : null} />
+                <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" label={{ value: '50% threshold', fill: C.gold, fontSize: 9 }} />
+                <Bar dataKey="Vote %" radius={[4,4,0,0]}>
+                  {simData.map((s, i) => <Cell key={i} fill={s.color} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        {/* ── GEOSPATIAL MAP ───────────────────────────────── */}
+        <SectionLabel layer="GEOSPATIAL" title="Zambia Province Electoral Map — Where the Votes Are"
+          sub="Click any province to see registered voters, party support, and strategic intelligence by region" />
+        <div style={{ marginBottom: 16 }}>
+          <ZambiaMap />
+        </div>
+
+        {/* ── NLP HEADLINE ANALYZER ────────────────────────── */}
+        <SectionLabel layer="NLP ANALYSIS" title="VADER Political Headline Sentiment Engine"
+          sub="Real Zambian political headlines scored by AI — compound score from −1.0 (negative) to +1.0 (positive)" />
+        <div style={{ background: C.card, border: `1px solid ${C.teal}`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: `${C.teal}22`, border: `2px solid ${C.teal}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🧠</div>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: C.teal }}>VADER-ZAMBIA NLP ENGINE · POLITICAL HEADLINE SENTIMENT</div>
+                <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
+                  {nlpData ? `${nlpData.lexiconSize}-word Zambian political lexicon · ${nlpData.engine}` : 'Loading NLP engine...'}
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              {nlpData && (
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 10, color: C.muted }}>Media Sentiment</div>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: nlpData.summary.overallSentiment === 'positive' ? C.teal : nlpData.summary.overallSentiment === 'negative' ? C.warn : C.gold }}>
+                    {nlpData.summary.overallSentiment.toUpperCase()} · {nlpData.summary.avgDisplayScore}/100
+                  </div>
+                </div>
+              )}
+              <button onClick={fetchNlpSentiment} disabled={nlpLoading}
+                style={{ padding: '8px 16px', background: C.teal, color: 'white', border: 'none', borderRadius: 6, fontFamily: 'monospace', fontWeight: 800, fontSize: 10, cursor: 'pointer' }}>
+                {nlpLoading ? '⟳ SCORING...' : '⟳ REFRESH'}
+              </button>
+            </div>
+          </div>
+
+          {/* Summary pills */}
+          {nlpData && (
+            <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+              {[
+                { label: 'POSITIVE', count: nlpData.summary.positive, color: C.teal },
+                { label: 'NEGATIVE', count: nlpData.summary.negative, color: C.warn },
+                { label: 'NEUTRAL', count: nlpData.summary.neutral, color: C.gold },
+              ].map(item => (
+                <div key={item.label} style={{ padding: '4px 14px', borderRadius: 12, background: `${item.color}18`, border: `1px solid ${item.color}`, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, color: item.color }}>
+                  {item.label}: {item.count}
+                </div>
+              ))}
+              <div style={{ padding: '4px 14px', borderRadius: 12, background: `${C.muted}18`, border: `1px solid ${C.muted}`, fontSize: 10, fontFamily: 'monospace', color: C.muted }}>
+                avg compound: {nlpData.summary.avgCompound > 0 ? '+' : ''}{nlpData.summary.avgCompound}
+              </div>
+            </div>
+          )}
+
+          {/* Headlines grid */}
+          {nlpData ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+              {nlpData.results.map((h, i) => {
+                const sentColor = h.sentiment_class === 'positive' ? C.teal : h.sentiment_class === 'negative' ? C.warn : C.gold
+                return (
+                  <div key={i} style={{ background: C.card2, border: `1px solid ${sentColor}30`, borderLeft: `3px solid ${sentColor}`, borderRadius: 6, padding: '10px 12px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
+                      <div style={{ fontSize: 14, fontWeight: 900, color: sentColor }}>{h.score_display}</div>
+                      <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace' }}>/100</div>
+                      <div style={{ fontSize: 7, fontFamily: 'monospace', marginTop: 3, padding: '2px 4px', borderRadius: 4, background: `${sentColor}20`, color: sentColor }}>{h.sentiment_class.toUpperCase()}</div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 11, color: C.text, lineHeight: 1.55, marginBottom: 4, fontStyle: 'italic' }}>&ldquo;{h.headline}&rdquo;</div>
+                      <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>
+                        {h.source} · compound: <span style={{ color: sentColor }}>{h.sentiment_score > 0 ? '+' : ''}{h.sentiment_score}</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: C.muted, fontFamily: 'monospace', fontSize: 10 }}>
+              {nlpLoading ? '🧠 VADER NLP engine scoring headlines...' : 'Click Refresh to run NLP analysis'}
+            </div>
+          )}
+
+          <div style={{ marginTop: 12, fontSize: 10, color: C.muted, textAlign: 'center', fontFamily: 'monospace' }}>
+            VADER algorithm · Zambia domain lexicon · Compound score: −1.0 (negative) to +1.0 (positive) · Threshold ±0.05
+          </div>
+        </div>
+
+        {/* ── FACEBOOK SENTIMENT ────────────────────────────── */}
+        <SectionLabel layer="SOCIAL MEDIA" title="Facebook Public Page Monitoring — AI Sentiment Analysis"
+          sub="Fetches live posts & comments from each candidate's public Facebook page · AI-classified by Cloudflare · Refreshes on demand" />
+        <div style={{ background: C.card, border: `1px solid #1877F2`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#1877F2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: 'white', flexShrink: 0 }}>f</div>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1877F2' }}>FACEBOOK PAGE MONITORING · AI SENTIMENT</div>
+                <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
+                  Live: HH · PF-NDC Alliance · Harry Kalaba · Fred M&#39;membe · AI analysis of posts &amp; public comments
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {fbSentiment.length > 0 && fbSentiment[0].liveData && (
+                <span style={{ fontSize: 9, fontFamily: 'monospace', padding: '3px 8px', borderRadius: 4, background: '#00C9A720', color: '#00C9A7', border: '1px solid #00C9A740' }}>
+                  🟢 LIVE DATA
+                </span>
+              )}
+              <button onClick={fetchFbSentiment} disabled={fbLoading}
+                style={{ padding: '8px 16px', background: '#1877F2', color: 'white', border: 'none', borderRadius: 6, fontFamily: 'monospace', fontWeight: 800, fontSize: 10, cursor: 'pointer' }}>
+                {fbLoading ? '⟳ FETCHING...' : '⟳ REFRESH'}
+              </button>
+            </div>
+          </div>
+          {fbSentiment.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+              {fbSentiment.map(fb => {
+                const sentColor = fb.analysis.sentiment === 'positive' ? C.teal : fb.analysis.sentiment === 'negative' ? C.warn : C.gold
+                const fig = ELECTION_DATA.figures.find(f => f.id === fb.leaderId)
+                const lColor = fig?.color ?? C.muted
+                return (
+                  <div key={fb.leaderId} className="card-hover rounded-xl p-4" style={{ background: C.card2, border: `1.5px solid ${lColor}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                      <div style={{ width: 34, height: 34, borderRadius: '50%', flexShrink: 0, background: `${lColor}20`, border: `2px solid ${lColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 900, color: lColor }}>
+                        {fig?.shortName ?? fb.leaderId.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 800, color: lColor }}>{fb.leaderName}</div>
+                        <div style={{ fontSize: 9, color: C.muted }}>fb/{fb.fbPage}</div>
+                      </div>
+                      {fb.liveData && (
+                        <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 3, background: '#00C9A720', color: '#00C9A7', border: '1px solid #00C9A740', flexShrink: 0 }}>LIVE</span>
+                      )}
+                    </div>
+                    {fb.liveData && (
+                      <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', marginBottom: 8, background: C.line, borderRadius: 4, padding: '4px 8px' }}>
+                        {fb.postsCount} posts · {fb.commentsCount} comments fetched
+                      </div>
+                    )}
+                    <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '3px 10px', borderRadius: 8, background: `${sentColor}20`, color: sentColor, border: `1px solid ${sentColor}` }}>
+                      {fb.analysis.sentiment.toUpperCase()}
+                    </span>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 10, marginBottom: 4 }}>Public Sentiment Score</div>
+                    <div style={{ background: C.line, borderRadius: 3, height: 10, marginBottom: 5, overflow: 'hidden' }}>
+                      <div style={{ width: `${fb.analysis.score}%`, height: '100%', background: sentColor, transition: 'width 0.8s' }} />
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 900, color: sentColor, textAlign: 'right', marginBottom: 10 }}>{fb.analysis.score}/100</div>
+                    <p style={{ fontSize: 11, color: C.text, lineHeight: 1.65, marginBottom: 10, opacity: 0.9 }}>{fb.analysis.summary}</p>
+                    <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 6 }}>
+                      <div style={{ fontSize: 10, color: C.muted, fontWeight: 600, marginBottom: 6 }}>Top Themes</div>
+                      {fb.analysis.topThemes.map((t, i) => (
+                        <div key={i} style={{ fontSize: 11, color: C.muted, lineHeight: 1.8, paddingLeft: 12, position: 'relative' }}>
+                          <span style={{ position: 'absolute', left: 0, color: lColor }}>▸</span>{t}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ fontSize: 9, color: '#444', marginTop: 10, fontFamily: 'monospace', display: 'flex', justifyContent: 'space-between' }}>
+                      <span>{fb.sampleCount} texts analysed</span>
+                      <span>{fb.mode === 'ai' ? '✓ AI' : '◎ sample'}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: C.muted, fontFamily: 'monospace', fontSize: 10 }}>
+              {fbLoading ? '⟳ Fetching Facebook pages and running AI analysis...' : 'Click REFRESH to fetch live Facebook data and run AI sentiment analysis'}
+            </div>
+          )}
+          <div style={{ marginTop: 12, fontSize: 9, color: '#444', fontFamily: 'monospace', borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+            Source: Facebook Graph API (public pages) · To enable live data: set FACEBOOK_ACCESS_TOKEN env var in Vercel · Analysis: Cloudflare AI llama-3.1-8b
+          </div>
+        </div>
+
+
+        {/* ── INTELLIGENCE FRAMEWORK ─────────────────────────── */}
+        <SectionLabel layer="INTELLIGENCE" title="How the AI Analyses the Election"
+          sub="Our platform moves from live monitoring, to trend analysis, to root causes, to scenario planning, and finally to clear action recommendations" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 10, marginBottom: 16 }}>
+          {[
+            { icon: '📡', name: 'Live Monitoring',     color: C.zg,   q: 'What is happening right now?',   items: ['Real-time data aggregation','Facebook · Twitter/X · WhatsApp','Lusaka Times · Observer · ZNBC','8,700,000-voter universe mapped','Province-level sentiment tracking'] },
+            { icon: '📈', name: 'Trend Analysis',      color: C.ndc,  q: 'How is support changing?',        items: ['18-month trajectory modelling','Rising opposition momentum tracked','Load-shedding impact on polls','Budget 2026 voter impact scored','Coalition watch: Kalaba & others'] },
+            { icon: '🔍', name: 'Root Cause Analysis', color: C.teal, q: 'Why are voters feeling this way?',items: ['AI identifies what drives opinion','Fuel & food costs → negative posts','PF nostalgia in northern regions',"TikTok youth drift to M'membe",'Kwacha performance vs Twitter/X'] },
+            { icon: '🎯', name: 'Scenario Planning',   color: C.gold, q: 'What could change the result?',   items: ['6 policy impact scenarios tested','Energy fix → +4.2 pts projected','Cost relief → +3.8 pts projected','Combined strategy → +6.1 pts','Mundubile ceiling if surge holds'] },
+            { icon: '✅', name: 'Action Priorities',   color: C.upnd, q: 'What should happen next?',         items: ['Ranked action recommendations','Energy roadmap: publish & deliver','TikTok/X rapid response capability','Mealie relief: visible & targeted','Northern Province rally strategy'] },
+          ].map(l => (
+            <div key={l.name} className="card-hover rounded-xl p-4" style={{ border: `1.5px solid ${l.color}`, background: `${l.color}08` }}>
+              <div style={{ textAlign: 'center', fontSize: 32, marginBottom: 6 }}>{l.icon}</div>
+              <div style={{ textAlign: 'center', fontWeight: 800, fontSize: 13, color: l.color, marginBottom: 5 }}>{l.name}</div>
+              <div style={{ textAlign: 'center', fontSize: 10, color: C.muted, fontStyle: 'italic', marginBottom: 12, minHeight: 32 }}>{l.q}</div>
+              <div style={{ borderTop: `1px solid ${l.color}30`, paddingTop: 10 }}>
+                {l.items.map((item, i) => (
+                  <div key={i} style={{ fontSize: 11, color: C.text, lineHeight: 2, paddingLeft: 14, position: 'relative', opacity: 0.85 }}>
+                    <span style={{ position: 'absolute', left: 0, color: l.color }}>▸</span>{item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── COUNTER-MEASURES ─────────────────────────────── */}
+        <SectionLabel layer="PLAYBOOK" title="Counter-Measure Planning — How UPND Should Respond"
+          sub="AI-recommended actions for each threat UPND faces, with estimated vote impact if implemented" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
+          {ELECTION_DATA.counterMeasures.map(cm => (
+            <div key={cm.threat} className="card-hover rounded-xl p-4" style={{ background: C.card, border: `1.5px solid ${cm.color}` }}>
+              <div style={{ fontWeight: 800, fontSize: 12, color: cm.color, marginBottom: 8, lineHeight: 1.3 }}>{cm.threat}</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: cm.color, marginBottom: 8 }}>{cm.pollImpact}</div>
+              <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '3px 10px', borderRadius: 8, background: `${cm.color}20`, color: cm.color, border: `1px solid ${cm.color}`, display: 'inline-block', marginBottom: 12 }}>{cm.priority}</span>
+              <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+                {cm.actions.map((a, i) => (
+                  <div key={i} style={{ fontSize: 11, color: C.text, lineHeight: 1.8, paddingLeft: 16, position: 'relative', opacity: 0.9, marginBottom: 2 }}>
+                    <span style={{ position: 'absolute', left: 0, color: cm.color }}>{i + 1}.</span>{a}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── STRATEGY PANEL ────────────────────────────────── */}
+        <SectionLabel layer="STRATEGY" title="AI Priority Recommendations — UPND 2026"
+          sub="What the data says should happen next — ranked by projected vote impact" />
+        <div style={{ background: C.card, border: `1px solid ${C.zg}`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
+          {[
+            { n: '01', color: C.zg,   pri: 'HIGH',   title: 'ENERGY ROADMAP — PUBLISH & DELIVER', desc: 'Announce 18-month Zesco/solar roadmap. #1 highest impact action: +4.2pts. Each week of resolved load shedding = +0.8pt. Most urgent given 44% negative energy sentiment on Twitter/X and TikTok.' },
+            { n: '02', color: C.teal, pri: 'HIGH',   title: 'TIKTOK & TWITTER/X RAPID RESPONSE DESK', desc: "24/7 AI-curated rebuttal content unit. Mundubile and M'membe gaining 18-35 audience on these platforms. Highest negative sentiment platforms for UPND. Critical capability gap." },
+            { n: '03', color: C.upnd, pri: 'HIGH',   title: 'MEALIE MEAL + FUEL VISIBLE RELIEF', desc: 'Province-by-province targeted subsidy: Lusaka, Copperbelt, Northern first. Make delivery visible via state media, Facebook live, ZNBC. +3.8pts projected. Copperbelt is the swing province.' },
+            { n: '04', color: C.warn, pri: 'HIGH',   title: 'NORTHERN PROVINCE — COUNTER MUNDUBILE SURGE', desc: 'Mundubile gaining +1.8pts/month. HH in-person rally tour: Northern, Luapula, Muchinga. Bemba-language radio + podcast. Local MP mobilisation. Target before September 2026.' },
+            { n: '05', color: C.gold, pri: 'MEDIUM', title: 'INFRASTRUCTURE VISIBILITY CAMPAIGN', desc: 'Roads, clinics, schools 2021-2026 score 72/100 — highest UPND asset. Severely under-communicated. AI-generated visual content per province. Facebook video + ZNBC special programmes.' },
+            { n: '06', color: C.sp,   pri: 'WATCH',  title: "M'MEMBE URBAN YOUTH — MONITOR & COUNTER", desc: "M'membe TikTok reach growing in 18-35 bracket. Deploy UPND youth creator network. Frame M'membe's socialist policies as investment killer. Escalate if SP crosses 5.5%." },
+          ].map(s => (
+            <div key={s.n} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: '16px 0', borderBottom: `1px solid ${C.line}` }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 900, color: 'white', flexShrink: 0 }}>{s.n}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 800, fontSize: 13, color: s.color, marginBottom: 5 }}>{s.title}</div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.65 }}>{s.desc}</div>
+              </div>
+              <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '4px 12px', borderRadius: 10, flexShrink: 0, marginTop: 4, background: s.pri === 'HIGH' ? `${C.warn}20` : s.pri === 'WATCH' ? `${C.sp}20` : `${C.gold}15`, color: s.pri === 'HIGH' ? C.warn : s.pri === 'WATCH' ? C.sp : C.gold, border: `1px solid ${s.pri === 'HIGH' ? C.warn : s.pri === 'WATCH' ? C.sp : C.gold}` }}>{s.pri}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ── ECONOMIC INDICATORS ──────────────────────────── */}
+        <SectionLabel layer="ECONOMICS" title="Macroeconomic Context — Key Voter Pressure Points"
+          sub="Real-world economic data that directly shapes voter sentiment in Zambia 2026" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 16 }}>
+          {[
+            { label: 'INFLATION (CPI)', value: '6.8%', sub: 'ZamStats May 2026', color: C.warn, note: '↑ Voter pressure: cost of living' },
+            { label: 'BoZ POLICY RATE', value: '13.25%', sub: 'Bank of Zambia', color: C.gold, note: 'High borrowing cost impact' },
+            { label: 'KWACHA/USD', value: 'K26.8', sub: 'Approx. May 2026', color: C.ndc, note: 'Stability vs 2021 baseline K23' },
+            { label: 'GDP GROWTH', value: '4.2%', sub: 'World Bank 2026 proj.', color: C.teal, note: '↑ Positive macro signal' },
+            { label: 'YOUTH UNEMPLOYMENT', value: '34.1%', sub: 'ILO / ZamStats', color: C.sp, note: '⚠ Youth voter risk factor' },
+            { label: 'MEALIE MEAL 25KG', value: '~K400', sub: 'National avg price', color: C.zr, note: '↑ Key voter grievance' },
+          ].map(ind => (
+            <div key={ind.label} className="card-hover rounded-lg p-4 text-center" style={{ background: C.card2, border: `2px solid ${ind.color}` }}>
+              <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.muted, fontWeight: 700, letterSpacing: 1, marginBottom: 6 }}>{ind.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: ind.color, marginBottom: 4 }}>{ind.value}</div>
+              <div style={{ fontSize: 10, color: C.muted, marginBottom: 6 }}>{ind.sub}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: ind.color }}>{ind.note}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── NEWS SOURCES ─────────────────────────────────── */}
+        <SectionLabel layer="SOURCES" title="Zambia 2026 Election — Verified News & Intelligence Sources"
+          sub="Cross-check any claim with these authoritative sources. AI can make mistakes — always verify." />
+        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 12, padding: '20px 24px', marginBottom: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16 }}>
+            {[
+              {
+                category: '🏛️ Official & Polling',
+                color: C.zg,
+                sources: [
+                  { name: 'Electoral Commission of Zambia (ECZ)', desc: '156 constituencies · 8,700,000 voters (confirmed 2026) · official results' },
+                  { name: 'ZANIS', desc: 'Government official public relations service' },
+                  { name: 'Afrobarometer Round 10', desc: 'Pan-African survey · Zambia 2024 module — public opinion data' },
+                ],
+              },
+              {
+                category: '📰 Independent Print & Online',
+                color: C.ndc,
+                sources: [
+                  { name: 'News Diggers!', desc: 'Investigative journalism, highly influential' },
+                  { name: 'The Mast', desc: 'Prominent independent daily' },
+                  { name: 'Daily Nation', desc: 'Private daily, political coverage' },
+                  { name: 'Zambia Daily Mail & Times', desc: 'State-owned broad coverage' },
+                ],
+              },
+              {
+                category: '📺 Broadcast & TV',
+                color: C.zo,
+                sources: [
+                  { name: 'ZNBC', desc: 'Public broadcaster — TV & Radio' },
+                  { name: 'Diamond TV', desc: 'Influential private television' },
+                  { name: 'Prime TV', desc: 'Private channel, wide viewership' },
+                  { name: 'MUVI Television', desc: 'Independent, widely watched' },
+                  { name: 'Radio Phoenix', desc: 'Political debates & analysis' },
+                ],
+              },
+              {
+                category: '🌍 International & Economic',
+                color: C.teal,
+                sources: [
+                  { name: 'Mail & Guardian Africa', desc: 'In-depth Zambia political analysis' },
+                  { name: 'DW Africa', desc: 'Regional coverage & election insights' },
+                  { name: 'IFES', desc: 'Expert election analysis & technical data' },
+                  { name: 'ZamStats', desc: 'CPI 6.8% · official economic statistics' },
+                  { name: 'Bank of Zambia', desc: 'Policy rate 13.25% · monetary policy' },
+                  { name: 'DataReportal Zambia 2026', desc: '5.2M internet users · 2.4M Facebook · TikTok growing fast' },
+                ],
+              },
+              {
+                category: '🔍 Integrity & Press Freedom',
+                color: C.gold,
+                sources: [
+                  { name: 'iVerify Zambia', desc: 'UN/EU misinformation verification — check any claim here first' },
+                  { name: 'OONI Zambia', desc: 'Open Observatory Network Interference — internet freedom data' },
+                  { name: 'CIVICUS Monitor', desc: 'Civic space rating: OBSTRUCTED — freedom of assembly data' },
+                  { name: 'MISA Zambia', desc: 'Press freedom & journalist safety monitor' },
+                  { name: 'PAZA', desc: 'Media ethics, electoral reporting standards' },
+                ],
+              },
+            ].map(group => (
+              <div key={group.category}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: group.color, marginBottom: 10, paddingBottom: 6, borderBottom: `2px solid ${group.color}40` }}>{group.category}</div>
+                {group.sources.map(s => (
+                  <div key={s.name} style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 2 }}>{s.name}</div>
+                    <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{s.desc}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${C.line}`, fontSize: 11, color: C.muted, textAlign: 'center', lineHeight: 1.6 }}>
+            <span style={{ color: C.gold, fontWeight: 700 }}>⚠ Verification Reminder:</span> For official results, always check the Electoral Commission of Zambia (ECZ) website.
+            Use <span style={{ color: C.teal }}>iVerify Zambia</span> to check any news that seems inaccurate or misleading.
+            AI analysis on this platform supplements — it does not replace — authoritative sources.
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── FOOTER ──────────────────────────────────────────── */}
+      <footer style={{ background: '#000', borderTop: `3px solid ${C.zo}`, padding: '20px 28px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24, fontSize: 11, fontFamily: 'monospace', color: C.muted, marginBottom: 16 }}>
+          {[
+            ['INTELLIGENCE SOURCES', ['Facebook (HH, PF-NDC, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · ZERN R1 · ZEPS', 'IDCPPA Mar 2026 · iVerify Zambia', 'OONI · CIVICUS · Lusaka Times', 'ECZ · ZamStats · BoZ · DataReportal']],
+            ['VOTER REGISTER (ECZ 2026)', ['Total: 8,700,000 · 156 Constituencies', 'Lusaka: 1,453,000', 'Copperbelt: 1,326,000', 'Eastern: 842,000', 'Southern: 801,000', 'Other provinces: 4,278,000']],
+            ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.8%', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: ~K26.8', 'GDP Growth (WB): 4.2%', 'Youth Unemployment: 34.1%', 'Mealie Meal 25kg: ~K400']],
+            ['ENGAGEMENT PACKAGE', ['Package: PREMIUM 90-day', 'Real-time + daily AI reports', 'Dedicated Account Manager', 'Alert threshold: ±3 points', 'Election Day: 13 Aug 2026', 'Next report: Sunday']],
+          ].map(([h, items]) => (
+            <div key={h as string}>
+              <div style={{ color: C.gold, fontWeight: 800, fontSize: 11, marginBottom: 10, letterSpacing: 0.5 }}>{h}</div>
+              {(items as string[]).map(item => <div key={item} style={{ lineHeight: 2.2 }}>{item}</div>)}
+            </div>
+          ))}
+        </div>
+        {/* ── AI Validation Strip ── */}
+        <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 12, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span style={{ fontSize: 10, color: C.zo, fontFamily: 'monospace', fontWeight: 800 }}>⚖ AI VALIDATION</span>
+              {verdicts.length > 0 ? (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {verdicts.map(v => (
+                    <span key={v.judgeId} style={{ fontSize: 9, fontFamily: 'monospace', padding: '2px 8px', borderRadius: 4,
+                      background: v.verdict === 'VALIDATED' ? '#00C9A720' : v.verdict === 'CAUTION' ? '#F5C40020' : '#FF3B3020',
+                      color: v.verdict === 'VALIDATED' ? '#00C9A7' : v.verdict === 'CAUTION' ? '#F5C400' : '#FF3B30',
+                      border: `1px solid ${v.verdict === 'VALIDATED' ? '#00C9A740' : v.verdict === 'CAUTION' ? '#F5C40040' : '#FF3B3040'}` }}>
+                      {v.judgeName.replace('Judge ', '')} · {v.verdict} {v.confidence}%
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace' }}>3 independent agents · Oracle · Strategis · Sentinex</span>
+              )}
+            </div>
+            <button onClick={callJudges} disabled={judgeLoading}
+              style={{ padding: '4px 12px', background: 'transparent', color: C.zo, border: `1px solid ${C.zo}40`, borderRadius: 4, fontSize: 9, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
+              {judgeLoading ? '⚖ VALIDATING...' : '⚖ RUN VALIDATION'}
+            </button>
+          </div>
+        </div>
+
+        <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ fontSize: 12, color: '#666', fontFamily: 'monospace' }}>
+            🦅 SentimentCommand · AI-Powered Election Intelligence · Zambia 2026
+          </div>
+          <div style={{ fontSize: 12, color: C.gold, fontFamily: 'monospace', fontWeight: 700 }}>
+            © @BryteSikaStrategy · Confidential — Authorised Use Only
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
