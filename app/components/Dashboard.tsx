@@ -518,35 +518,38 @@ export default function Dashboard() {
   const projectionModes = [
     {
       id: 'intel' as const,
-      label: 'CIA-style OSINT',
+      label: 'Source Reliability',
       call: 'UPND advantage, contested downside',
       confidence: 68,
       color: C.teal,
-      method: 'Key Judgments, confidence levels, alternative hypotheses and indicator watchlists.',
+      method: 'Key judgments, source reliability grades, confidence levels, alternative hypotheses and indicator watchlists.',
       projection: 'HH remains the best-positioned candidate if economic irritation does not consolidate into a single opposition vehicle.',
       triggers: ['Mundubile-Makebi ticket clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
+      whitebox: 'Separates official facts from estimates, grades each signal by reliability, and shows which indicators would change the call.',
       caveat: 'Analytic confidence is moderate because social-platform signals are noisy and not a substitute for verified polling.',
     },
     {
       id: 'electiondesk' as const,
-      label: 'CNN-style Desk',
+      label: 'Projection Gates',
       call: 'Lean UPND',
       confidence: 72,
       color: C.gold,
       method: 'Projection gates: current lead, province path, remaining undecided pool, turnout assumptions and confidence threshold.',
       projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga, Eastern transferability and Copperbelt watched as Mundubile-Makebi pickup lanes.',
       triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile-Makebi below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
-      caveat: 'Election-desk language here is modeled. It is not a media network call and not an ECZ result.',
+      whitebox: 'Shows the thresholds, province path and undecided assumptions before any candidate is moved from Toss-up to Lean/Likely.',
+      caveat: 'Projection language here is modeled. It is not a media network call and not an ECZ result.',
     },
     {
       id: 'fusion' as const,
-      label: 'Palantir-style Fusion',
+      label: 'Fusion Graph',
       call: 'Incumbent path intact',
       confidence: 74,
       color: C.ndc,
-      method: 'Fuses voter register, province leans, economy, OSINT, platform sentiment, issue risk and scenario deltas.',
+      method: 'Fuses voter register, province leans, economy, open intelligence, platform sentiment, issue risk and scenario deltas.',
       projection: 'The integrated graph points to an incumbent path through Lusaka, Southern, Western and North-Western, with Copperbelt as the decisive stress test.',
       triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Field-event and media spike matching'],
+      whitebox: 'Links each candidate score to visible evidence nodes: province, issue, platform, turnout, credibility and missing-data penalty.',
       caveat: 'Fusion output is only as strong as source freshness, labels and missing-data handling.',
     },
   ]
@@ -763,8 +766,8 @@ export default function Dashboard() {
         </div>
 
         {/* ── CHARTS ROW 1 ─────────────────────────────────── */}
-        <SectionLabel layer="PROJECTION DESK" title="Intelligence + Election Desk Projection"
-          sub="Open-source analytic layer inspired by intelligence estimates, election-night desks and data-fusion platforms" />
+        <SectionLabel layer="PROJECTION DESK" title="Whitebox Election Projection Model"
+          sub="Explainable source reliability, projection gates and fusion graph analysis for candidate-by-candidate reasoning" />
         <div className="projection-desk" style={{ background: 'linear-gradient(135deg, rgba(4,9,13,.96), rgba(12,25,40,.94))', border: `1px solid ${selectedProjection.color}66`, borderRadius: 10, padding: 16, marginBottom: 16, display: 'grid', gridTemplateColumns: '300px minmax(0,1fr) 360px', gap: 14 }}>
           <div style={{ display: 'grid', gap: 8 }}>
             {projectionModes.map(modeItem => {
@@ -802,6 +805,10 @@ export default function Dashboard() {
                 <div style={{ fontSize: 10, color: selectedProjection.color, fontFamily: 'monospace', fontWeight: 900, marginBottom: 6 }}>PROJECTION</div>
                 <div style={{ fontSize: 12, color: C.text, lineHeight: 1.65 }}>{selectedProjection.projection}</div>
               </div>
+            </div>
+            <div style={{ marginTop: 12, padding: '10px 12px', borderRadius: 8, background: `${selectedProjection.color}12`, border: `1px solid ${selectedProjection.color}33` }}>
+              <div style={{ fontSize: 10, color: selectedProjection.color, fontFamily: 'monospace', fontWeight: 900, marginBottom: 5 }}>WHITEBOX EXPLANATION</div>
+              <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{selectedProjection.whitebox}</div>
             </div>
             <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.line}`, fontSize: 10, color: C.muted, lineHeight: 1.5 }}>
               <span style={{ color: C.warn, fontWeight: 900 }}>Caveat:</span> {selectedProjection.caveat}
