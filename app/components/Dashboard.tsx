@@ -559,28 +559,28 @@ export default function Dashboard() {
       agent: 'Data Scientist Agent',
       method: 'District clustering',
       input: 'ECZ 2016/2021 patterns, province register, constituency history, turnout bands.',
-      output: 'Classifies districts as UPND-heavy, PF-linked, swing, urban-growth or rural-lag clusters.',
+      output: 'JSON output: districtCluster, turnoutBand, confidence and evidenceNodes for every projection update.',
       color: C.ndc,
     },
     {
       agent: 'Pollster Agent',
       method: 'Bayesian polling blend',
       input: 'Afrobarometer-style surveys, local polls, demographic shifts, undecided pool and margin of error.',
-      output: 'Produces candidate intervals and prevents over-reading a single noisy poll or platform spike.',
+      output: 'JSON output: candidateIntervals, undecidedAllocation, marginOfError and pollingCaveats.',
       color: C.gold,
     },
     {
       agent: 'Analyst Agent',
       method: 'Structured red team',
       input: 'Elite dynamics, coalition cohesion, tribal/regional voting patterns, copper prices, load shedding and campaign finance signals.',
-      output: 'Tests opponent pathways and explains why a lead could break, hold or narrow.',
+      output: 'JSON output: alternativeHypotheses, redTeamRisks, causalDrivers and keyWatchIndicators.',
       color: C.warn,
     },
     {
       agent: 'Real-Time Agent',
       method: 'Reporting-order correction',
       input: 'Live ECZ/result feeds when available, station order, rural/urban lag, radio/community sentiment and anomaly alerts.',
-      output: 'Adjusts early returns for non-random reporting so urban-first results do not distort the national call.',
+      output: 'JSON output: reportingBias, correctedEstimate, anomalyFlags and resultFlowConfidence.',
       color: C.teal,
     },
   ]
@@ -886,6 +886,9 @@ export default function Dashboard() {
           </div>
           <div style={{ background: 'rgba(4,9,13,.72)', border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
             <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 950, letterSpacing: 1, marginBottom: 10 }}>WHITEBOX WEIGHTS</div>
+            <div style={{ marginBottom: 12, padding: '8px 10px', borderRadius: 8, background: `${C.teal}12`, border: `1px solid ${C.teal}40`, color: C.text, fontSize: 11, lineHeight: 1.55 }}>
+              Agent communication mode: strict JSON objects with typed fields, confidence scores, caveats and evidence nodes.
+            </div>
             {whiteboxWeights.map(weight => (
               <div key={weight.label} style={{ marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 4 }}>

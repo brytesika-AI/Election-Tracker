@@ -86,7 +86,7 @@ Content:
 
 Also act as devil's advocate: identify the strongest criticism of ${candidateName} found in the content, then suggest a strategic counter-response.
 
-Respond with exactly this JSON (no markdown):
+Respond with exactly one valid JSON object only:
 {
   "sentiment": "positive" | "negative" | "neutral",
   "score": <0-100 where 100 is fully positive>,
@@ -104,9 +104,10 @@ Respond with exactly this JSON (no markdown):
         headers: { Authorization: `Bearer ${CF_API_TOKEN}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
-            { role: 'system', content: 'Zambian political analyst. JSON only. No markdown. Include devil\'s advocate and strategic counter.' },
+            { role: 'system', content: 'Zambian political analyst. Return exactly one valid JSON object. No markdown. Include devil\'s advocate and strategic counter.' },
             { role: 'user', content: prompt },
           ],
+          response_format: { type: 'json_object' },
           max_tokens: 450,
           temperature: 0.25,
         }),

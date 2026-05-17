@@ -94,7 +94,7 @@ Content:
 
 Act as both analyst AND devil's advocate: give the honest critique youth are making, then recommend the strongest strategic counter-move the candidate should make.
 
-Respond with exactly this JSON (no markdown):
+Respond with exactly one valid JSON object only:
 {
   "sentiment": "positive" | "negative" | "neutral",
   "score": <0-100>,
@@ -113,9 +113,10 @@ Respond with exactly this JSON (no markdown):
         headers: { Authorization: `Bearer ${CF_API_TOKEN}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
-            { role: 'system', content: 'Zambian youth political analyst. JSON only. No markdown. Devil\'s advocate + strategic counter required.' },
+            { role: 'system', content: 'Zambian youth political analyst. Return exactly one valid JSON object. No markdown. Devil\'s advocate + strategic counter required.' },
             { role: 'user', content: prompt },
           ],
+          response_format: { type: 'json_object' },
           max_tokens: 500,
           temperature: 0.3,
         }),

@@ -139,7 +139,7 @@ async function analyzeWithAI(leaderName: string, texts: string[], source: string
 Content:
 - ${sample}
 
-Respond with exactly this JSON (no markdown):
+Respond with exactly one valid JSON object only:
 {
   "sentiment": "positive" | "negative" | "neutral",
   "score": <0-100 where 100 is fully positive>,
@@ -155,9 +155,10 @@ Respond with exactly this JSON (no markdown):
         headers: { Authorization: `Bearer ${CF_API_TOKEN}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
-            { role: 'system', content: 'Political sentiment analyst for Zambia. JSON only. No markdown.' },
+            { role: 'system', content: 'Political sentiment analyst for Zambia. Return exactly one valid JSON object. No markdown.' },
             { role: 'user', content: prompt },
           ],
+          response_format: { type: 'json_object' },
           max_tokens: 350,
           temperature: 0.2,
         }),

@@ -23,10 +23,11 @@ async function callCloudflareAI(prompt: string): Promise<string> {
           {
             role: 'system',
             content:
-              'You are an expert political data analyst specialising in African elections, specifically Zambia. Respond in JSON only. No markdown.',
+              'You are an expert political data analyst specialising in African elections, specifically Zambia. Return exactly one valid JSON object. No markdown.',
           },
           { role: 'user', content: prompt },
         ],
+        response_format: { type: 'json_object' },
         max_tokens: 512,
         temperature: 0.3,
       }),
@@ -102,7 +103,7 @@ You are Judge ORACLE — Data Integrity Validator for Zambia 2026 election intel
 Validate this polling snapshot against Zambia 2021 election results and ECZ data:
 ${JSON.stringify(snapshot, null, 2)}
 
-Respond with JSON:
+Respond with one valid JSON object only:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
   "confidence": <0-100>,
@@ -119,7 +120,7 @@ Evaluate the strategic recommendations for the ruling UPND party given this data
 ${JSON.stringify(snapshot, null, 2)}
 
 Key figures: HH (incumbent, UPND), Brian Mundubile + Makebi Zulu consolidated opposition lane, Harry Kalaba (Citizens First/CF Orange Alliance), M'membe (Socialist Party/People's Pact).
-Respond with JSON:
+Respond with one valid JSON object only:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
   "confidence": <0-100>,
@@ -135,7 +136,7 @@ You are Judge SENTINEX — Sentiment Verification Agent for Zambia 2026.
 Cross-validate platform sentiment for UPND across Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC:
 ${JSON.stringify(snapshot, null, 2)}
 
-Respond with JSON:
+Respond with one valid JSON object only:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
   "confidence": <0-100>,
