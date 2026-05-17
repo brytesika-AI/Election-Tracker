@@ -482,6 +482,12 @@ export default function Dashboard() {
     { name: 'All others', value: Math.max(0, nationalAccounted - leader.poll - runnerUp.poll), color: C.gold, note: 'Minor candidates and issue lanes' },
     { name: 'Undecided', value: ELECTION_DATA.nationalPoll.others_undecided, color: C.muted, note: 'Available pool before first round' },
   ]
+  const mundubileTicket = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')
+  const ticketReadout = [
+    { label: 'Candidate', value: 'Brian Mundubile', note: 'Northern/PF-linked machinery and Tonse visibility' },
+    { label: 'Running mate / cooperation', value: 'Makebi Zulu', note: 'Eastern/Pamodzi transfer potential; verify final ECZ filing' },
+    { label: 'Model status', value: 'Combined opposition lane', note: 'The dashboard models them together because their strategic value is vote consolidation' },
+  ]
   const provincePopularity = ELECTION_DATA.provinces.map((p) => {
     const kalaba = Math.max(1, Math.min(8, p.name === 'Luapula' ? 7 : p.name === 'Eastern' ? 5 : Math.round(ELECTION_DATA.nationalPoll.kalaba_cf)))
     const membe = Math.max(2, Math.min(9, ['Copperbelt', 'Lusaka'].includes(p.name) ? 6 : Math.round(ELECTION_DATA.nationalPoll.membe_sp)))
@@ -510,6 +516,13 @@ export default function Dashboard() {
     mood: p.mood,
     color: p.sentiment >= 55 ? C.teal : p.sentiment <= 45 ? C.warn : C.gold,
   }))
+  const publicDecisionStack = [
+    { layer: 'State', question: 'What is true now?', answer: 'HH leads, but is below 50%+1; Mundubile-Makebi is the main consolidated opposition lane.', color: C.teal },
+    { layer: 'Time', question: 'What is changing?', answer: 'The opposition lane is trending up, while UPND must convert undecided voters before the first-round gate.', color: C.gold },
+    { layer: 'Causality', question: 'Why is it moving?', answer: 'Energy, mealie meal, youth jobs, PF structure alignment, and Bemba/Nyanja radio narratives drive movement.', color: C.warn },
+    { layer: 'Simulation', question: 'What could happen?', answer: 'Run first-round win vs rerun scenarios under ticket clarity, Copperbelt swing, and undecided allocation.', color: C.ndc },
+    { layer: 'Optimization', question: 'What should be done?', answer: 'Prioritize actions that close the 2.8 pt 50%+1 gap or prepare credible runoff-transfer strategy.', color: C.zg },
+  ]
 
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
   const campaignLenses = [
@@ -942,6 +955,46 @@ export default function Dashboard() {
             ))}
           </div>
         </ChartCard>
+
+        <div className="ticket-stack">
+          <div className="ticket-stack__ticket" style={{ borderColor: mundubileTicket?.color ?? C.pf }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'start', marginBottom: 12 }}>
+              <div>
+                <div style={{ color: C.gold, fontFamily: 'monospace', fontSize: 10, fontWeight: 900, letterSpacing: 1 }}>CANDIDATE + RUNNING MATE</div>
+                <div style={{ color: C.text, fontSize: 24, fontWeight: 950, lineHeight: 1.08, marginTop: 6 }}>Mundubile-Makebi ticket lane</div>
+                <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, marginTop: 6 }}>
+                  Shown as one ticket/cooperation lane because the strategic effect is consolidation: northern PF-linked machinery plus eastern/Pamodzi transfer potential.
+                </div>
+              </div>
+              {mundubileTicket && <CandidatePhoto photo={mundubileTicket.photo} shortName={mundubileTicket.shortName} color={mundubileTicket.color} size={68} />}
+            </div>
+            <div style={{ display: 'grid', gap: 9 }}>
+              {ticketReadout.map(item => (
+                <div key={item.label} style={{ border: `1px solid ${C.line}`, borderRadius: 8, padding: '9px 10px', background: 'rgba(18,28,44,.62)' }}>
+                  <div style={{ color: C.pf, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, marginBottom: 3 }}>{item.label.toUpperCase()}</div>
+                  <div style={{ color: C.text, fontSize: 13, fontWeight: 900 }}>{item.value}</div>
+                  <div style={{ color: C.muted, fontSize: 10, lineHeight: 1.45, marginTop: 3 }}>{item.note}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="ticket-stack__decision">
+            <div style={{ color: C.teal, fontFamily: 'monospace', fontSize: 10, fontWeight: 900, letterSpacing: 1, marginBottom: 10 }}>5-LAYER DECISION STACK</div>
+            <div style={{ display: 'grid', gap: 8 }}>
+              {publicDecisionStack.map((layer, idx) => (
+                <div key={layer.layer} style={{ display: 'grid', gridTemplateColumns: '30px 88px 1fr', gap: 9, alignItems: 'start', borderTop: idx === 0 ? 'none' : `1px solid ${C.line}`, paddingTop: idx === 0 ? 0 : 8 }}>
+                  <div style={{ width: 26, height: 26, borderRadius: 6, background: `${layer.color}20`, color: layer.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 950, fontFamily: 'monospace', fontSize: 10 }}>{idx + 1}</div>
+                  <div>
+                    <div style={{ color: layer.color, fontSize: 11, fontWeight: 950 }}>{layer.layer}</div>
+                    <div style={{ color: C.muted, fontSize: 9, lineHeight: 1.35 }}>{layer.question}</div>
+                  </div>
+                  <div style={{ color: C.text, fontSize: 11, lineHeight: 1.5 }}>{layer.answer}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"
           sub="A filled Zambia map makes the lead geography readable immediately: orange for UPND, red for the opposition lane, gold for contested." />
