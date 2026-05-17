@@ -9,6 +9,8 @@ export const ELECTION_DATA = {
   districts: 116,
   wards: 1858,
   aiConfidence: 72,
+  presidentialThreshold: 50,
+  presidentialRule: 'President-elect must receive more than 50% of valid votes cast; otherwise a second-round/runoff risk is triggered.',
 
   // ── Macroeconomic Context (ZamStats / Bank of Zambia) ──
   macroIndicators: {
@@ -194,12 +196,12 @@ export const ELECTION_DATA = {
 
   // ── Simulation Scenarios ──
   scenarios: [
-    { label: 'Status Quo',       value: 47.2, color: '#555',    desc: 'No major policy shifts before election' },
-    { label: 'Energy Fix Only',  value: 51.8, color: '#0077E6', desc: '18-month Zesco/solar roadmap published & delivered' },
-    { label: 'Cost Relief Only', value: 53.4, color: '#00C9A7', desc: 'Mealie meal + fuel subsidy in key provinces' },
-    { label: 'Both Policies',    value: 56.1, color: '#F5C400', desc: 'Energy fix + cost of living relief combined' },
-    { label: 'Both + Campaign',  value: 58.8, color: '#FF6B00', desc: 'Policy wins + strong TikTok/FB campaign' },
-    { label: 'Optimal',          value: 61.5, color: '#198A00', desc: 'All levers: policy, media, rally, ground game' },
+    { label: 'Status Quo',       value: 47.2, color: '#555',    desc: 'Below 50% threshold: runoff-risk baseline unless undecided voters break strongly for UPND' },
+    { label: 'Energy Fix Only',  value: 51.8, color: '#0077E6', desc: '18-month Zesco/solar roadmap delivered; moves model above first-round threshold' },
+    { label: 'Cost Relief Only', value: 53.4, color: '#00C9A7', desc: 'Mealie meal/fuel relief in Lusaka, Copperbelt and Northern; clears first-round threshold' },
+    { label: 'Both Policies',    value: 56.1, color: '#F5C400', desc: 'Energy fix + cost relief; safer first-round path and lower runoff exposure' },
+    { label: 'Both + Campaign',  value: 58.8, color: '#FF6B00', desc: 'Policy proof + TikTok/FB/radio campaign; strong first-round majority path' },
+    { label: 'Optimal',          value: 61.5, color: '#198A00', desc: 'All levers: policy, media, rally, ground game; 50%+1 risk materially reduced' },
   ],
 
   // ── Past Presidents ──
@@ -222,10 +224,10 @@ export const ELECTION_DATA = {
       pollImpact: '+4.2%',
       priority: 'HIGH',
       actions: [
-        'Publish 18-month Zesco/solar roadmap with provincial milestones',
-        'Emergency 300 MW solar tender — announce & track publicly',
-        'WhatsApp community energy progress tracker per district',
-        'Reframe as inherited PF/Lungu-era Zesco debt crisis',
+        'Publish 18-month Zesco/solar roadmap with provincial milestones and weekly news-verifiable delivery updates',
+        'Emergency solar/IPP procurement tracker: show MW added, district served and outage-hours reduced',
+        'Target Lusaka/Copperbelt SMEs first because urban anger can block a 50%+1 first-round path',
+        'Pair inherited-debt narrative with visible repairs, mini-grids and tariff facts',
       ],
     },
     {
@@ -234,10 +236,10 @@ export const ELECTION_DATA = {
       pollImpact: '+3.8%',
       priority: 'HIGH',
       actions: [
-        'Province-by-province mealie meal subsidy: Lusaka, CB, Northern first',
-        'Kwacha stabilisation comms — anchor to IMF deal narrative',
-        'Live price dashboard on ZNBC, Facebook, and WhatsApp groups',
-        'Fertiliser delivery visible on ground — photo/video campaigns',
+        'Province-by-province mealie meal relief: Lusaka, Copperbelt and Northern first, with shop-price evidence',
+        'Tie kwacha and inflation messages to household price proof; macro claims alone do not close the 50%+1 gap',
+        'Live price dashboard on ZNBC, News Diggers placements, Facebook and WhatsApp groups',
+        'Fertiliser and FRA delivery proof: publish district receipts, farmer clips and radio call-in checks',
       ],
     },
     {
@@ -246,10 +248,10 @@ export const ELECTION_DATA = {
       pollImpact: '+2.4%',
       priority: 'HIGH',
       actions: [
-        'HH in-person rally tour: Northern, Luapula, Muchinga provinces',
-        'Bemba-language radio + podcast outreach in rural north',
-        'Release PF governance failures 2011-2021: Auditor General data',
-        'Local MP mobilisation in PF strongholds — community projects',
+        'HH in-person rally tour: Northern, Luapula and Muchinga, where modelled UPND share is 25-30%',
+        'Bemba-language radio + podcast outreach in rural north, then track call-in sentiment weekly',
+        'Release PF governance record with Auditor General and debt facts, not generic attack lines',
+        'Local MP mobilisation in PF strongholds tied to clinics, CDF, roads and agriculture delivery evidence',
       ],
     },
     {
@@ -258,10 +260,10 @@ export const ELECTION_DATA = {
       pollImpact: '+1.4%',
       priority: 'WATCH',
       actions: [
-        "Counter M'membe TikTok narrative with UPND youth content creators",
-        'Engage Copperbelt & Lusaka youth with skills + jobs programmes',
-        'Social media: highlight UPND anti-elitism record vs SP elite leadership',
-        'Monitor SP sentiment velocity weekly — escalate if >5.5%',
+        "Counter M'membe mining inequality narrative with specific Copperbelt royalty, contractor-payment and jobs data",
+        'Engage Copperbelt & Lusaka youth with measurable skills/jobs programmes; youth unemployment is the live risk',
+        'Use creator Q&A with ministers, not slogans, to answer mining, jobs and cost-of-living questions',
+        'Monitor SP sentiment velocity weekly; escalate if SP crosses 5.5% or pulls UPND urban youth share',
       ],
     },
     {
@@ -270,10 +272,10 @@ export const ELECTION_DATA = {
       pollImpact: '+1.2%',
       priority: 'MEDIUM',
       actions: [
-        'Monitor Kalaba–Mundubile coalition signals via SentimentCommand AI',
-        'Engage Citizens First / CF Orange sympathisers in Eastern & Luapula with local projects',
-        'Back-channel dialogue option: offer Kalaba dignified role post-election',
-        'Ensure Kalaba northern base is cannibalised by Mundubile, not consolidated',
+        'Monitor Kalaba-Mundubile coalition signals via news, radio and SentimentCommand AI',
+        'Engage CF Orange sympathisers in Eastern and Luapula with local delivery proof, not national talking points',
+        'Model Kalaba as first-round spoiler and runoff-transfer actor; his 3-4% matters under 50%+1',
+        'Avoid consolidating the whole opposition lane; track whether Kalaba voters transfer to Mundubile-Makebi',
       ],
     },
   ],
@@ -292,13 +294,16 @@ export const ELECTION_DATA = {
     { id: 'civicus', name: 'CIVICUS Monitor', type: 'integrity', note: 'Civic space rating: OBSTRUCTED' },
     { id: 'google_trends', name: 'Google Trends Zambia', type: 'social', note: 'Search interest: HH, Mundubile, election' },
     { id: 'datareportal', name: 'DataReportal / platform monitoring', type: 'social', note: 'Social-media audience context; live app signals come from configured platform scrapers where credentials exist' },
+    { id: 'gdelt', name: 'GDELT Global Knowledge Graph', type: 'news', note: 'Open news/event monitoring for campaign narratives, issue spikes and misinformation signals' },
+    { id: 'newsdiggers', name: 'News Diggers!', type: 'news', note: 'Independent reporting used as a news signal, not as certified polling' },
+    { id: 'znbc', name: 'ZNBC', type: 'news', note: 'Public broadcaster signal; discount for state-media bias when modelling sentiment' },
   ],
 
   openIntelligenceSources: [
     { category: 'Official Election', sources: ['ECZ', 'National Assembly of Zambia', 'ZambiaLII'] },
     { category: 'Economic Pressure', sources: ['ZamStats', 'Bank of Zambia', 'World Bank', 'IMF'] },
     { category: 'Election Integrity', sources: ['CCMG Zambia', 'iVerify Zambia', 'CIVICUS Monitor', 'OONI Explorer'] },
-    { category: 'Open Web Signals', sources: ['Google Trends', 'GDELT', 'DataReportal'] },
+    { category: 'News & Open Web Signals', sources: ['News Diggers!', 'ZNBC', 'Lusaka Times', 'The Mast', 'GDELT', 'Google Trends', 'DataReportal'] },
     { category: 'Geospatial', sources: ['OpenStreetMap', 'HDX administrative boundaries', 'CARTO basemaps'] },
     { category: 'Media Watch', sources: ['ZNBC', 'News Diggers!', 'MISA Zambia', 'The Mast', 'Diamond TV'] },
   ],

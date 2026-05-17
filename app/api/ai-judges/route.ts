@@ -51,8 +51,9 @@ function demoVerdicts(dataSnapshot: Record<string, unknown>): JudgeVerdict[] {
       verdict: upnd > 45 ? 'VALIDATED' : 'CAUTION',
       confidence: 84,
       summary:
-        `Model estimates checked against the ECZ certified 2026 register (8,786,300 voters) and the 2021 presidential baseline. UPND at ${upnd.toFixed(1)}% is a scenario estimate, not an official poll.`,
+        `Model estimates checked against the ECZ certified 2026 register (8,786,300 voters), the 2021 presidential baseline and Zambia's more-than-50% win threshold. UPND at ${upnd.toFixed(1)}% is a scenario estimate and remains runoff-risk unless it clears 50%+1.`,
       findings: [
+        'Zambia presidential threshold: more than 50% of valid votes; current baseline is runoff-risk',
         `UPND ${upnd.toFixed(1)}% within ±2.5pt margin of error vs 2021 benchmark`,
         `PF ${pf.toFixed(1)}% reflects Lungu eligibility uncertainty drag`,
         'Mundubile surge (+1.8pt/month) is statistically significant — flag',
@@ -69,11 +70,11 @@ function demoVerdicts(dataSnapshot: Record<string, unknown>): JudgeVerdict[] {
       summary:
         'Strategic recommendations are grounded in Zambian political realities. Energy and cost-of-living levers are correctly prioritised. Northern Province swing campaign is underweighted given Mundubile momentum.',
       findings: [
-        'Energy roadmap (+4.2pt impact) — HIGHEST ROI single action: CONFIRMED',
-        'TikTok rapid response desk: CRITICAL — 18-35 voter cohort at risk',
-        'Northern Province: HH rally tour should be moved to HIGH PRIORITY',
-        "M'membe SP urban youth risk is underestimated — recommend escalation",
-        'Infrastructure visibility campaign: deploy before September 2026 deadline',
+        'Energy roadmap (+4.2pt impact) must be news-verifiable through ZNBC/independent media and district evidence',
+        'TikTok rapid response desk: CRITICAL because youth unemployment remains the live campaign risk',
+        'Northern/Luapula/Muchinga tour should be HIGH PRIORITY to protect the 50%+1 path',
+        "M'membe SP urban youth risk is underestimated; use Copperbelt mining/jobs data, not generic slogans",
+        'Cost-of-living proof points must be local: mealie meal, fuel, fertiliser and household prices',
       ],
       timestamp: ts,
     },
@@ -85,6 +86,7 @@ function demoVerdicts(dataSnapshot: Record<string, unknown>): JudgeVerdict[] {
       summary:
         `Platform sentiment cross-validated across Facebook, Twitter/X, Lusaka Times, Zambian Observer, and ZNBC. UPND positive sentiment (avg 51.3%) is higher than poll numbers suggest — latent support may be undercounted.`,
       findings: [
+        'News sentiment must be included alongside social: ZNBC, News Diggers, The Mast, Lusaka Times and event signals',
         'Facebook positive UPND: 48% — exceeds national poll by ~1pt (normal)',
         'ZNBC 68% positive: state media effect confirmed — discount accordingly',
         'Twitter/X 40% negative: urban elite opinion skew — not representative',
@@ -103,6 +105,8 @@ You are Judge ORACLE — Data Integrity Validator for Zambia 2026 election intel
 Validate this polling snapshot against Zambia 2021 election results and ECZ data:
 ${JSON.stringify(snapshot, null, 2)}
 
+Mandatory checks: apply Zambia's presidential rule that a first-round winner must receive more than 50% of valid votes cast; flag runoff risk if no candidate clears that gate. Treat news sources as corroborating evidence, not polling.
+
 Respond with one valid JSON object only:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
@@ -120,6 +124,7 @@ Evaluate the strategic recommendations for the ruling UPND party given this data
 ${JSON.stringify(snapshot, null, 2)}
 
 Key figures: HH (incumbent, UPND), Brian Mundubile + Makebi Zulu consolidated opposition lane, Harry Kalaba (Citizens First/CF Orange Alliance), M'membe (Socialist Party/People's Pact).
+All strategy must be grounded in Zambia-specific evidence: ECZ registered voters, 226 constituencies, province voter weights, inflation, BoZ policy rate, youth unemployment, mealie meal/fuel/electricity pressure, and credible news signals. Do not give generic campaign advice. Include whether the action helps clear 50%+1 or prepares for a runoff.
 Respond with one valid JSON object only:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
@@ -133,8 +138,10 @@ Respond with one valid JSON object only:
 function buildSentimentPrompt(snapshot: Record<string, unknown>) {
   return `
 You are Judge SENTINEX — Sentiment Verification Agent for Zambia 2026.
-Cross-validate platform sentiment for UPND across Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC:
+Cross-validate platform sentiment for UPND across Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC, News Diggers, The Mast and open news/event signals:
 ${JSON.stringify(snapshot, null, 2)}
+
+Score whether news coverage changes the 50%+1 first-round path, creates runoff risk, or only affects narrative noise.
 
 Respond with one valid JSON object only:
 {
@@ -160,6 +167,10 @@ export async function POST(req: NextRequest) {
     platforms: ELECTION_DATA.platforms,
     platPositive: ELECTION_DATA.platPositive,
     platNegative: ELECTION_DATA.platNegative,
+    presidentialThreshold: ELECTION_DATA.presidentialThreshold,
+    presidentialRule: ELECTION_DATA.presidentialRule,
+    macroIndicators: ELECTION_DATA.macroIndicators,
+    newsSources: ['ZNBC', 'News Diggers!', 'Lusaka Times', 'The Mast', 'Zambian Observer', 'GDELT'],
   }
 
   // Try Cloudflare AI — fall back to demo

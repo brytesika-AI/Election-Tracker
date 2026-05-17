@@ -466,6 +466,8 @@ export default function Dashboard() {
   }))
 
   const simData = ELECTION_DATA.scenarios.map(s => ({ label: s.label, 'Vote %': s.value, color: s.color, desc: s.desc }))
+  const firstRoundGap = Math.max(0, ELECTION_DATA.presidentialThreshold - ELECTION_DATA.nationalPoll.upnd)
+  const runoffRisk = ELECTION_DATA.nationalPoll.upnd > ELECTION_DATA.presidentialThreshold ? 'LOW' : 'HIGH'
   const provData = ELECTION_DATA.provinces.map(p => ({
     name: p.name, 'Voters (K)': Math.round(p.voters / 1000),
     color: p.lean === 'UPND' ? C.upnd : p.lean === 'PF' ? C.pf : C.gold,
@@ -523,8 +525,8 @@ export default function Dashboard() {
       confidence: 68,
       color: C.teal,
       method: 'Structured analytic techniques: key judgments, source reliability grades, red-team alternatives and indicator watchlists.',
-      projection: 'HH remains the best-positioned candidate if economic irritation does not consolidate into a single opposition vehicle.',
-      triggers: ['Mundubile-Makebi ticket clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
+      projection: 'HH remains best-positioned, but at 47.2% the model is below Zambia’s more-than-50% first-round threshold, so runoff exposure is real.',
+      triggers: ['Mundubile-Makebi ticket clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives', 'News spike confirming policy delivery'],
       whitebox: 'Separates official facts from estimates, grades each signal by reliability, and shows which indicators would change the call.',
       caveat: 'Analytic confidence is moderate because social-platform signals are noisy and not a substitute for verified polling.',
     },
@@ -535,9 +537,9 @@ export default function Dashboard() {
       confidence: 72,
       color: C.gold,
       method: 'Bayesian projection gates: current lead, province path, undecided pool, turnout assumptions, margin of error and confidence threshold.',
-      projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga, Eastern transferability and Copperbelt watched as Mundubile-Makebi pickup lanes.',
-      triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile-Makebi below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
-      whitebox: 'Shows the thresholds, province path and undecided assumptions before any candidate is moved from Toss-up to Lean/Likely.',
+      projection: 'No first-round win call unless UPND clears more than 50% of valid-vote model share. Current status is Lean UPND but runoff-risk, with Copperbelt and Northern/Luapula/Muchinga as the stress tests.',
+      triggers: ['UPND above 50% in two consecutive model refreshes', 'UPND 50%+1 path after undecided allocation', 'Mundubile-Makebi below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
+      whitebox: 'Shows the legal threshold, province path, undecided assumptions and runoff gate before any candidate is moved from Lean to First-Round Majority.',
       caveat: 'Projection language here is modeled. It is not a media network call and not an ECZ result.',
     },
     {
@@ -547,9 +549,9 @@ export default function Dashboard() {
       confidence: 74,
       color: C.ndc,
       method: 'Fuses voter register, clustered districts, province leans, economy, open intelligence, platform sentiment, issue risk and scenario deltas.',
-      projection: 'The integrated graph points to an incumbent path through Lusaka, Southern, Western and North-Western, with Copperbelt as the decisive stress test.',
-      triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Reporting-order bias checks'],
-      whitebox: 'Links each candidate score to visible evidence nodes: province, issue, platform, turnout, credibility and missing-data penalty.',
+      projection: 'The graph points to an incumbent lead through Lusaka, Southern, Western and North-Western, but the win condition is not lead size alone: it must clear 50%+1 or plan for a runoff.',
+      triggers: ['Province-level anomaly detection', 'Narrative velocity by platform', 'Issue-to-region correlation', 'Reporting-order bias checks', 'News corroboration from ZNBC/News Diggers/The Mast/GDELT'],
+      whitebox: 'Links each candidate score to visible evidence nodes: province, issue, platform, turnout, news credibility, threshold gap and missing-data penalty.',
       caveat: 'Fusion output is only as strong as source freshness, labels and missing-data handling.',
     },
   ]
@@ -589,15 +591,15 @@ export default function Dashboard() {
     { label: 'Historical clusters', value: 20, note: '2016/2021 district behaviour and turnout bands', color: C.ndc },
     { label: 'Polling blend', value: 18, note: 'survey averages, uncertainty, undecided allocation', color: C.gold },
     { label: 'Issue pressure', value: 14, note: 'cost of living, electricity, jobs, copper economy', color: C.warn },
-    { label: 'Open intelligence', value: 10, note: 'media, civil society, radio, OSINT verification', color: C.teal },
+    { label: 'News + open intelligence', value: 10, note: 'ZNBC, News Diggers, The Mast, GDELT, radio and OSINT verification', color: C.teal },
     { label: 'Social velocity', value: 8, note: 'Facebook, X, TikTok directional movement only', color: C.pf },
   ]
   const decisionStack = [
     {
       layer: 'STATE',
       question: 'What is true now?',
-      signal: 'ECZ register, province leans, ticket status, issue sentiment, platform narratives.',
-      output: 'Mundubile-Makebi treated as a consolidated opposition lane until ECZ filings confirm final ticket.',
+      signal: 'ECZ register, province leans, ticket status, issue sentiment, platform narratives, news validation.',
+      output: 'State includes the 50%+1 win rule, news validation, and Mundubile-Makebi as a consolidated opposition lane until ECZ filings confirm final ticket.',
       color: C.teal,
     },
     {
@@ -617,15 +619,15 @@ export default function Dashboard() {
     {
       layer: 'SIMULATION',
       question: 'What futures are plausible?',
-      signal: 'Ticket cohesion, Copperbelt swing, youth turnout, energy recovery and opposition vote leakage.',
-      output: 'Run scenarios for unified PF-linked ticket, fragmented field, and UPND recovery through energy/cost relief.',
+      signal: 'Ticket cohesion, Copperbelt swing, youth turnout, energy recovery, news-cycle shocks and opposition vote leakage.',
+      output: 'Run first-round-majority vs runoff scenarios for unified PF-linked ticket, fragmented field, and UPND recovery through energy/cost relief.',
       color: C.ndc,
     },
     {
       layer: 'OPTIMIZATION',
       question: 'What should be done next?',
       signal: 'Impact vs feasibility across regions, platforms and message types.',
-      output: 'Prioritize actions that lower uncertainty: verify ticket, map province transfer, target Copperbelt, publish proof points.',
+      output: 'Prioritize actions that close the 50%+1 gap: verify ticket, map province transfer, target Copperbelt, publish proof points and make news-verifiable delivery visible.',
       color: C.zg,
     },
   ]
@@ -736,7 +738,7 @@ export default function Dashboard() {
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-              Official facts are ECZ/ZamStats/BoZ sourced. Candidate support, trends, issue scores and scenario strength are model estimates for planning, not certified polling or ECZ results.
+              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
             </div>
           </div>
           <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>
@@ -747,8 +749,9 @@ export default function Dashboard() {
         {/* ── KPI ROW ─────────────────────────────────────── */}
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 12, marginBottom: 16 }}>
           <KpiCard label="HH MODEL LEAD" value="+26.9 pts" sub="vs Mundubile-Makebi lane (20.3%)" trend="Modelled — monitor" borderColor={C.teal} />
+          <KpiCard label="50%+1 GAP" value={`${firstRoundGap.toFixed(1)} pts`} sub="needed to clear first round" trend={`Runoff risk: ${runoffRisk}`} borderColor={C.warn} />
           <KpiCard label="DAYS TO ELECTION" value={`${countdown.days}d`} sub="13 August 2026" trend={`${countdown.hours}h ${countdown.minutes}m remaining`} borderColor={C.gold} />
           <KpiCard label="REGISTERED VOTERS" value="8,786,300" sub="ECZ certified 2026" trend="226 constituencies" borderColor={C.ndc} />
           <KpiCard label="OPPOSITION LANE" value="+2.3 pts/mo" sub="Mundubile-Makebi model trend" trend="Verify ECZ ticket filing" borderColor={C.warn} />
@@ -862,7 +865,7 @@ export default function Dashboard() {
               </div>
             ))}
             <div style={{ marginTop: 12, padding: '10px 12px', borderRadius: 8, background: `${selectedProjection.color}12`, border: `1px solid ${selectedProjection.color}33`, fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-              Projection rule: never call a race from sentiment alone. Require province path, turnout assumptions, undecided compression and official-result flow.
+              Projection rule: never call a race from sentiment alone. A first-round win requires more than 50% of valid votes cast; otherwise the model flags a runoff scenario and reweights second-round transfer paths.
             </div>
           </div>
         </div>
@@ -1004,7 +1007,7 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </ChartCard>
 
-          <ChartCard title="SCENARIO MODELLING — HH VOTE PROJECTION" sub="Majority threshold: 50% · Baseline: 47.2%">
+          <ChartCard title="SCENARIO MODELLING — HH VOTE PROJECTION" sub={`50%+1 first-round gate · Baseline: 47.2% · gap: ${firstRoundGap.toFixed(1)} pts`}>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={simData}>
                 <XAxis dataKey="label" tick={{ fontSize: 8, fill: C.muted }} />
@@ -1017,7 +1020,7 @@ export default function Dashboard() {
                       <div style={{ fontSize: 9, color: C.muted, maxWidth: 180 }}>{payload[0].payload.desc}</div>
                     </div>
                   ) : null} />
-                <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" label={{ value: '50% threshold', fill: C.gold, fontSize: 9 }} />
+                <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" label={{ value: '50%+1 gate', fill: C.gold, fontSize: 9 }} />
                 <Bar dataKey="Vote %" radius={[4,4,0,0]}>
                   {simData.map((s, i) => <Cell key={i} fill={s.color} />)}
                 </Bar>
@@ -1034,14 +1037,14 @@ export default function Dashboard() {
         </div>
 
         {/* ── NLP HEADLINE ANALYZER ────────────────────────── */}
-        <SectionLabel layer="NLP ANALYSIS" title="VADER Political Headline Sentiment Engine"
-          sub="Real Zambian political headlines scored by AI — compound score from −1.0 (negative) to +1.0 (positive)" />
+        <SectionLabel layer="NEWS INTELLIGENCE" title="Zambian News Sentiment + Event Monitor"
+          sub="ZNBC, News Diggers, Lusaka Times, The Mast, Zambian Observer and GDELT-style event signals scored for strategy and 50%+1 runoff risk" />
         <div style={{ background: C.card, border: `1px solid ${C.teal}`, borderRadius: 8, padding: 18, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: `${C.teal}22`, border: `2px solid ${C.teal}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🧠</div>
               <div>
-                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: C.teal }}>VADER-ZAMBIA NLP ENGINE · POLITICAL HEADLINE SENTIMENT</div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: C.teal }}>NEWS + VADER-ZAMBIA NLP ENGINE · POLITICAL HEADLINE SENTIMENT</div>
                 <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
                   {nlpData ? `${nlpData.lexiconSize}-word Zambian political lexicon · ${nlpData.engine}` : 'Loading NLP engine...'}
                 </div>
@@ -1110,7 +1113,7 @@ export default function Dashboard() {
           )}
 
           <div style={{ marginTop: 12, fontSize: 10, color: C.muted, textAlign: 'center', fontFamily: 'monospace' }}>
-            VADER algorithm · Zambia domain lexicon · Compound score: −1.0 (negative) to +1.0 (positive) · Threshold ±0.05
+            News rule: stories must be mapped to issue, province, candidate and 50%+1 threshold impact before they influence strategy. VADER algorithm · Zambia domain lexicon · Compound score: −1.0 to +1.0
           </div>
         </div>
 
