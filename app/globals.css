@@ -227,6 +227,14 @@ body {
     grid-template-columns: 1fr !important;
   }
 
+  .operator-lens {
+    grid-template-columns: 1fr !important;
+  }
+
+  .operator-lens__tabs {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   .heritage-hero__content {
     grid-template-columns: 1fr;
     padding: 28px 24px 44px;

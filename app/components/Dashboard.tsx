@@ -365,6 +365,7 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(() => new Date())
   const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
   const [showQuotes, setShowQuotes]   = useState(false)
+  const [activeLens, setActiveLens] = useState<'energy' | 'cost' | 'youth' | 'copperbelt' | 'opposition'>('energy')
   const [airtableStatus, setAirtableStatus] = useState('LIVE')
   const [vercelStatus, setVercelStatus]     = useState('LIVE')
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
@@ -475,6 +476,49 @@ export default function Dashboard() {
   }))
 
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
+  const campaignLenses = [
+    {
+      id: 'energy' as const,
+      label: 'Energy',
+      score: '+4.2 pts',
+      color: C.gold,
+      risk: 'Highest irritation driver on Twitter/X and TikTok.',
+      action: 'Lead with a visible load-shedding recovery clock, province-by-province power updates, and short videos from repair sites.',
+    },
+    {
+      id: 'cost' as const,
+      label: 'Cost of Living',
+      score: '+3.8 pts',
+      color: C.warn,
+      risk: 'Mealie meal, fuel and household pressure still define the kitchen-table mood.',
+      action: 'Show price relief in Lusaka, Copperbelt and Northern first. Pair policy claims with shop-floor proof and radio explainers.',
+    },
+    {
+      id: 'youth' as const,
+      label: 'Youth',
+      score: '+2.6 pts',
+      color: C.teal,
+      risk: 'Youth unemployment weakens trust even when macro numbers improve.',
+      action: 'Run creator-led job, bursary and skills stories on TikTok/X with comments mined daily for counter-messaging.',
+    },
+    {
+      id: 'copperbelt' as const,
+      label: 'Copperbelt',
+      score: '+3.1 pts',
+      color: C.ndc,
+      risk: 'Urban Copperbelt is the fastest route to a narrow national swing.',
+      action: 'Prioritise mining jobs, contractor payments, market trader costs and Kitwe/Ndola field visibility.',
+    },
+    {
+      id: 'opposition' as const,
+      label: 'Opposition Surge',
+      score: '-2.3 pts/mo',
+      color: C.pf,
+      risk: 'Mundubile/Tonse alignment is the clearest northern opposition lane.',
+      action: 'Track alliance cohesion, legal vehicle clarity and Bemba-language radio share before the trend hardens.',
+    },
+  ]
+  const selectedLens = campaignLenses.find(lens => lens.id === activeLens) ?? campaignLenses[0]
 
   return (
     <div
@@ -609,19 +653,43 @@ export default function Dashboard() {
         </div>
 
         {/* ── PAST PRESIDENTS ──────────────────────────────── */}
-        <SectionLabel layer="HISTORY" title="Zambia Heads of State 1964–2026"
-          sub="Historical context — understanding past presidents helps decode current voter loyalties" />
-        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 8, padding: '14px 18px', marginBottom: 16 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 10 }}>
-            {ELECTION_DATA.presidents.map(p => (
-              <div key={p.initials} className="card-hover" style={{ textAlign: 'center', padding: '14px 8px', borderRadius: 8, background: C.card2, border: `1px solid ${p.color}22` }}>
-                <div style={{ width: 48, height: 48, borderRadius: '50%', margin: '0 auto 10px', border: `2px solid ${p.color}`, background: `${p.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 900, color: p.color }}>{p.initials}</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{p.name}</div>
-                <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace', marginBottom: 6 }}>{p.years}</div>
-                <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 8, background: `${p.color}20`, color: p.color, fontFamily: 'monospace', fontWeight: 700 }}>{p.party}</span>
-                <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>{p.note}</div>
+        <SectionLabel layer="OPERATIONS" title="Interactive Campaign Lens"
+          sub="Tap a pressure point to change the tactical readout before reviewing the charts" />
+        <div className="operator-lens" style={{ background: 'linear-gradient(135deg, rgba(14,23,36,.96), rgba(8,31,17,.9))', border: `1px solid ${selectedLens.color}66`, borderRadius: 10, padding: 16, marginBottom: 16, display: 'grid', gridTemplateColumns: '1fr 1.35fr', gap: 16, alignItems: 'stretch' }}>
+          <div className="operator-lens__tabs" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+            {campaignLenses.map(lens => {
+              const active = lens.id === activeLens
+              return (
+                <button key={lens.id} onClick={() => setActiveLens(lens.id)}
+                  style={{ minHeight: 82, padding: '10px 8px', borderRadius: 8, border: `1px solid ${active ? lens.color : C.line}`, background: active ? `${lens.color}20` : 'rgba(18,28,44,.72)', color: active ? lens.color : C.text, cursor: 'pointer', textAlign: 'left', boxShadow: active ? `0 0 0 1px ${lens.color}33, 0 10px 26px rgba(0,0,0,.24)` : 'none' }}>
+                  <div style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 900, marginBottom: 7 }}>{lens.label.toUpperCase()}</div>
+                  <div style={{ fontSize: 20, fontWeight: 950, lineHeight: 1 }}>{lens.score}</div>
+                  <div style={{ fontSize: 9, color: C.muted, marginTop: 6 }}>scenario impact</div>
+                </button>
+              )
+            })}
+          </div>
+          <div style={{ background: 'rgba(4,9,13,.54)', border: `1px solid ${selectedLens.color}40`, borderRadius: 8, padding: '14px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}>
+              <div>
+                <div style={{ fontSize: 10, color: selectedLens.color, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>ACTIVE LENS</div>
+                <div style={{ fontSize: 20, color: C.text, fontWeight: 900 }}>{selectedLens.label}</div>
               </div>
-            ))}
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 10, color: C.muted }}>Projected effect</div>
+                <div style={{ fontSize: 24, color: selectedLens.color, fontWeight: 950 }}>{selectedLens.score}</div>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 12 }}>
+              <div style={{ borderLeft: `3px solid ${C.warn}`, paddingLeft: 10 }}>
+                <div style={{ fontSize: 10, color: C.warn, fontFamily: 'monospace', fontWeight: 900, marginBottom: 5 }}>RISK SIGNAL</div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.55 }}>{selectedLens.risk}</div>
+              </div>
+              <div style={{ borderLeft: `3px solid ${selectedLens.color}`, paddingLeft: 10 }}>
+                <div style={{ fontSize: 10, color: selectedLens.color, fontFamily: 'monospace', fontWeight: 900, marginBottom: 5 }}>NEXT MOVE</div>
+                <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>{selectedLens.action}</div>
+              </div>
+            </div>
           </div>
         </div>
 
