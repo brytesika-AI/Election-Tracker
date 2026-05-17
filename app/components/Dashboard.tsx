@@ -204,6 +204,13 @@ function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0
         <div style={{ fontWeight: 800, fontSize: 15, color: f.color, textAlign: 'center', marginBottom: 5 }}>{f.name}</div>
         <div style={{ textAlign: 'center', marginBottom: 6 }}><PartyBadge party={f.party} color={f.color} /></div>
         <div style={{ fontSize: 10, color: C.muted, textAlign: 'center', lineHeight: 1.4, marginBottom: 12 }}>{f.role}</div>
+        {f.id === 'pf_ndc' && (
+          <div style={{ background: `${f.color}14`, border: `1px solid ${f.color}44`, borderRadius: 6, padding: '7px 9px', marginBottom: 12, textAlign: 'center' }}>
+            <div style={{ fontSize: 9, color: f.color, fontFamily: 'monospace', fontWeight: 900, marginBottom: 3 }}>TICKET STRUCTURE</div>
+            <div style={{ fontSize: 11, color: C.text, lineHeight: 1.45 }}>Candidate: Brian Mundubile · Running-mate/cooperation lane: Makebi Zulu</div>
+            <div style={{ fontSize: 9, color: C.muted, marginTop: 3 }}>Verify final ECZ nomination filing</div>
+          </div>
+        )}
 
         {/* Poll bar */}
         <div style={{ marginBottom: 4 }}>
@@ -432,7 +439,7 @@ export default function Dashboard() {
   const timelineData = ELECTION_DATA.months.map((m, i) => ({
     month: m,
     'HH (UPND)':       ELECTION_DATA.upndTrend[i],
-    'Mundubile / Tonse': ELECTION_DATA.allianceTrend[i],
+    'Mundubile + Makebi': ELECTION_DATA.allianceTrend[i],
     'Kalaba (CF)':       ELECTION_DATA.kalabaTrend[i],
     "M'membe (SP)":    ELECTION_DATA.membeTrend[i],
     projected: i >= projFrom,
@@ -440,7 +447,7 @@ export default function Dashboard() {
 
   const pollData = [
     { name: 'HH (UPND)',         value: 47.2, color: C.upnd },
-    { name: 'Mundubile / Tonse', value: 20.3, color: C.pf   },
+    { name: 'Mundubile + Makebi', value: 20.3, color: C.pf   },
     { name: "M'membe (SP)",      value: 4.1,  color: C.sp   },
     { name: 'Kalaba (CF)',       value: 3.8,  color: C.dp   },
     { name: 'Undecided/Other',   value: 24.6, color: C.muted},
@@ -503,8 +510,8 @@ export default function Dashboard() {
       label: 'Opposition Surge',
       score: '-2.3 pts/mo',
       color: C.pf,
-      risk: 'Mundubile/Tonse alignment is the clearest northern opposition lane.',
-      action: 'Track alliance cohesion, legal vehicle clarity and Bemba-language radio share before the trend hardens.',
+      risk: 'Mundubile-Makebi consolidation is the clearest PF-linked northern/eastern opposition lane.',
+      action: 'Track candidate/running-mate confirmation, legal vehicle clarity, PF structure movement and Bemba/Nyanja radio share before the trend hardens.',
     },
   ]
   const selectedLens = campaignLenses.find(lens => lens.id === activeLens) ?? campaignLenses[0]
@@ -517,7 +524,7 @@ export default function Dashboard() {
       color: C.teal,
       method: 'Key Judgments, confidence levels, alternative hypotheses and indicator watchlists.',
       projection: 'HH remains the best-positioned candidate if economic irritation does not consolidate into a single opposition vehicle.',
-      triggers: ['Opposition alliance legal clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
+      triggers: ['Mundubile-Makebi ticket clarity', 'Load-shedding sentiment break point', 'Copperbelt urban swing', 'Youth unemployment narratives'],
       caveat: 'Analytic confidence is moderate because social-platform signals are noisy and not a substitute for verified polling.',
     },
     {
@@ -527,8 +534,8 @@ export default function Dashboard() {
       confidence: 72,
       color: C.gold,
       method: 'Projection gates: current lead, province path, remaining undecided pool, turnout assumptions and confidence threshold.',
-      projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga and Copperbelt watched as opposition pickup lanes.',
-      triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile/Tonse below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
+      projection: 'No race call. Dashboard status is Lean UPND, with Northern/Luapula/Muchinga, Eastern transferability and Copperbelt watched as Mundubile-Makebi pickup lanes.',
+      triggers: ['UPND above 50% in two consecutive model refreshes', 'Mundubile-Makebi below 18%', 'Undecided under 18%', 'Copperbelt margin above +7 UPND'],
       caveat: 'Election-desk language here is modeled. It is not a media network call and not an ECZ result.',
     },
     {
@@ -544,6 +551,43 @@ export default function Dashboard() {
     },
   ]
   const selectedProjection = projectionModes.find(mode => mode.id === projectionMode) ?? projectionModes[1]
+  const decisionStack = [
+    {
+      layer: 'STATE',
+      question: 'What is true now?',
+      signal: 'ECZ register, province leans, ticket status, issue sentiment, platform narratives.',
+      output: 'Mundubile-Makebi treated as a consolidated opposition lane until ECZ filings confirm final ticket.',
+      color: C.teal,
+    },
+    {
+      layer: 'TIME',
+      question: 'How is it changing?',
+      signal: '20-month trend, +2.3 pts/month opposition lane, undecided compression, countdown to nominations.',
+      output: 'Watch whether ticket clarity accelerates Northern, Luapula, Muchinga and Eastern movement.',
+      color: C.gold,
+    },
+    {
+      layer: 'CAUSALITY',
+      question: 'Why is it moving?',
+      signal: 'Cost of living, load shedding, PF structure consolidation, youth unemployment and radio narratives.',
+      output: 'If Makebi unlocks Eastern/PF-Pamodzi transfer and Mundubile holds northern machinery, UPND margin narrows.',
+      color: C.warn,
+    },
+    {
+      layer: 'SIMULATION',
+      question: 'What futures are plausible?',
+      signal: 'Ticket cohesion, Copperbelt swing, youth turnout, energy recovery and opposition vote leakage.',
+      output: 'Run scenarios for unified PF-linked ticket, fragmented field, and UPND recovery through energy/cost relief.',
+      color: C.ndc,
+    },
+    {
+      layer: 'OPTIMIZATION',
+      question: 'What should be done next?',
+      signal: 'Impact vs feasibility across regions, platforms and message types.',
+      output: 'Prioritize actions that lower uncertainty: verify ticket, map province transfer, target Copperbelt, publish proof points.',
+      color: C.zg,
+    },
+  ]
 
   return (
     <div
@@ -605,7 +649,7 @@ export default function Dashboard() {
         <div style={{ background: C.gold, overflow: 'hidden', padding: '3px 0' }}>
           <div className="ticker-wrap">
             <span className="ticker-inner" style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11, color: '#000' }}>
-              &nbsp;&nbsp; LIVE · ZAMBIA 2026 ELECTION · 13 AUG 2026 · HH MODEL: 47.2% · MUNDUBILE/TONSE: 20.3% · M&#39;MEMBE: 4.1% · KALABA: 3.8% · VOTERS: 8,786,300 ECZ · 226 CONSTITUENCIES ·
+              &nbsp;&nbsp; LIVE · ZAMBIA 2026 ELECTION · 13 AUG 2026 · HH MODEL: 47.2% · MUNDUBILE-MAKEBI: 20.3% · M&#39;MEMBE: 4.1% · KALABA: 3.8% · VOTERS: 8,786,300 ECZ · 226 CONSTITUENCIES ·
               MODEL CONFIDENCE: 72% · OPPOSITION ALIGNMENT +2.3pts/mo ⚠ · INFLATION: 6.8% · BoZ RATE: 13.25% · SOURCES: ECZ · ZAMSTATS · BOZ · FACEBOOK · TWITTER/X · ZNBC · AIRTABLE · &nbsp;&nbsp;
             </span>
           </div>
@@ -663,10 +707,10 @@ export default function Dashboard() {
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
-          <KpiCard label="HH MODEL LEAD" value="+26.9 pts" sub="vs Mundubile/Tonse lane (20.3%)" trend="Modelled — monitor" borderColor={C.teal} />
+          <KpiCard label="HH MODEL LEAD" value="+26.9 pts" sub="vs Mundubile-Makebi lane (20.3%)" trend="Modelled — monitor" borderColor={C.teal} />
           <KpiCard label="DAYS TO ELECTION" value={`${countdown.days}d`} sub="13 August 2026" trend={`${countdown.hours}h ${countdown.minutes}m remaining`} borderColor={C.gold} />
           <KpiCard label="REGISTERED VOTERS" value="8,786,300" sub="ECZ certified 2026" trend="226 constituencies" borderColor={C.ndc} />
-          <KpiCard label="OPPOSITION LANE" value="+2.3 pts/mo" sub="Mundubile/Tonse model trend" trend="Ticket details fluid" borderColor={C.warn} />
+          <KpiCard label="OPPOSITION LANE" value="+2.3 pts/mo" sub="Mundubile-Makebi model trend" trend="Verify ECZ ticket filing" borderColor={C.warn} />
           <KpiCard label="MODEL CONFIDENCE" value={`${ELECTION_DATA.aiConfidence}%`} sub="Audit-adjusted" trend="Official facts separated" borderColor={C.zg} />
         </div>
 
@@ -778,6 +822,22 @@ export default function Dashboard() {
           </div>
         </div>
 
+        <SectionLabel layer="DECISION STACK" title="5 Layer Strategy Operating System"
+          sub="State → Time → Causality → Simulation → Optimization, adapted for election intelligence decisions" />
+        <div className="decision-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 16 }}>
+          {decisionStack.map((layer, idx) => (
+            <div key={layer.layer} className="card-hover" style={{ background: 'rgba(14,23,36,.92)', border: `1px solid ${layer.color}66`, borderRadius: 8, padding: '14px 13px', minHeight: 190 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <div style={{ fontSize: 10, color: layer.color, fontFamily: 'monospace', fontWeight: 950, letterSpacing: 1 }}>{layer.layer}</div>
+                <div style={{ width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${layer.color}20`, color: layer.color, fontFamily: 'monospace', fontSize: 10, fontWeight: 900 }}>{idx + 1}</div>
+              </div>
+              <div style={{ color: C.text, fontSize: 13, fontWeight: 900, lineHeight: 1.25, marginBottom: 8 }}>{layer.question}</div>
+              <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, marginBottom: 10 }}>{layer.signal}</div>
+              <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 9, color: layer.color, fontSize: 11, lineHeight: 1.5, fontWeight: 700 }}>{layer.output}</div>
+            </div>
+          ))}
+        </div>
+
         <SectionLabel layer="TRENDS" title="20-Month Support Model — Jan 2025 to Aug 2026"
           sub="Scenario model · Jul–Aug 2026 are projected estimates · not ECZ polling ▸" />
         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 16 }}>
@@ -791,7 +851,7 @@ export default function Dashboard() {
                 <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" strokeWidth={0.8} />
                 <ReferenceLine x="Jul'26▸" stroke={C.gold} strokeDasharray="4 3" strokeWidth={1.2} label={{ value: 'PROJECTED ▸', fill: C.gold, fontSize: 9, position: 'top' }} />
                 <Line type="monotone" dataKey="HH (UPND)"       stroke={C.upnd} strokeWidth={3}   dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="Mundubile / Tonse" stroke={C.pf}   strokeWidth={2.5} dot={{ r: 2.5 }} strokeDasharray="5 3" />
+                <Line type="monotone" dataKey="Mundubile + Makebi" stroke={C.pf}   strokeWidth={2.5} dot={{ r: 2.5 }} strokeDasharray="5 3" />
                 <Line type="monotone" dataKey="Kalaba (CF)"       stroke={C.dp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="3 2" />
                 <Line type="monotone" dataKey="M'membe (SP)"     stroke={C.sp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="2 3" />
               </LineChart>
@@ -836,7 +896,7 @@ export default function Dashboard() {
                 <PolarAngleAxis dataKey="issue" tick={{ fontSize: 7.5, fill: C.muted }} />
                 <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 7, fill: C.line }} />
                 <Radar name="HH/UPND" dataKey="UPND" stroke={C.upnd} fill={C.upnd} fillOpacity={0.25} strokeWidth={2} />
-                <Radar name="Mundubile / Tonse" dataKey="PF" stroke={C.pf} fill={C.pf} fillOpacity={0.15} strokeWidth={1.5} />
+                <Radar name="Mundubile + Makebi" dataKey="PF" stroke={C.pf} fill={C.pf} fillOpacity={0.15} strokeWidth={1.5} />
                 <Legend wrapperStyle={{ fontSize: 9 }} />
                 <Tooltip contentStyle={tooltipStyle} />
               </RadarChart>
@@ -981,7 +1041,7 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1877F2' }}>FACEBOOK PAGE MONITORING · AI SENTIMENT</div>
                 <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
-                  Live: HH · Mundubile/Tonse · Harry Kalaba · Fred M&#39;membe · AI analysis of posts &amp; public comments
+                  Live: HH · Mundubile-Makebi · Harry Kalaba · Fred M&#39;membe · AI analysis of posts &amp; public comments
                 </div>
               </div>
             </div>
@@ -1069,7 +1129,7 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1DA1F2' }}>TWITTER/X MONITORING · AI SENTIMENT + STRATEGY</div>
                 <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
-                  Live: HH · Mundubile/Tonse · Kalaba · M&#39;membe · Devil&#39;s advocate + strategic counter per candidate
+                  Live: HH · Mundubile-Makebi · Kalaba · M&#39;membe · Devil&#39;s advocate + strategic counter per candidate
                 </div>
               </div>
             </div>
@@ -1454,7 +1514,7 @@ export default function Dashboard() {
       <footer style={{ background: '#000', borderTop: `3px solid ${C.zo}`, padding: '20px 28px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24, fontSize: 11, fontFamily: 'monospace', color: C.muted, marginBottom: 16 }}>
           {[
-            ['INTELLIGENCE SOURCES', ['Facebook (HH, Mundubile/Tonse, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · public media monitoring', 'iVerify Zambia · OONI · CIVICUS', 'ECZ · ZamStats · BoZ · World Bank']],
+            ['INTELLIGENCE SOURCES', ['Facebook (HH, Mundubile-Makebi, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · public media monitoring', 'iVerify Zambia · OONI · CIVICUS', 'ECZ · ZamStats · BoZ · World Bank']],
             ['VOTER REGISTER (ECZ 2026)', ['Total: 8,786,300 · 226 constituencies', 'Lusaka: 1,430,889', 'Copperbelt: 1,296,446', 'Eastern: 1,129,444', 'Southern: 1,103,275', 'Other provinces: 3,826,246']],
             ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.8%', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: ~K26.8', 'GDP Growth (WB): 4.2%', 'Youth unemployment 19-22: 32.6%', 'Mealie Meal 25kg: monitored']],
             ['ENGAGEMENT PACKAGE', ['Package: PREMIUM 90-day', 'Real-time + daily AI reports', 'Dedicated Account Manager', 'Alert threshold: ±3 points', 'Election Day: 13 Aug 2026', 'Next report: Sunday']],

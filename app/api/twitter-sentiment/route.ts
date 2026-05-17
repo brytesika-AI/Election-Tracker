@@ -12,7 +12,7 @@ const TWITTER_ACTOR_ID  = 'u6ppkMWAx2E2MpEuF' // quacker~twitter-scraper
 // ── Search queries per candidate ─────────────────────────────────────────────
 const CANDIDATE_QUERIES = [
   { id: 'hh',     name: 'Hakainde Hichilema', queries: ['HakaindehichilemaHH', 'HH Zambia president 2026', 'UPND Zambia election'] },
-  { id: 'pf_ndc', name: 'Brian Mundubile / Tonse Alliance', queries: ['BrianMundubile Zambia', 'Tonse Alliance 2026', 'Mundubile president'] },
+  { id: 'pf_ndc', name: 'Brian Mundubile + Makebi Zulu', queries: ['BrianMundubile Zambia', 'Makebi Zulu Mundubile', 'Tonse Alliance 2026', 'Mundubile president'] },
   { id: 'kalaba', name: 'Harry Kalaba',        queries: ['HarryKalaba Zambia', 'Citizens First Zambia 2026', 'CF Orange Alliance'] },
   { id: 'membe',  name: "Fred M'membe",        queries: ['FredMmembe Socialist', 'Socialist Party Zambia 2026', "M'membe Zambia"] },
 ]
@@ -149,7 +149,7 @@ const CURATED: Record<string, string[]> = {
     "Mundubile and the Tonse lane are rising. This is the real opposition Zambia needed #Mundubile2026",
     "@BrianMundubile in Kasama yesterday. Thousands came out. Northern Province is ready #Tonse",
     "Mundubile + Makebi Zulu coalition is smart politics. Youth + Northern base = formidable #Zambia2026",
-    "The Mundubile/Tonse opposition lane is gaining momentum. If this holds to August it's second round territory",
+    "The Mundubile-Makebi opposition lane is gaining momentum. If this holds to August it's second round territory",
     "Why is UPND harassing PF members? Political persecution is real. #Zambia2026 #Mundubile",
     "NDC manifesto on agriculture is excellent. Farmers will benefit from this alliance #MakebiZulu",
     "Engineer Mundubile built roads in Mporokoso. We know his delivery record #Tonse #Zambia",
@@ -189,7 +189,7 @@ const CURATED: Record<string, string[]> = {
 
 const DEMO_ANALYSIS: Record<string, ReturnType<typeof analyzeWithAI> extends Promise<infer T> ? NonNullable<T> : never> = {
   hh:     { sentiment: 'neutral', score: 54, summary: "Twitter split: infrastructure and kwacha gains praised, but load shedding and mealie meal cost generate intense backlash — HH must act before August", topThemes: ['Load shedding', 'Cost of living', 'Free education', 'Infrastructure'], devilsAdvocate: "High youth joblessness and food prices mean ordinary Zambians feel worse off despite macro gains — UPND risks losing urban youth vote", strategicCounter: "Launch visible province-by-province mealie meal relief campaign with real-time ZNBC/TikTok coverage to counter cost-of-living narrative" },
-  pf_ndc: { sentiment: 'positive', score: 66, summary: "Twitter energised around the Mundubile/Tonse lane — Northern base mobilising fast, Copperbelt youth joining, second-round scenario trending", topThemes: ['Alliance surge', 'Northern mobilisation', 'Youth coalition', 'Second round'], devilsAdvocate: "Alliance cohesion is fragile — party vehicle, PF factions and ticket details could blunt the momentum", strategicCounter: "Lock in a clear alliance manifesto and joint rally schedule before nominations to demonstrate unity" },
+  pf_ndc: { sentiment: 'positive', score: 66, summary: "Twitter energised around the Mundubile-Makebi lane — Northern base mobilising fast, Copperbelt youth joining, second-round scenario trending", topThemes: ['Alliance surge', 'Northern mobilisation', 'Youth coalition', 'Second round'], devilsAdvocate: "Alliance cohesion is fragile — party vehicle, PF factions and ticket details could blunt the momentum", strategicCounter: "Lock in a clear candidate/running-mate announcement, alliance manifesto and joint rally schedule before nominations to demonstrate unity" },
   kalaba: { sentiment: 'positive', score: 60, summary: "Respected as principled but Twitter sees Citizens First squeezed between UPND and larger opposition structures — coalition or kingmaker role dominates discourse", topThemes: ['Integrity brand', 'Coalition pressure', 'Kingmaker role', 'Luapula base'], devilsAdvocate: "A low model estimate makes Kalaba look like a wasted vote in a two-horse race — users increasingly ask him to ally or sharpen the CF Orange lane", strategicCounter: "Announce a concrete CF Orange Alliance policy position to convert the integrity brand into electoral leverage" },
   membe:  { sentiment: 'neutral',  score: 47, summary: "M'membe owns the youth narrative on Twitter — mining and inequality resonate, but socialist label polarises business community and older voters", topThemes: ['Mining royalties', 'Youth mobilisation', 'Press freedom', 'Inequality debate'], devilsAdvocate: "SP/People's Pact can peel UPND urban youth votes but still needs a path beyond protest support", strategicCounter: "Reframe SP as 'Zambian resources for Zambians' to attract voters who agree with the economics but fear ideological labels" },
 }

@@ -12,7 +12,7 @@ const AIRTABLE_TABLE_ID = 'tblcwKbfCnT6Ig8oi' // Media Sentiment NLP table
 // ── Candidate Facebook pages ─────────────────────────────────────────────────
 const LEADER_PAGES = [
   { id: 'hh',     name: 'Hakainde Hichilema', fbPage: 'HakaindehichilemaHH',  fbUrl: 'https://www.facebook.com/HakaindehichilemaHH' },
-  { id: 'pf_ndc', name: 'Brian Mundubile / Tonse Alliance', fbPage: 'BrianMundubile', fbUrl: 'https://www.facebook.com/BrianMundubile' },
+  { id: 'pf_ndc', name: 'Brian Mundubile + Makebi Zulu', fbPage: 'BrianMundubile', fbUrl: 'https://www.facebook.com/BrianMundubile' },
   { id: 'kalaba', name: 'Harry Kalaba',        fbPage: 'HarryKalaba',           fbUrl: 'https://www.facebook.com/HarryKalaba' },
   { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
 ]
@@ -212,18 +212,18 @@ const CURATED: Record<string, string[]> = {
     "Why is the government harassing PF members? This is political persecution plain and simple",
     "UPND has failed, time for change in 2026, the opposition lane has our vote in Northern Province",
     "Engineer Mundubile understands development, he built roads in Mporokoso when in govt",
-    "Northern and Luapula provinces are solidly behind the Mundubile/Tonse lane in 2026",
+    "Northern and Luapula provinces are solidly behind the Mundubile-Makebi lane in 2026",
     "The opposition alliance is recovering after difficult times, but it needs unity and clarity",
     "2026 is our year, Zambians are tired of UPND failures on economy and electricity",
     "Makebi Zulu brings the youth vote, Mundubile brings Northern base — powerful combination",
     "NDC joining PF is great, now we have a real credible alternative that can win",
     "Young people need real change, NDC and PF together give us that option in August",
     "PF built good infrastructure when in power, UPND is destroying that legacy",
-    "Mundubile/Tonse model support around 20% is a real threat to UPND now, watch this space",
+    "Mundubile-Makebi model support around 20% is a real threat to UPND now, watch this space",
     "Mundubile speaks our language, he is from us, Northern Province is solidly ready",
     "NDC manifesto on agriculture is excellent, farmers will benefit from this alliance",
     "We need Lungu to campaign for Mundubile even though he cannot stand himself in 2026",
-    "Mundubile/Tonse is the real change option if it can organise nationally",
+    "Mundubile-Makebi is the real change option if it can organise nationally",
     "If the alliance holds to August 2026 they could force a second round — historic",
   ],
   kalaba: [
@@ -274,7 +274,7 @@ const CURATED: Record<string, string[]> = {
 
 const DEMO_ANALYSIS: Record<string, { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[] }> = {
   hh:     { sentiment: 'positive', score: 58, summary: "Supporters credit HH's economic stabilisation and free education, but backlash over load shedding and mealie meal prices is intense", topThemes: ['Cost of living', 'Load shedding', 'Free education', 'Kwacha stability'] },
-  pf_ndc: { sentiment: 'positive', score: 64, summary: 'Mundubile/Tonse lane energising northern rural base and Copperbelt youth, but alliance clarity remains the main risk', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
+  pf_ndc: { sentiment: 'positive', score: 64, summary: 'Mundubile-Makebi lane energising northern rural base and Copperbelt youth, but ticket and alliance clarity remain the main risk', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
   kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but Citizens First/CF Orange is seen as too small to win alone — coalition calls dominate the conversation', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
   membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's mining analysis, business community fears socialist policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
 }

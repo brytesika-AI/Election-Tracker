@@ -118,7 +118,7 @@ You are Judge STRATEGIS — Campaign Strategy Evaluator for Zambia 2026.
 Evaluate the strategic recommendations for the ruling UPND party given this data:
 ${JSON.stringify(snapshot, null, 2)}
 
-Key figures: HH (incumbent, UPND), Brian Mundubile/Tonse lane, Makebi/PF-Pamodzi lane, Harry Kalaba (Citizens First/CF Orange Alliance), M'membe (Socialist Party/People's Pact).
+Key figures: HH (incumbent, UPND), Brian Mundubile + Makebi Zulu consolidated opposition lane, Harry Kalaba (Citizens First/CF Orange Alliance), M'membe (Socialist Party/People's Pact).
 Respond with JSON:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",

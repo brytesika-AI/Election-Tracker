@@ -12,7 +12,7 @@ const TIKTOK_ACTOR_ID   = 'GdWCkxBtKWOsKjdch' // clockworks~tiktok-scraper
 // ── TikTok hashtags to monitor per candidate ──────────────────────────────────
 const CANDIDATE_HASHTAGS = [
   { id: 'hh',     name: 'Hakainde Hichilema', hashtags: ['ZambiaElection2026', 'HakaindehichilemaHH', 'UPND2026', 'HHZambia'] },
-  { id: 'pf_ndc', name: 'Brian Mundubile / Tonse Alliance', hashtags: ['BrianMundubile', 'TonseAlliance', 'Mundubile2026', 'ZambiaElection'] },
+  { id: 'pf_ndc', name: 'Brian Mundubile + Makebi Zulu', hashtags: ['BrianMundubile', 'MakebiZulu', 'TonseAlliance', 'Mundubile2026', 'ZambiaElection'] },
   { id: 'kalaba', name: 'Harry Kalaba',        hashtags: ['HarryKalaba', 'CitizensFirst', 'KalabaZambia', 'CFOrangeAlliance'] },
   { id: 'membe',  name: "Fred M'membe",        hashtags: ['FredMmembe', 'SocialistPartyZambia', 'MmembeZambia', 'ZambiaYouthVote'] },
 ]
@@ -155,7 +155,7 @@ const CURATED: Record<string, string[]> = {
   ],
   pf_ndc: [
     "Mundubile in Lusaka youth rally — crowd was massive. Young Zambians want change #Tonse #ZambiaYouth",
-    "Mundubile/Tonse lane rising. Mundubile speaks for young Northern Province Zambians #Mundubile2026",
+    "Mundubile-Makebi lane rising. The ticket needs a youth jobs answer for Northern and Eastern Province #Mundubile2026",
     "Makebi and Mundubile discussions could consolidate the northern opposition lane #Tonse",
     "Engineering background means Mundubile understands jobs and real development #BrianMundubile",
     "UPND failed youth employment. The opposition lane is promising real change on jobs #ZambiaElection2026",
@@ -191,7 +191,7 @@ const CURATED: Record<string, string[]> = {
 
 const DEMO_ANALYSIS: Record<string, { sentiment: 'positive' | 'negative' | 'neutral'; score: number; summary: string; topThemes: string[]; youthGrievance: string; devilsAdvocate: string; strategicCounter: string }> = {
   hh:     { sentiment: 'neutral',  score: 50, summary: "Youth split: grateful for free education but furious over load shedding and food prices — UPND youth vote is genuinely at risk", topThemes: ['Load shedding', 'Youth jobs', 'Free education', 'Cost of living'], youthGrievance: "High youth joblessness and expensive food make young Zambians feel UPND change has not reached them", devilsAdvocate: "Young people see kwacha stability and debt restructuring as elite-level fixes while they can't afford food or electricity — macro wins mean little at street level", strategicCounter: "Launch a visible 90-day youth jobs sprint announced on TikTok with HH doing live Q&A with young Zambians in each province" },
-  pf_ndc: { sentiment: 'positive', score: 68, summary: "TikTok youth energised by Mundubile/Tonse momentum — Northern mobilisation is the fastest-growing opposition digital lane", topThemes: ['Alliance momentum', 'Youth jobs manifesto', 'Northern mobilisation', 'Digital growth'], youthGrievance: "Youth in this lane want proof the opposition offers something genuinely new beyond PF nostalgia", devilsAdvocate: "PF governed Zambia for 10 years and youth unemployment was also high — Mundubile must answer for the old record", strategicCounter: "Release a costed 100-day youth jobs plan, distinguishing it clearly from PF's past record to credibly own the youth change narrative" },
+  pf_ndc: { sentiment: 'positive', score: 68, summary: "TikTok youth energised by Mundubile-Makebi momentum — Northern mobilisation is the fastest-growing opposition digital lane", topThemes: ['Alliance momentum', 'Youth jobs manifesto', 'Northern mobilisation', 'Digital growth'], youthGrievance: "Youth in this lane want proof the opposition offers something genuinely new beyond PF nostalgia", devilsAdvocate: "PF governed Zambia for 10 years and youth unemployment was also high — Mundubile and Makebi must answer for the old record", strategicCounter: "Release a costed 100-day youth jobs plan, distinguishing it clearly from PF's past record to credibly own the youth change narrative" },
   kalaba: { sentiment: 'neutral',  score: 55, summary: "Respected by youth but Citizens First is seen as too small to win alone — TikTok calls grow louder for clearer CF Orange positioning", topThemes: ['Integrity brand', 'Coalition pressure', 'Digital absence', 'Kingmaker potential'], youthGrievance: "Youth admire Kalaba's principles but feel a vote for CF Orange needs a clearer path to power", devilsAdvocate: "Citizens First has limited TikTok presence, limited youth creator network and little viral content", strategicCounter: "Partner with Zambian TikTok political creators and make the CF Orange Alliance ticket visible before nominations settle" },
   membe:  { sentiment: 'positive', score: 62, summary: "M'membe owns youth TikTok in Zambia — mining inequality narrative viral among 18-35s, SP/People's Pact growing on social media despite ideological risk", topThemes: ['Mining inequality', 'TikTok virality', 'Youth anger', 'Anti-establishment'], youthGrievance: "Young Zambians with joblessness and little mining royalty benefit feel the economic model has failed them", devilsAdvocate: "SP/People's Pact can build a media brand without proving it can build a government", strategicCounter: "Reframe messaging from 'socialist party' to 'Zambian resources for Zambians' to reach moderate youth who agree with the economics but fear the brand" },
 }
