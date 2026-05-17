@@ -6,7 +6,7 @@ import { ELECTION_DATA } from '@/app/lib/data'
 const C = {
   bg: '#060C14', card: '#0E1724', card2: '#121C2C', line: '#1C2A3A',
   text: '#E2E8F0', muted: '#7A8FA6', gold: '#F5C400',
-  upnd: '#FF6B00', pf: '#CC0000', contested: '#F5C400',
+  upnd: '#FF6B00', pf: '#D71920', contested: '#F5C400',
   teal: '#00C9A7', warn: '#FF3B30',
 }
 
@@ -89,7 +89,7 @@ const ZAMBIA_GEOJSON = {
     },
     {
       type: 'Feature' as const,
-      properties: { name: 'N/Western' },
+      properties: { name: 'North-Western' },
       geometry: {
         type: 'Polygon' as const,
         coordinates: [[[22.0,-8.0],[26.5,-8.0],[27.0,-8.0],[27.0,-10.0],[26.5,-12.0],[26.0,-13.5],[25.0,-14.0],[22.0,-14.0],[22.0,-8.0]]]
@@ -152,18 +152,18 @@ export default function ZambiaMap() {
         const layer = L.geoJSON(feature as Parameters<typeof L.geoJSON>[0], {
           style: {
             fillColor: fill,
-            fillOpacity: 0.35,
-            color: fill,
-            weight: 2,
-            opacity: 0.9,
+            fillOpacity: 0.56,
+            color: '#F8FAFC',
+            weight: 1.3,
+            opacity: 0.92,
           },
           onEachFeature: (feat, lyr) => {
             lyr.on({
               mouseover: () => {
-                (lyr as L.Path).setStyle({ fillOpacity: 0.65, weight: 3 })
+                (lyr as L.Path).setStyle({ fillOpacity: 0.82, weight: 2.3, color: '#FFFFFF' })
               },
               mouseout: () => {
-                (lyr as L.Path).setStyle({ fillOpacity: 0.35, weight: 2 })
+                (lyr as L.Path).setStyle({ fillOpacity: 0.56, weight: 1.3, color: '#F8FAFC' })
               },
               click: () => {
                 setSelected(prev => prev === provinceName ? null : provinceName)
@@ -177,13 +177,13 @@ export default function ZambiaMap() {
               icon: L.divIcon({
                 className: '',
                 html: `<div style="
-                  font-family:monospace;font-size:10px;font-weight:900;
-                  color:${fill};text-shadow:0 0 6px #000,0 0 6px #000;
+                  font-family:Arial,sans-serif;font-size:10px;font-weight:900;
+                  color:#fff;text-shadow:0 1px 4px #000,0 0 8px #000;
                   white-space:nowrap;text-align:center;pointer-events:none;
                   line-height:1.4;
                 ">
                   ${provinceName.toUpperCase()}<br>
-                  <span style="font-size:9px;color:${fill}aa">HH ${provData.upnd}%</span>
+                  <span style="font-size:9px;color:${fill};background:rgba(0,0,0,.55);padding:1px 5px;border-radius:999px">HH ${provData.upnd}%</span>
                 </div>`,
                 iconAnchor: [40, 18],
                 iconSize: [80, 36],
@@ -210,15 +210,31 @@ export default function ZambiaMap() {
   const selectedProv = selected ? ELECTION_DATA.provinces.find(p => p.name === selected) : null
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16, alignItems: 'start' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 16, alignItems: 'stretch' }}>
 
-      {/* ── Real Leaflet Map ── */}
-      <div style={{ background: C.card2, borderRadius: 10, padding: 16, border: `1px solid ${C.line}` }}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: C.text, marginBottom: 3 }}>
-          ZAMBIA · PROVINCE ELECTORAL MAP
+      {/* ── Broadcast-style Leaflet Map ── */}
+      <div style={{ background: '#07111F', borderRadius: 10, padding: 0, border: `1px solid ${C.line}`, overflow: 'hidden', position: 'relative', boxShadow: '0 16px 36px rgba(0,0,0,.35)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'linear-gradient(90deg,#0A1626,#111827)', borderBottom: `1px solid ${C.line}` }}>
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#E5E7EB', letterSpacing: 1.2, fontFamily: 'monospace' }}>ZAMBIA ELECTION MAP</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1 }}>2026 province support model</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 11, color: C.muted }}>ECZ certified register</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: C.text }}>8,786,300</div>
+          </div>
         </div>
-        <div style={{ fontSize: 10, color: C.muted, marginBottom: 10 }}>
-          Real map · 10 provinces · 156 constituencies · OpenStreetMap · Click a province to see intelligence
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', borderBottom: `1px solid ${C.line}` }}>
+          {[
+            ['UPND model leads', ELECTION_DATA.provinces.filter(p => p.lean === 'UPND').length, C.upnd],
+            ['Opposition model leads', ELECTION_DATA.provinces.filter(p => p.lean === 'PF').length, C.pf],
+            ['Contested', ELECTION_DATA.provinces.filter(p => p.lean === 'CONTESTED').length, C.contested],
+          ].map(([label, value, color]) => (
+            <div key={label as string} style={{ padding: '10px 14px', borderRight: `1px solid ${C.line}` }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: color as string, lineHeight: 1 }}>{value as number}</div>
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>{label as string}</div>
+            </div>
+          ))}
         </div>
 
         {/* Leaflet CSS */}
@@ -229,14 +245,14 @@ export default function ZambiaMap() {
             Map failed to load — check connection
           </div>
         ) : (
-          <div ref={mapRef} style={{ height: 420, borderRadius: 8, overflow: 'hidden', border: `1px solid ${C.line}` }} />
+          <div ref={mapRef} style={{ height: 470, overflow: 'hidden' }} />
         )}
 
         {/* Legend */}
         <div style={{ display: 'flex', gap: 16, marginTop: 10, flexWrap: 'wrap' }}>
           {[
             ['UPND Lead', C.upnd],
-            ['PF-NDC Lead', C.pf],
+            ['Opposition Lead', C.pf],
             ['Contested', C.contested],
           ].map(([label, color]) => (
             <div key={label as string} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -245,20 +261,20 @@ export default function ZambiaMap() {
             </div>
           ))}
           <div style={{ marginLeft: 'auto', fontSize: 10, color: C.muted }}>
-            Source: ECZ 2026 · OpenStreetMap · CARTO
+            Source: ECZ 2026 register · OpenStreetMap · CARTO · support values are model estimates
           </div>
         </div>
       </div>
 
       {/* ── Province Detail Panel ── */}
-      <div style={{ background: C.card2, borderRadius: 10, padding: 16, border: `1px solid ${C.line}`, minHeight: 400 }}>
+      <div style={{ background: '#0B1220', borderRadius: 10, padding: 16, border: `1px solid ${C.line}`, minHeight: 470, boxShadow: '0 16px 36px rgba(0,0,0,.25)' }}>
         {selectedProv ? (
           <>
             <div style={{ fontWeight: 900, fontSize: 16, color: leanColor(selectedProv.lean), marginBottom: 6 }}>
               {selectedProv.name} Province
             </div>
             <span style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 800, padding: '3px 12px', borderRadius: 10, background: `${leanColor(selectedProv.lean)}20`, color: leanColor(selectedProv.lean), border: `1px solid ${leanColor(selectedProv.lean)}`, display: 'inline-block', marginBottom: 16 }}>
-              {selectedProv.lean === 'CONTESTED' ? '⚡ CONTESTED' : selectedProv.lean === 'UPND' ? '🟠 UPND STRONGHOLD' : '🔴 PF-NDC STRONGHOLD'}
+              {selectedProv.lean === 'CONTESTED' ? 'CONTESTED' : selectedProv.lean === 'UPND' ? 'UPND MODEL LEAD' : 'OPPOSITION MODEL LEAD'}
             </span>
 
             <div style={{ marginBottom: 14 }}>
@@ -273,7 +289,7 @@ export default function ZambiaMap() {
             <div style={{ marginBottom: 14 }}>
               {[
                 { label: 'HH (UPND)', pct: selectedProv.upnd, color: C.upnd },
-                { label: 'PF-NDC Alliance', pct: selectedProv.pf, color: C.pf },
+                { label: 'Opposition lane', pct: selectedProv.pf, color: C.pf },
                 { label: 'Others / Undecided', pct: 100 - selectedProv.upnd - selectedProv.pf, color: C.muted },
               ].map(item => (
                 <div key={item.label} style={{ marginBottom: 8 }}>
@@ -291,7 +307,7 @@ export default function ZambiaMap() {
             <div style={{ background: C.line, borderRadius: 6, padding: '10px 12px', fontSize: 11, color: C.muted, lineHeight: 1.8, marginBottom: 12 }}>
               <div><span style={{ color: C.text }}>UPND margin:</span> <span style={{ color: leanColor(selectedProv.lean), fontWeight: 800 }}>{selectedProv.upnd > selectedProv.pf ? '+' : ''}{selectedProv.upnd - selectedProv.pf} pts</span></div>
               <div><span style={{ color: C.text }}>Est. UPND votes:</span> <span style={{ color: C.upnd }}>{Math.round(selectedProv.voters * selectedProv.upnd / 100).toLocaleString()}</span></div>
-              <div><span style={{ color: C.text }}>Est. PF-NDC votes:</span> <span style={{ color: C.pf }}>{Math.round(selectedProv.voters * selectedProv.pf / 100).toLocaleString()}</span></div>
+              <div><span style={{ color: C.text }}>Est. opposition votes:</span> <span style={{ color: C.pf }}>{Math.round(selectedProv.voters * selectedProv.pf / 100).toLocaleString()}</span></div>
             </div>
 
             <button onClick={() => setSelected(null)}
@@ -313,7 +329,7 @@ export default function ZambiaMap() {
               {ELECTION_DATA.provinces.map(p => (
                 <div key={p.name} onClick={() => setSelected(p.name)}
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', cursor: 'pointer', borderBottom: `1px solid ${C.line}30` }}>
-                  <span style={{ fontSize: 11, color: C.text, fontWeight: 600 }}>{p.name}</span>
+                  <span style={{ fontSize: 11, color: C.text, fontWeight: 700 }}>{p.name}</span>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <span style={{ fontSize: 10, color: C.upnd }}>{p.upnd}%</span>
                     <span style={{ fontSize: 9, color: C.muted }}>vs</span>
@@ -330,9 +346,9 @@ export default function ZambiaMap() {
             <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[
                 { label: 'UPND leads', value: ELECTION_DATA.provinces.filter(p => p.lean === 'UPND').length, color: C.upnd },
-                { label: 'PF-NDC leads', value: ELECTION_DATA.provinces.filter(p => p.lean === 'PF').length, color: C.pf },
+                { label: 'Opp. leads', value: ELECTION_DATA.provinces.filter(p => p.lean === 'PF').length, color: C.pf },
                 { label: 'Contested', value: ELECTION_DATA.provinces.filter(p => p.lean === 'CONTESTED').length, color: C.contested },
-                { label: 'Constituencies', value: 156, color: C.teal },
+                { label: 'Constituencies', value: ELECTION_DATA.constituencies, color: C.teal },
               ].map(item => (
                 <div key={item.label} style={{ background: C.line, borderRadius: 6, padding: '8px 10px', textAlign: 'center' }}>
                   <div style={{ fontSize: 18, fontWeight: 900, color: item.color }}>{item.value}</div>

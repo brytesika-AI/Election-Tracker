@@ -12,8 +12,8 @@ const TWITTER_ACTOR_ID  = 'u6ppkMWAx2E2MpEuF' // quacker~twitter-scraper
 // ── Search queries per candidate ─────────────────────────────────────────────
 const CANDIDATE_QUERIES = [
   { id: 'hh',     name: 'Hakainde Hichilema', queries: ['HakaindehichilemaHH', 'HH Zambia president 2026', 'UPND Zambia election'] },
-  { id: 'pf_ndc', name: 'PF-NDC Alliance',    queries: ['BrianMundubile Zambia', 'PF-NDC Alliance 2026', 'Mundubile president'] },
-  { id: 'kalaba', name: 'Harry Kalaba',        queries: ['HarryKalaba Zambia', 'Democratic Party Zambia 2026'] },
+  { id: 'pf_ndc', name: 'Brian Mundubile / Tonse Alliance', queries: ['BrianMundubile Zambia', 'Tonse Alliance 2026', 'Mundubile president'] },
+  { id: 'kalaba', name: 'Harry Kalaba',        queries: ['HarryKalaba Zambia', 'Citizens First Zambia 2026', 'CF Orange Alliance'] },
   { id: 'membe',  name: "Fred M'membe",        queries: ['FredMmembe Socialist', 'Socialist Party Zambia 2026', "M'membe Zambia"] },
 ]
 
@@ -140,35 +140,35 @@ const CURATED: Record<string, string[]> = {
     "Load shedding is the number one issue. HH must fix Zesco before August 2026 or lose #ZambiaElection",
     "Anti-corruption drive must go harder. Too many PF thieves still walking free #HHichilema",
     "Debt restructuring deal is done. IMF back. Zambia credible again internationally. @HHichilema",
-    "Youth unemployment at 34%. UPND promised jobs. Where are they? #ZambiaYouth #Zambia2026",
+    "Youth unemployment remains high. UPND promised jobs. Where are they? #ZambiaYouth #Zambia2026",
     "President HH at SADC summit. Zambia respected on the international stage again #UPND",
     "Mealie meal prices are making people angry. UPND losing Copperbelt if they don't act fast",
     "The infrastructure numbers don't lie. 3000km roads built. Schools, clinics. #UPND delivering",
   ],
   pf_ndc: [
-    "PF-NDC Alliance at 20.3% and rising. This is the real opposition Zambia needed #Mundubile2026",
-    "@BrianMundubile in Kasama yesterday. Thousands came out. Northern Province is ready #PFNDC",
+    "Mundubile and the Tonse lane are rising. This is the real opposition Zambia needed #Mundubile2026",
+    "@BrianMundubile in Kasama yesterday. Thousands came out. Northern Province is ready #Tonse",
     "Mundubile + Makebi Zulu coalition is smart politics. Youth + Northern base = formidable #Zambia2026",
-    "PF-NDC combined is up +2.3pts per month. If this holds to August it's second round territory",
+    "The Mundubile/Tonse opposition lane is gaining momentum. If this holds to August it's second round territory",
     "Why is UPND harassing PF members? Political persecution is real. #Zambia2026 #Mundubile",
     "NDC manifesto on agriculture is excellent. Farmers will benefit from this alliance #MakebiZulu",
-    "Engineer Mundubile built roads in Mporokoso. We know his delivery record #PFNDC #Zambia",
-    "UPND has failed on electricity and mealie meal. Time for PF-NDC change in 2026 #ZambiaVotes",
-    "If the PF-NDC alliance holds together they could force a second round. Historic #Zambia2026",
-    "Copperbelt youth moving to PF-NDC fast. UPND must take this seriously #CopperbeltVotes",
+    "Engineer Mundubile built roads in Mporokoso. We know his delivery record #Tonse #Zambia",
+    "UPND has failed on electricity and mealie meal. Time for opposition change in 2026 #ZambiaVotes",
+    "If the opposition alliance holds together they could force a second round. Historic #Zambia2026",
+    "Copperbelt youth moving to the opposition lane fast. UPND must take this seriously #CopperbeltVotes",
     "Mundubile speaks our language. He is from us. Northern Province is ready #NorthernProvince",
     "NDC + PF = real alternative. Young people have a choice now. #MakebiZulu #BrianMundubile",
   ],
   kalaba: [
-    "Harry Kalaba left PF over corruption when it was costly to do so. That is real integrity #KalabaDP",
+    "Harry Kalaba left PF over corruption when it was costly to do so. That is real integrity #CitizensFirst",
     "@HarryKalaba polling at 3.8%. Squeezed by Mundubile in Luapula. Coalition talks inevitable",
     "Kalaba should be finance minister in a coalition. His economic record is excellent #DP2026",
-    "DP has the best manifesto but nobody knows it. Need more media presence #HarryKalaba",
+    "Citizens First has policy ideas but needs more media presence #HarryKalaba",
     "Principled politicians are rare in Zambia. Kalaba is one of very few we trust #KalabaZambia",
     "Kalaba plus Mundubile in coalition would be serious in Northern and Luapula provinces",
     "Harry Kalaba can play kingmaker role in 2026 if he aligns right. His 3.8% matters strategically",
     "We in Luapula want Kalaba as VP in a coalition. His ethics are needed at the top #Zambia2026",
-    "DP policies on anti-corruption and agriculture are well-thought-out. Needs funding to scale",
+    "Citizens First policies on anti-corruption and agriculture are well-thought-out. Needs funding to scale",
     "Kalaba refuses to compromise principles for power. Zambia needs more leaders like this",
   ],
   membe: [
@@ -188,10 +188,10 @@ const CURATED: Record<string, string[]> = {
 }
 
 const DEMO_ANALYSIS: Record<string, ReturnType<typeof analyzeWithAI> extends Promise<infer T> ? NonNullable<T> : never> = {
-  hh:     { sentiment: 'neutral', score: 54, summary: "Twitter split: infrastructure and kwacha gains praised, but load shedding and mealie meal cost generate intense backlash — HH must act before August", topThemes: ['Load shedding', 'Cost of living', 'Free education', 'Infrastructure'], devilsAdvocate: "Youth unemployment at 34% and mealie meal at K400 mean ordinary Zambians feel worse off despite macro gains — UPND risks losing urban youth vote", strategicCounter: "Launch visible province-by-province mealie meal relief campaign with real-time ZNBC/TikTok coverage to counter cost-of-living narrative" },
-  pf_ndc: { sentiment: 'positive', score: 66, summary: "Twitter energised around PF-NDC Alliance surge — Northern base mobilising fast, Copperbelt youth joining, second-round scenario trending", topThemes: ['Alliance surge', 'Northern mobilisation', 'Youth coalition', 'Second round'], devilsAdvocate: "Alliance cohesion is fragile — PF and NDC have different voter bases and past tensions; one public disagreement could collapse the momentum", strategicCounter: "Lock in formal alliance manifesto and joint rally schedule by July 2026 to demonstrate unity before the campaign's final month" },
-  kalaba: { sentiment: 'positive', score: 60, summary: "Respected as principled but Twitter sees him squeezed between UPND and PF-NDC — coalition or kingmaker role dominates discourse", topThemes: ['Integrity brand', 'Coalition pressure', 'Kingmaker role', 'Luapula base'], devilsAdvocate: "3.8% polling and falling makes Kalaba a wasted vote in a two-horse race — Twitter users increasingly asking him to step aside or ally", strategicCounter: "Announce a concrete policy coalition position with either PF-NDC or UPND to convert the integrity brand into actual electoral leverage" },
-  membe:  { sentiment: 'neutral',  score: 47, summary: "M'membe owns the youth narrative on Twitter — mining and inequality resonate, but socialist label polarises business community and older voters", topThemes: ['Mining royalties', 'Youth mobilisation', 'Press freedom', 'Inequality debate'], devilsAdvocate: "SP at 4.1% can only peel UPND urban youth votes — M'membe has no path to 50%+1 and may simply hand Lusaka to PF-NDC by splitting opposition", strategicCounter: "Reframe SP as 'progressive reform' not 'socialism' — moderate the nationalisation messaging to attract Copperbelt business owners without losing youth base" },
+  hh:     { sentiment: 'neutral', score: 54, summary: "Twitter split: infrastructure and kwacha gains praised, but load shedding and mealie meal cost generate intense backlash — HH must act before August", topThemes: ['Load shedding', 'Cost of living', 'Free education', 'Infrastructure'], devilsAdvocate: "High youth joblessness and food prices mean ordinary Zambians feel worse off despite macro gains — UPND risks losing urban youth vote", strategicCounter: "Launch visible province-by-province mealie meal relief campaign with real-time ZNBC/TikTok coverage to counter cost-of-living narrative" },
+  pf_ndc: { sentiment: 'positive', score: 66, summary: "Twitter energised around the Mundubile/Tonse lane — Northern base mobilising fast, Copperbelt youth joining, second-round scenario trending", topThemes: ['Alliance surge', 'Northern mobilisation', 'Youth coalition', 'Second round'], devilsAdvocate: "Alliance cohesion is fragile — party vehicle, PF factions and ticket details could blunt the momentum", strategicCounter: "Lock in a clear alliance manifesto and joint rally schedule before nominations to demonstrate unity" },
+  kalaba: { sentiment: 'positive', score: 60, summary: "Respected as principled but Twitter sees Citizens First squeezed between UPND and larger opposition structures — coalition or kingmaker role dominates discourse", topThemes: ['Integrity brand', 'Coalition pressure', 'Kingmaker role', 'Luapula base'], devilsAdvocate: "A low model estimate makes Kalaba look like a wasted vote in a two-horse race — users increasingly ask him to ally or sharpen the CF Orange lane", strategicCounter: "Announce a concrete CF Orange Alliance policy position to convert the integrity brand into electoral leverage" },
+  membe:  { sentiment: 'neutral',  score: 47, summary: "M'membe owns the youth narrative on Twitter — mining and inequality resonate, but socialist label polarises business community and older voters", topThemes: ['Mining royalties', 'Youth mobilisation', 'Press freedom', 'Inequality debate'], devilsAdvocate: "SP/People's Pact can peel UPND urban youth votes but still needs a path beyond protest support", strategicCounter: "Reframe SP as 'Zambian resources for Zambians' to attract voters who agree with the economics but fear ideological labels" },
 }
 
 export async function GET(req: NextRequest) {

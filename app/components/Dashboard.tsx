@@ -179,7 +179,7 @@ function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0
         {/* Poll bar */}
         <div style={{ marginBottom: 4 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: C.muted, marginBottom: 4 }}>
-            <span>National Poll</span>
+            <span>Model Estimate</span>
             <span style={{ fontWeight: 800, color: f.color, fontSize: 14 }}>{f.poll.toFixed(1)}%</span>
           </div>
           <div style={{ background: C.line, borderRadius: 4, height: 10, position: 'relative', overflow: 'hidden' }}>
@@ -196,10 +196,10 @@ function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0
           <div>⚠ <span style={{ color: C.warn }}>{f.weakness}</span></div>
         </div>
 
-        {/* AI Win Probability */}
+        {/* Scenario strength */}
         <div style={{ background: `${C.card2}`, borderRadius: 6, padding: '8px 10px', marginBottom: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-            <span style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>AI Win Probability</span>
+            <span style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>Scenario Strength</span>
             <span style={{ fontSize: 14, fontWeight: 900, color: aiColor }}>{f.aiScore}%</span>
           </div>
           <div style={{ background: C.line, borderRadius: 3, height: 8, overflow: 'hidden' }}>
@@ -321,7 +321,7 @@ export default function Dashboard() {
   const [ttSentiment, setTtSentiment]       = useState<SocialSentiment[]>([])
   const [ttLoading, setTtLoading]           = useState(false)
   const [refreshing, setRefreshing]         = useState(false)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(() => new Date())
   const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
   const [showQuotes, setShowQuotes]   = useState(false)
   const [airtableStatus, setAirtableStatus] = useState('LIVE')
@@ -383,33 +383,35 @@ export default function Dashboard() {
   }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment])
 
   useEffect(() => {
-    setLastUpdated(new Date())
-    fetchFbSentiment()
-    fetchTwSentiment()
-    fetchTtSentiment()
-    fetchNlpSentiment()
-    // Check Vercel health
-    fetch('/api/vercel-health').then(r => r.json()).then(d => setVercelStatus(d.status)).catch(() => {})
-    // Check Airtable
-    fetch('/api/airtable-data').then(r => r.json()).then(d => setAirtableStatus(d.source === 'airtable' ? 'SYNCED' : 'STATIC')).catch(() => {})
-  }, [fetchFbSentiment, fetchNlpSentiment])
+    const id = window.setTimeout(() => {
+      fetchFbSentiment()
+      fetchTwSentiment()
+      fetchTtSentiment()
+      fetchNlpSentiment()
+      // Check Vercel health
+      fetch('/api/vercel-health').then(r => r.json()).then(d => setVercelStatus(d.status)).catch(() => {})
+      // Check Airtable
+      fetch('/api/airtable-data').then(r => r.json()).then(d => setAirtableStatus(d.source === 'airtable' ? 'SYNCED' : 'STATIC')).catch(() => {})
+    }, 0)
+    return () => window.clearTimeout(id)
+  }, [fetchFbSentiment, fetchNlpSentiment, fetchTtSentiment, fetchTwSentiment])
 
   // ── Chart data ──────────────────────────────────────────
   const projFrom = ELECTION_DATA.projectedFromIndex ?? 18
   const timelineData = ELECTION_DATA.months.map((m, i) => ({
     month: m,
     'HH (UPND)':       ELECTION_DATA.upndTrend[i],
-    'PF-NDC Alliance': ELECTION_DATA.allianceTrend[i],
-    'Kalaba (DP)':     ELECTION_DATA.kalabaTrend[i],
+    'Mundubile / Tonse': ELECTION_DATA.allianceTrend[i],
+    'Kalaba (CF)':       ELECTION_DATA.kalabaTrend[i],
     "M'membe (SP)":    ELECTION_DATA.membeTrend[i],
     projected: i >= projFrom,
   }))
 
   const pollData = [
     { name: 'HH (UPND)',         value: 47.2, color: C.upnd },
-    { name: 'PF-NDC Alliance',   value: 20.3, color: C.pf   },
+    { name: 'Mundubile / Tonse', value: 20.3, color: C.pf   },
     { name: "M'membe (SP)",      value: 4.1,  color: C.sp   },
-    { name: 'Kalaba (DP)',       value: 3.8,  color: C.dp   },
+    { name: 'Kalaba (CF)',       value: 3.8,  color: C.dp   },
     { name: 'Undecided/Other',   value: 24.6, color: C.muted},
   ]
 
@@ -487,8 +489,8 @@ export default function Dashboard() {
         <div style={{ background: C.gold, overflow: 'hidden', padding: '3px 0' }}>
           <div className="ticker-wrap">
             <span className="ticker-inner" style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 11, color: '#000' }}>
-              &nbsp;&nbsp; LIVE · ZAMBIA 2026 ELECTION · 13 AUG 2026 · HH: 47.2% · PF-NDC ALLIANCE: 20.3% · M&#39;MEMBE: 4.1% · KALABA: 3.8% · VOTERS: 8,700,000 ECZ · 156 CONSTITUENCIES ·
-              AI CONFIDENCE: 84% · PF-NDC SURGE +2.3pts/mo ⚠ · INFLATION: 6.8% · BoZ RATE: 13.25% · SOURCES: FACEBOOK · TWITTER/X · LUSAKA TIMES · ZAMBIAN OBSERVER · ZNBC · AIRTABLE LIVE DATA · &nbsp;&nbsp;
+              &nbsp;&nbsp; LIVE · ZAMBIA 2026 ELECTION · 13 AUG 2026 · HH MODEL: 47.2% · MUNDUBILE/TONSE: 20.3% · M&#39;MEMBE: 4.1% · KALABA: 3.8% · VOTERS: 8,786,300 ECZ · 226 CONSTITUENCIES ·
+              MODEL CONFIDENCE: 72% · OPPOSITION ALIGNMENT +2.3pts/mo ⚠ · INFLATION: 6.8% · BoZ RATE: 13.25% · SOURCES: ECZ · ZAMSTATS · BOZ · FACEBOOK · TWITTER/X · ZNBC · AIRTABLE · &nbsp;&nbsp;
             </span>
           </div>
         </div>
@@ -526,16 +528,28 @@ export default function Dashboard() {
       </div>
 
       <div style={{ padding: '16px 20px 40px', maxWidth: 1800, margin: '0 auto' }}>
+        <div style={{ background: '#0B1220', border: `1px solid ${C.gold}`, borderLeft: `5px solid ${C.gold}`, borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: C.gold, lineHeight: 1 }}>2026</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+              Official facts are ECZ/ZamStats/BoZ sourced. Candidate support, trends, issue scores and scenario strength are model estimates for planning, not certified polling or ECZ results.
+            </div>
+          </div>
+          <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>
+            Voters: 8,786,300<br />Constituencies: 226
+          </div>
+        </div>
 
         {/* ── KPI ROW ─────────────────────────────────────── */}
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
-          <KpiCard label="HH NATIONAL LEAD" value="+26.9 pts" sub="vs PF-NDC Alliance (20.3%)" trend="▲ Narrowing — monitor" borderColor={C.teal} />
+          <KpiCard label="HH MODEL LEAD" value="+26.9 pts" sub="vs Mundubile/Tonse lane (20.3%)" trend="Modelled — monitor" borderColor={C.teal} />
           <KpiCard label="DAYS TO ELECTION" value={`${countdown.days}d`} sub="13 August 2026" trend={`${countdown.hours}h ${countdown.minutes}m remaining`} borderColor={C.gold} />
-          <KpiCard label="REGISTERED VOTERS" value="8,700,000" sub="ECZ Confirmed 2026" trend="▲ +29% vs 2021" borderColor={C.ndc} />
-          <KpiCard label="PF-NDC ALLIANCE" value="+2.3 pts/mo" sub="Combined opposition surge" trend="⚠ ALERT — MONITOR" borderColor={C.warn} />
-          <KpiCard label="AI CONFIDENCE" value="84%" sub="Multi-source validated" trend="Intelligence Active" borderColor={C.zg} />
+          <KpiCard label="REGISTERED VOTERS" value="8,786,300" sub="ECZ certified 2026" trend="226 constituencies" borderColor={C.ndc} />
+          <KpiCard label="OPPOSITION LANE" value="+2.3 pts/mo" sub="Mundubile/Tonse model trend" trend="Ticket details fluid" borderColor={C.warn} />
+          <KpiCard label="MODEL CONFIDENCE" value={`${ELECTION_DATA.aiConfidence}%`} sub="Audit-adjusted" trend="Official facts separated" borderColor={C.zg} />
         </div>
 
         {/* ── FIGURE CARDS ─── HH vs Opposition ────────────── */}
@@ -563,10 +577,10 @@ export default function Dashboard() {
         </div>
 
         {/* ── CHARTS ROW 1 ─────────────────────────────────── */}
-        <SectionLabel layer="TRENDS" title="20-Month Poll Trajectory — Jan 2025 to Aug 2026"
-          sub="18 months historical · Jul–Aug 2026 are AI-projected forward estimates based on trend rates ▸" />
+        <SectionLabel layer="TRENDS" title="20-Month Support Model — Jan 2025 to Aug 2026"
+          sub="Scenario model · Jul–Aug 2026 are projected estimates · not ECZ polling ▸" />
         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 14, marginBottom: 16 }}>
-          <ChartCard title="HH vs Opposition — Polling Trajectory + Forecast" sub="18 months historical · Jul–Aug 2026 projected from trend rates · ▸ = AI forecast zone">
+          <ChartCard title="HH vs Opposition — Support Trajectory + Forecast" sub="Modelled estimates · Jul–Aug 2026 projected from trend rates · ▸ = forecast zone">
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={timelineData}>
                 <XAxis dataKey="month" tick={{ fontSize: 8, fill: C.muted }} />
@@ -576,14 +590,14 @@ export default function Dashboard() {
                 <ReferenceLine y={50} stroke={C.gold} strokeDasharray="5 3" strokeWidth={0.8} />
                 <ReferenceLine x="Jul'26▸" stroke={C.gold} strokeDasharray="4 3" strokeWidth={1.2} label={{ value: 'PROJECTED ▸', fill: C.gold, fontSize: 9, position: 'top' }} />
                 <Line type="monotone" dataKey="HH (UPND)"       stroke={C.upnd} strokeWidth={3}   dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="PF-NDC Alliance"  stroke={C.pf}   strokeWidth={2.5} dot={{ r: 2.5 }} strokeDasharray="5 3" />
-                <Line type="monotone" dataKey="Kalaba (DP)"      stroke={C.dp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="3 2" />
+                <Line type="monotone" dataKey="Mundubile / Tonse" stroke={C.pf}   strokeWidth={2.5} dot={{ r: 2.5 }} strokeDasharray="5 3" />
+                <Line type="monotone" dataKey="Kalaba (CF)"       stroke={C.dp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="3 2" />
                 <Line type="monotone" dataKey="M'membe (SP)"     stroke={C.sp}   strokeWidth={1.5} dot={{ r: 2 }} strokeDasharray="2 3" />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          <ChartCard title="National Poll Share — May 2026" sub="AI-aggregated estimate · ECZ voter universe: 8,700,000 · PF-NDC shown as combined alliance">
+          <ChartCard title="National Support Estimate — May 2026" sub="Modelled estimate · ECZ voter register: 8,786,300 · opposition labels updated from current public reporting">
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie data={pollData} dataKey="value" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2} label={({ value }) => `${value.toFixed(1)}%`} labelLine={false}>
@@ -621,7 +635,7 @@ export default function Dashboard() {
                 <PolarAngleAxis dataKey="issue" tick={{ fontSize: 7.5, fill: C.muted }} />
                 <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 7, fill: C.line }} />
                 <Radar name="HH/UPND" dataKey="UPND" stroke={C.upnd} fill={C.upnd} fillOpacity={0.25} strokeWidth={2} />
-                <Radar name="PF-NDC Alliance" dataKey="PF" stroke={C.pf} fill={C.pf} fillOpacity={0.15} strokeWidth={1.5} />
+                <Radar name="Mundubile / Tonse" dataKey="PF" stroke={C.pf} fill={C.pf} fillOpacity={0.15} strokeWidth={1.5} />
                 <Legend wrapperStyle={{ fontSize: 9 }} />
                 <Tooltip contentStyle={tooltipStyle} />
               </RadarChart>
@@ -766,7 +780,7 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1877F2' }}>FACEBOOK PAGE MONITORING · AI SENTIMENT</div>
                 <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
-                  Live: HH · PF-NDC Alliance · Harry Kalaba · Fred M&#39;membe · AI analysis of posts &amp; public comments
+                  Live: HH · Mundubile/Tonse · Harry Kalaba · Fred M&#39;membe · AI analysis of posts &amp; public comments
                 </div>
               </div>
             </div>
@@ -854,7 +868,7 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#1DA1F2' }}>TWITTER/X MONITORING · AI SENTIMENT + STRATEGY</div>
                 <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
-                  Live: HH · PF-NDC · Kalaba · M&#39;membe · Devil&#39;s advocate + strategic counter per candidate
+                  Live: HH · Mundubile/Tonse · Kalaba · M&#39;membe · Devil&#39;s advocate + strategic counter per candidate
                 </div>
               </div>
             </div>
@@ -921,7 +935,7 @@ export default function Dashboard() {
               <div>
                 <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 11, color: '#FE2C55' }}>TIKTOK YOUTH INTELLIGENCE · 18–35 VOTER SENTIMENT</div>
                 <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>
-                  Youth grievance · devil&#39;s advocate · strategic counter-move per candidate · 34.1% youth unemployment context
+                  Youth grievance · devil&#39;s advocate · strategic counter-move per candidate · 32.6% highest youth-cohort unemployment context
                 </div>
               </div>
             </div>
@@ -983,7 +997,7 @@ export default function Dashboard() {
             </div>
           )}
           <div style={{ marginTop: 12, fontSize: 9, color: '#444', fontFamily: 'monospace', borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
-            Youth context: 34.1% unemployment · 5.2M internet users · 2.4M Facebook · TikTok fastest growing in 18-35 bracket · Apify clockworks~tiktok-scraper
+            Youth context: 32.6% unemployment in the 19-22 cohort · certified youth voters are 46.3% of the register · TikTok fastest growing in 18-35 bracket · Apify clockworks~tiktok-scraper
           </div>
         </div>
 
@@ -992,7 +1006,7 @@ export default function Dashboard() {
           sub="Our platform moves from live monitoring, to trend analysis, to root causes, to scenario planning, and finally to clear action recommendations" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 10, marginBottom: 16 }}>
           {[
-            { icon: '📡', name: 'Live Monitoring',     color: C.zg,   q: 'What is happening right now?',   items: ['Real-time data aggregation','Facebook · Twitter/X · WhatsApp','Lusaka Times · Observer · ZNBC','8,700,000-voter universe mapped','Province-level sentiment tracking'] },
+            { icon: '📡', name: 'Live Monitoring',     color: C.zg,   q: 'What is happening right now?',   items: ['Real-time data aggregation','Facebook · Twitter/X · WhatsApp','Lusaka Times · Observer · ZNBC','8,786,300-voter register mapped','Province-level sentiment tracking'] },
             { icon: '📈', name: 'Trend Analysis',      color: C.ndc,  q: 'How is support changing?',        items: ['18-month trajectory modelling','Rising opposition momentum tracked','Load-shedding impact on polls','Budget 2026 voter impact scored','Coalition watch: Kalaba & others'] },
             { icon: '🔍', name: 'Root Cause Analysis', color: C.teal, q: 'Why are voters feeling this way?',items: ['AI identifies what drives opinion','Fuel & food costs → negative posts','PF nostalgia in northern regions',"TikTok youth drift to M'membe",'Kwacha performance vs Twitter/X'] },
             { icon: '🎯', name: 'Scenario Planning',   color: C.gold, q: 'What could change the result?',   items: ['6 policy impact scenarios tested','Energy fix → +4.2 pts projected','Cost relief → +3.8 pts projected','Combined strategy → +6.1 pts','Mundubile ceiling if surge holds'] },
@@ -1061,11 +1075,11 @@ export default function Dashboard() {
           sub="Real-world economic data that directly shapes voter sentiment in Zambia 2026" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 16 }}>
           {[
-            { label: 'INFLATION (CPI)', value: '6.8%', sub: 'ZamStats May 2026', color: C.warn, note: '↑ Voter pressure: cost of living' },
+            { label: 'INFLATION (CPI)', value: '6.8%', sub: 'ZamStats Apr 2026', color: C.warn, note: 'Voter pressure: cost of living' },
             { label: 'BoZ POLICY RATE', value: '13.25%', sub: 'Bank of Zambia', color: C.gold, note: 'High borrowing cost impact' },
             { label: 'KWACHA/USD', value: 'K26.8', sub: 'Approx. May 2026', color: C.ndc, note: 'Stability vs 2021 baseline K23' },
             { label: 'GDP GROWTH', value: '4.2%', sub: 'World Bank 2026 proj.', color: C.teal, note: '↑ Positive macro signal' },
-            { label: 'YOUTH UNEMPLOYMENT', value: '34.1%', sub: 'ILO / ZamStats', color: C.sp, note: '⚠ Youth voter risk factor' },
+            { label: 'YOUTH UNEMPLOYMENT', value: '32.6%', sub: 'ZamStats 2024, age 19-22', color: C.sp, note: 'Youth voter risk factor' },
             { label: 'MEALIE MEAL 25KG', value: '~K400', sub: 'National avg price', color: C.zr, note: '↑ Key voter grievance' },
           ].map(ind => (
             <div key={ind.label} className="card-hover rounded-lg p-4 text-center" style={{ background: C.card2, border: `2px solid ${ind.color}` }}>
@@ -1075,6 +1089,84 @@ export default function Dashboard() {
               <div style={{ fontSize: 10, fontWeight: 700, color: ind.color }}>{ind.note}</div>
             </div>
           ))}
+        </div>
+
+        {/* ── OPEN INTELLIGENCE SOURCES ───────────────────────── */}
+        <SectionLabel layer="OSINT" title="Open Intelligence Source Matrix"
+          sub="Public sources to cross-check election claims, campaign narratives, civic-space risks, economic pressure, and geospatial context" />
+        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 12, padding: '18px 20px', marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
+            {[
+              {
+                category: 'Official Election',
+                color: C.zg,
+                sources: [
+                  { name: 'ECZ', url: 'https://www.elections.org.zm/', use: 'Register, roadmap, results, constituencies' },
+                  { name: 'National Assembly', url: 'https://www.parliament.gov.zm/', use: 'Delimitation, MPs, parliamentary notices' },
+                  { name: 'ZambiaLII', url: 'https://zambialii.org/', use: 'Constitution, election law, court materials' },
+                ],
+              },
+              {
+                category: 'Economy',
+                color: C.teal,
+                sources: [
+                  { name: 'ZamStats', url: 'https://www.zamstats.gov.zm/', use: 'CPI, labour force, demographics' },
+                  { name: 'Bank of Zambia', url: 'https://www.boz.zm/', use: 'Policy rate, exchange-rate context' },
+                  { name: 'World Bank', url: 'https://www.worldbank.org/en/country/zambia', use: 'Growth forecasts, macro context' },
+                ],
+              },
+              {
+                category: 'Election Integrity',
+                color: C.gold,
+                sources: [
+                  { name: 'CCMG Zambia', url: 'https://ccmgzambia.org/', use: 'Long-term observation, code violations' },
+                  { name: 'iVerify Zambia', url: 'https://iverify.org/', use: 'Mis/disinformation checks' },
+                  { name: 'CIVICUS Monitor', url: 'https://monitor.civicus.org/', use: 'Civic space and rights context' },
+                ],
+              },
+              {
+                category: 'Open Web Signals',
+                color: C.ndc,
+                sources: [
+                  { name: 'Google Trends', url: 'https://trends.google.com/', use: 'Search interest by region and topic' },
+                  { name: 'GDELT', url: 'https://www.gdeltproject.org/', use: 'Global news/event monitoring' },
+                  { name: 'DataReportal', url: 'https://datareportal.com/', use: 'Digital audience and platform context' },
+                ],
+              },
+              {
+                category: 'Geospatial',
+                color: C.zo,
+                sources: [
+                  { name: 'OpenStreetMap', url: 'https://www.openstreetmap.org/', use: 'Base maps, settlements, roads' },
+                  { name: 'HDX', url: 'https://data.humdata.org/', use: 'Administrative boundaries and humanitarian data' },
+                  { name: 'OONI Explorer', url: 'https://explorer.ooni.org/', use: 'Internet measurement and access checks' },
+                ],
+              },
+              {
+                category: 'Media Watch',
+                color: C.warn,
+                sources: [
+                  { name: 'ZNBC', url: 'https://znbc.co.zm/', use: 'Public broadcaster signals' },
+                  { name: 'News Diggers!', url: 'https://diggers.news/', use: 'Independent reporting and investigations' },
+                  { name: 'MISA Zambia', url: 'https://zambia.misa.org/', use: 'Press freedom and media safety' },
+                ],
+              },
+            ].map(group => (
+              <div key={group.category} className="card-hover" style={{ background: C.card2, border: `1px solid ${group.color}55`, borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: group.color, fontFamily: 'monospace', marginBottom: 10 }}>{group.category.toUpperCase()}</div>
+                {group.sources.map(source => (
+                  <a key={source.name} href={source.url} target="_blank" rel="noreferrer"
+                    style={{ display: 'block', textDecoration: 'none', padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: C.text, marginBottom: 2 }}>{source.name}</div>
+                    <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.45 }}>{source.use}</div>
+                  </a>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 14, fontSize: 10, color: C.muted, lineHeight: 1.6, borderTop: `1px solid ${C.line}`, paddingTop: 12 }}>
+            OSINT rule: official numbers come first, civil-society and media sources corroborate behaviour on the ground, and social/open-web signals are treated as directional indicators until verified.
+          </div>
         </div>
 
         {/* ── NEWS SOURCES ─────────────────────────────────── */}
@@ -1087,7 +1179,7 @@ export default function Dashboard() {
                 category: '🏛️ Official & Polling',
                 color: C.zg,
                 sources: [
-                  { name: 'Electoral Commission of Zambia (ECZ)', desc: '156 constituencies · 8,700,000 voters (confirmed 2026) · official results' },
+                  { name: 'Electoral Commission of Zambia (ECZ)', desc: '226 constituencies · 8,786,300 voters certified for 2026 · official results' },
                   { name: 'ZANIS', desc: 'Government official public relations service' },
                   { name: 'Afrobarometer Round 10', desc: 'Pan-African survey · Zambia 2024 module — public opinion data' },
                 ],
@@ -1122,7 +1214,7 @@ export default function Dashboard() {
                   { name: 'IFES', desc: 'Expert election analysis & technical data' },
                   { name: 'ZamStats', desc: 'CPI 6.8% · official economic statistics' },
                   { name: 'Bank of Zambia', desc: 'Policy rate 13.25% · monetary policy' },
-                  { name: 'DataReportal Zambia 2026', desc: '5.2M internet users · 2.4M Facebook · TikTok growing fast' },
+                  { name: 'DataReportal / platform monitoring', desc: 'Social audience context · app uses configured platform scrapers when credentials exist' },
                 ],
               },
               {
@@ -1161,9 +1253,9 @@ export default function Dashboard() {
       <footer style={{ background: '#000', borderTop: `3px solid ${C.zo}`, padding: '20px 28px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24, fontSize: 11, fontFamily: 'monospace', color: C.muted, marginBottom: 16 }}>
           {[
-            ['INTELLIGENCE SOURCES', ['Facebook (HH, PF-NDC, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · ZERN R1 · ZEPS', 'IDCPPA Mar 2026 · iVerify Zambia', 'OONI · CIVICUS · Lusaka Times', 'ECZ · ZamStats · BoZ · DataReportal']],
-            ['VOTER REGISTER (ECZ 2026)', ['Total: 8,700,000 · 156 Constituencies', 'Lusaka: 1,453,000', 'Copperbelt: 1,326,000', 'Eastern: 842,000', 'Southern: 801,000', 'Other provinces: 4,278,000']],
-            ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.8%', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: ~K26.8', 'GDP Growth (WB): 4.2%', 'Youth Unemployment: 34.1%', 'Mealie Meal 25kg: ~K400']],
+            ['INTELLIGENCE SOURCES', ['Facebook (HH, Mundubile/Tonse, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · public media monitoring', 'iVerify Zambia · OONI · CIVICUS', 'ECZ · ZamStats · BoZ · World Bank']],
+            ['VOTER REGISTER (ECZ 2026)', ['Total: 8,786,300 · 226 constituencies', 'Lusaka: 1,430,889', 'Copperbelt: 1,296,446', 'Eastern: 1,129,444', 'Southern: 1,103,275', 'Other provinces: 3,826,246']],
+            ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.8%', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: ~K26.8', 'GDP Growth (WB): 4.2%', 'Youth unemployment 19-22: 32.6%', 'Mealie Meal 25kg: monitored']],
             ['ENGAGEMENT PACKAGE', ['Package: PREMIUM 90-day', 'Real-time + daily AI reports', 'Dedicated Account Manager', 'Alert threshold: ±3 points', 'Election Day: 13 Aug 2026', 'Next report: Sunday']],
           ].map(([h, items]) => (
             <div key={h as string}>

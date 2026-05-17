@@ -50,12 +50,12 @@ function demoVerdicts(dataSnapshot: Record<string, unknown>): JudgeVerdict[] {
       verdict: upnd > 45 ? 'VALIDATED' : 'CAUTION',
       confidence: 84,
       summary:
-        `Polling data cross-validated against ECZ voter register (9,054,000) and 2021 baseline. UPND at ${upnd.toFixed(1)}% is statistically consistent with incumbency advantage adjusted for economic headwinds.`,
+        `Model estimates checked against the ECZ certified 2026 register (8,786,300 voters) and the 2021 presidential baseline. UPND at ${upnd.toFixed(1)}% is a scenario estimate, not an official poll.`,
       findings: [
         `UPND ${upnd.toFixed(1)}% within ±2.5pt margin of error vs 2021 benchmark`,
         `PF ${pf.toFixed(1)}% reflects Lungu eligibility uncertainty drag`,
         'Mundubile surge (+1.8pt/month) is statistically significant — flag',
-        'Pamodzi Alliance cohesion index: LOW — likely to fragment before Aug 2026',
+        'Opposition alliance cohesion index: LOW — party vehicle and ticket details remain fluid',
         'Voter register growth (+29% since 2021) favours youth-focused parties',
       ],
       timestamp: ts,
@@ -118,7 +118,7 @@ You are Judge STRATEGIS — Campaign Strategy Evaluator for Zambia 2026.
 Evaluate the strategic recommendations for the ruling UPND party given this data:
 ${JSON.stringify(snapshot, null, 2)}
 
-Key figures: HH (incumbent), Mundubile (PF), Makebi (NDC), Pamodzi Alliance, Kalaba (DP), M'membe (SP).
+Key figures: HH (incumbent, UPND), Brian Mundubile/Tonse lane, Makebi/PF-Pamodzi lane, Harry Kalaba (Citizens First/CF Orange Alliance), M'membe (Socialist Party/People's Pact).
 Respond with JSON:
 {
   "verdict": "VALIDATED" | "CAUTION" | "DISPUTED",
@@ -149,10 +149,10 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
   const dataSnapshot = {
     upnd:    body.upnd    ?? ELECTION_DATA.nationalPoll.upnd,
-    pf:      body.pf      ?? ELECTION_DATA.nationalPoll.pf_mundubile,
+    pf:      body.pf      ?? ELECTION_DATA.nationalPoll.mundubile_tonse,
     ndc:     body.ndc     ?? ELECTION_DATA.nationalPoll.ndc_makebi,
     pamodzi: body.pamodzi ?? 0,
-    kalaba:  body.kalaba  ?? ELECTION_DATA.nationalPoll.kalaba_dp,
+    kalaba:  body.kalaba  ?? ELECTION_DATA.nationalPoll.kalaba_cf,
     membe:   body.membe   ?? ELECTION_DATA.nationalPoll.membe_sp,
     voterTotal: ELECTION_DATA.voterTotal,
     electionDate: ELECTION_DATA.electionDate,

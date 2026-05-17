@@ -139,7 +139,7 @@ const DEMO_HEADLINES: HeadlineInput[] = [
   { headline: 'Load shedding CRISIS continues to devastate Lusaka businesses', source: 'Lusaka Times' },
   { headline: 'HH delivers free education programme reaching 2 million children', source: 'ZNBC' },
   { headline: 'Mundubile surge in Northern Province raises concern for UPND strategists', source: 'Zambian Observer' },
-  { headline: 'PF-NDC Alliance gains momentum with combined 20% national poll support', source: 'Lusaka Times' },
+  { headline: 'Mundubile and Tonse Alliance lane gains momentum in opposition model', source: 'Lusaka Times' },
   { headline: 'Mealie meal shortage hits rural communities ahead of 2026 election', source: 'The Mast' },
   { headline: 'Kwacha shows stability against major currencies in May 2026', source: 'Times of Zambia' },
   { headline: 'Youth unemployment CRISIS threatens UPND vote in Copperbelt Province', source: 'Zambian Observer' },

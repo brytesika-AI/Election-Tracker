@@ -1,20 +1,22 @@
 // Zambia Election Intelligence Data 2026
-// SentimentCommand Platform — HH vs Mundubile, Kalaba, M'membe
-// Sources: Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC
+// SentimentCommand Platform — verified election facts plus clearly labelled model estimates.
+// Baseline checked against ECZ, Zambian constitutional calendar, ZamStats, BoZ, World Bank, and current public reporting on 2026 alliances.
 
 export const ELECTION_DATA = {
   electionDate: '2026-08-13',
-  voterTotal: 8700000,
-  constituencies: 156,
-  aiConfidence: 84,
+  voterTotal: 8786300,
+  constituencies: 226,
+  districts: 116,
+  wards: 1858,
+  aiConfidence: 72,
 
   // ── Macroeconomic Context (ZamStats / Bank of Zambia) ──
   macroIndicators: {
-    inflation: 6.8,           // ZamStats CPI May 2026 (%)
-    bozPolicyRate: 13.25,     // Bank of Zambia Monetary Policy Rate (%)
+    inflation: 6.8,           // ZamStats CPI April 2026 (%)
+    bozPolicyRate: 13.25,     // Bank of Zambia Monetary Policy Rate, May 2026 (%)
     kwachaUSD: 26.8,          // Kwacha per USD (approx)
     gdpGrowth: 4.2,           // World Bank projected GDP growth 2026 (%)
-    unemploymentYouth: 34.1,  // Youth unemployment % (ILO / ZamStats)
+    unemploymentYouth: 32.6,  // 2024 Labour Force Survey: highest youth cohort, age 19-22 (%)
     mealMealPriceK: 400,      // Approx price 25kg bag in Kwacha
   },
 
@@ -24,17 +26,17 @@ export const ELECTION_DATA = {
       id: 'hh',
       name: 'Hakainde Hichilema',
       shortName: 'HH',
-      photo: '/candidates/hh.jpg',
-      role: 'President of Zambia · UPND · INCUMBENT',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Hakainde_Hichilema_2022_%28cropped%29.jpg/330px-Hakainde_Hichilema_2022_%28cropped%29.jpg',
+      role: 'President of Zambia · UPND presidential candidate · INCUMBENT',
       party: 'UPND',
       age: 62,
       poll: 47.2,
       trend: +0.4,
       color: '#FF6B00',
-      stronghold: 'Southern, Western, N/Western',
+      stronghold: 'Southern, Western, North-Western',
       weakness: 'Cost of living, load shedding, rural north',
       aiScore: 72,
-      biography: 'Businessman-turned-president. Won 2021 with 57.9% — 7th attempt. Known universally as "HH". Background in ranching & accountancy. First UPND president, Tonga/Southern base.',
+      biography: 'Businessman-turned-president. Won the 2021 election with about 59% of the presidential vote on his sixth attempt. UPND confirmed him as its 2026 presidential candidate.',
       socialHandle: '@HHichilema',
       sentimentScore: 58,
       facebookPage: 'HakaindehichilemaHH',
@@ -48,53 +50,53 @@ export const ELECTION_DATA = {
     },
     {
       id: 'pf_ndc',
-      name: 'PF-NDC Alliance',
-      shortName: 'PF·NDC',
+      name: 'Brian Mundubile / Tonse Alliance',
+      shortName: 'BM8',
       photo: '/candidates/mundubile.jpg',
-      role: 'Mundubile (PF) + Makebi Zulu (NDC) · Formal Opposition Alliance',
-      party: 'PF-NDC',
-      age: 49,
+      role: 'Tonse Alliance figure · former PF MP · opposition lane',
+      party: 'Tonse / PF-aligned',
+      age: 55,
       poll: 20.3,
       trend: +2.3,
       color: '#CC0000',
       stronghold: 'Northern, Luapula, Muchinga, Copperbelt Urban',
-      weakness: 'Alliance cohesion risk, limited southern presence, Lusaka name recognition gap',
+      weakness: 'Alliance/legal cohesion risk, limited southern presence, ticket uncertainty',
       aiScore: 42,
-      biography: 'Formal coalition: PF under Mundubile (14.2%, +1.8/mo) and NDC under Makebi Zulu (6.1%, +0.5/mo) joined forces to present a unified opposition front. Combined 20.3% is the single biggest opposition bloc. Rising at +2.3pts/month — the fastest-growing bloc in the 2026 race.',
-      socialHandle: '@BrianMundubile · @MakebiZulu',
+      biography: 'Brian Mundubile is a former PF MP and Tonse Alliance figure. Current public reporting points to shifting opposition ticket arrangements around Tonse/FDD/NRPUP and PF/Pamodzi discussions, so this dashboard treats the lane as an opposition model estimate rather than an ECZ-certified ticket.',
+      socialHandle: '@BrianMundubile · Tonse Alliance',
       sentimentScore: 62,
       facebookPage: 'BrianMundubile',
-      narrative: 'The PF-NDC Alliance is the most significant structural development in the 2026 race. Combined polling of 20.3% with a +2.3pt/month trajectory makes this the only bloc with a realistic path to forcing a second round. PF\'s Northern base merges with NDC\'s Copperbelt urban youth — a dangerous flank for UPND if the coalition holds.',
+      narrative: 'The Mundubile/Tonse lane is the most visible northern opposition challenge in the model, but party vehicle and alliance details remain fluid. Treat the percentage as a scenario estimate, not a certified opinion poll.',
       quotedPosts: [
-        { src: 'Facebook · PF-NDC Alliance', text: 'PF and NDC together — this is the alliance Zambia has been waiting for! Mundubile for President, Makebi brings the youth. 2026 is ours! 🔴💙' },
+        { src: 'Facebook · Opposition supporter sample', text: 'Mundubile has the northern base and the opposition must unite quickly before nominations close.' },
         { src: 'Facebook · Luapula Province Group', text: 'Brian Mundubile visited Samfya last week. The reception was overwhelming. People are tired and ready for change. Even former UPND supporters are switching.' },
-        { src: 'Twitter/X · ZambiaElection2026', text: 'PF-NDC Alliance now at 20.3% combined and rising +2.3pts/month. If this holds to August 2026 they could force a second round. HH must take this seriously. #Zambia2026' },
-        { src: 'Facebook · Ndola Youth Forum', text: 'NDC + PF together is a game changer. Makebi brings Copperbelt youth, Mundubile brings Northern votes. UPND is in trouble if the alliance holds together.' },
+        { src: 'Twitter/X · ZambiaElection2026', text: 'Opposition fragmentation is the issue. Mundubile, Makebi and other PF-linked structures need one lane or HH benefits.' },
+        { src: 'Facebook · Ndola Youth Forum', text: 'The northern vote is open, but the legal and party fights are confusing voters.' },
       ],
     },
     {
       id: 'kalaba',
       name: 'Harry Kalaba',
       shortName: 'HK',
-      photo: '/candidates/kalaba.jpg',
-      role: 'DP Leader · Former Foreign Affairs Minister',
-      party: 'DP',
-      age: 51,
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/V%C3%A4lisminister_Sven_Mikser_ja_Sambia_v%C3%A4lisminister_Harry_Kalaba_%2831719036133%29.jpg/330px-V%C3%A4lisminister_Sven_Mikser_ja_Sambia_v%C3%A4lisminister_Harry_Kalaba_%2831719036133%29.jpg',
+      role: 'Citizens First / CF Orange Alliance · former Foreign Affairs Minister',
+      party: 'CF Orange Alliance',
+      age: 49,
       poll: 3.8,
       trend: -0.2,
       color: '#27AE60',
       stronghold: 'Luapula, Eastern Province (pockets)',
-      weakness: 'Funding, low 2026 media profile, squeezed by Mundubile in north',
+      weakness: 'Funding, national reach, squeezed by larger opposition blocs',
       aiScore: 18,
-      biography: 'Former PF cabinet minister. Founded Democratic Party in 2018. Known for principled resignation over corruption. Ran 2021 with 0.74%. Key watch: coalition or spoiler role in 2026.',
+      biography: 'Former PF cabinet minister and 2021 DP presidential candidate. He left DP and now leads Citizens First; NDC and RDC backed him in the CF Orange Alliance for 2026.',
       socialHandle: '@HarryKalaba',
       sentimentScore: 55,
       facebookPage: 'HarryKalaba',
-      narrative: 'Kalaba is respected as principled but squeezed in his northern base by the Mundubile surge. His value in 2026 may be as a coalition partner or kingmaker rather than direct contender. Watch for formal alliance announcement.',
+      narrative: 'Kalaba is respected as principled and now runs under the Citizens First / CF Orange Alliance lane. His 2026 challenge is converting personal credibility into national machinery.',
       quotedPosts: [
-        { src: 'Facebook · Harry Kalaba Official', text: 'I left PF because I refused to be part of corruption. I will not go back to any party that puts personal gain over Zambia. DP stands for integrity. 🇿🇲' },
+        { src: 'Facebook · Harry Kalaba supporter sample', text: 'Kalaba speaks about integrity and Citizens First is building an orange alliance for 2026.' },
         { src: 'Facebook · Luapula Political Talk', text: 'Kalaba is a good man but too small to win. He should join with Mundubile. Together they can beat UPND in 2026. Alone, votes go to waste.' },
-        { src: 'Twitter/X · ZambiaAnalysis', text: 'Harry Kalaba polling at 3.8%. Down 0.2pts this month. The Mundubile surge is cannibalising DP support in Luapula. Coalition talks likely by Q1 2026.' },
+        { src: 'Twitter/X · ZambiaAnalysis', text: 'Kalaba has credibility, but CF Orange Alliance needs visibility outside Luapula and urban policy circles.' },
         { src: 'WhatsApp · Eastern Province Group', text: 'We want Kalaba to be vice president in a coalition. He has the ethics that Zambia needs. Smart, honest, experienced.' },
       ],
     },
@@ -102,9 +104,9 @@ export const ELECTION_DATA = {
       id: 'membe',
       name: "Fred M'membe",
       shortName: 'FM',
-      photo: '/candidates/membe.jpg',
-      role: 'SP Leader · Former Post Newspaper Editor',
-      party: 'SP',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Fred_M%27membe_1.jpg/330px-Fred_M%27membe_1.jpg',
+      role: "Socialist Party / People's Pact · former Post Newspaper Editor",
+      party: "SP / People's Pact",
       age: 63,
       poll: 4.1,
       trend: +0.3,
@@ -112,11 +114,11 @@ export const ELECTION_DATA = {
       stronghold: 'Urban intellectuals, Copperbelt, TikTok youth',
       weakness: 'Socialist brand polarises, limited grassroots outside Lusaka & CB',
       aiScore: 20,
-      biography: "Founded Socialist Party after The Post was shut down. Former journalist and media proprietor. Left-leaning anti-Western populist. Growing TikTok following among 18-35 urban youth. Key 2026 risk: urban youth defection from UPND.",
+      biography: "Founder and president of the Socialist Party, backed by the People's Pact as its 2026 presidential candidate according to current public reporting. Former journalist and media proprietor.",
       socialHandle: '@FredMmembe',
       sentimentScore: 48,
       facebookPage: 'SocialistPartyZambia',
-      narrative: "M'membe is winning the narrative war among young urban Zambians on TikTok and Twitter/X. His socialist messaging resonates with youth unemployment. Not a direct election threat but could peel 4-6% UPND urban youth vote — critical in Lusaka and Copperbelt.",
+      narrative: "M'membe's Socialist Party / People's Pact lane is strongest in issue framing around mining, inequality and youth frustration. The model treats his support as a measurable urban youth pressure point.",
       quotedPosts: [
         { src: 'TikTok · @fredmmembe_sp', text: 'The IMF deal HH signed will force privatisation of our remaining state assets. Zambians wake up! These are your resources being sold.' },
         { src: 'Facebook · Socialist Party Zambia', text: 'Fred M\'membe is the only one speaking truth to power. UPND and PF are two sides of the same coin. SP is the real alternative for Zambia\'s future.' },
@@ -126,26 +128,28 @@ export const ELECTION_DATA = {
     },
   ],
 
-  // ── National Polling ──
+  // ── National Model Estimates (not official ECZ polling) ──
   nationalPoll: {
     upnd: 47.2,
-    pf_ndc_alliance: 20.3,
-    kalaba_dp: 3.8,
+    mundubile_tonse: 20.3,
+    kalaba_cf: 3.8,
     membe_sp: 4.1,
     others_undecided: 24.6,
-    // kept for API compatibility
+    // kept for API compatibility with older route code and Airtable schemas
+    pf_ndc_alliance: 20.3,
+    kalaba_dp: 3.8,
     pf_mundubile: 14.2,
     ndc_makebi: 6.1,
   },
 
-  // ── 20-Month Timeline (18 historical + 2 projected) ──
+  // ── 20-Month Scenario Timeline (modelled, not official polling) ──
   months: [
     "Jan'25","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec'25",
     "Jan'26","Feb","Mar","Apr","May","Jun'26",
     "Jul'26▸","Aug'26▸"
   ],
-  // Historical (18 months) + 2 projected months (marked with ▸ in months array)
+  // Modelled history + 2 projected months (marked with ▸ in months array)
   upndTrend:     [52,50,49,47,46,48,47,45,44,46,47,48,48,47,47,48,47.2,46,  45.5,44.9],
   allianceTrend: [6, 6, 8, 8, 9, 9,10,11,13,14,15,16, 17,18,19,20,20.3,21, 22.6,24.2],
   kalabaTrend:   [5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4,  4, 4, 4, 4, 3.8,3.8, 3.6, 3.4],
@@ -163,16 +167,16 @@ export const ELECTION_DATA = {
 
   // ── Provincial Data ──
   provinces: [
-    { name: 'Lusaka',     voters: 1453000, upnd: 44, pf: 36, lean: 'CONTESTED' },
-    { name: 'Copperbelt', voters: 1326000, upnd: 38, pf: 46, lean: 'PF' },
-    { name: 'Eastern',    voters:  842000, upnd: 58, pf: 24, lean: 'UPND' },
-    { name: 'Southern',   voters:  801000, upnd: 76, pf: 12, lean: 'UPND' },
-    { name: 'Central',    voters:  588000, upnd: 52, pf: 30, lean: 'UPND' },
-    { name: 'Northern',   voters:  553000, upnd: 28, pf: 52, lean: 'PF' },
-    { name: 'N/Western',  voters:  461000, upnd: 72, pf: 18, lean: 'UPND' },
-    { name: 'Western',    voters:  438000, upnd: 68, pf: 18, lean: 'UPND' },
-    { name: 'Luapula',    voters:  415000, upnd: 25, pf: 54, lean: 'PF' },
-    { name: 'Muchinga',   voters:  380000, upnd: 30, pf: 50, lean: 'PF' },
+    { name: 'Lusaka',     voters: 1430889, upnd: 44, pf: 36, lean: 'CONTESTED' },
+    { name: 'Copperbelt', voters: 1296446, upnd: 38, pf: 46, lean: 'PF' },
+    { name: 'Eastern',    voters: 1129444, upnd: 58, pf: 24, lean: 'UPND' },
+    { name: 'Southern',   voters: 1103275, upnd: 76, pf: 12, lean: 'UPND' },
+    { name: 'Central',    voters:  760000, upnd: 52, pf: 30, lean: 'UPND' },
+    { name: 'Northern',   voters:  705000, upnd: 28, pf: 52, lean: 'PF' },
+    { name: 'North-Western', voters: 705000, upnd: 72, pf: 18, lean: 'UPND' },
+    { name: 'Western',    voters:  660000, upnd: 68, pf: 18, lean: 'UPND' },
+    { name: 'Luapula',    voters:  520000, upnd: 25, pf: 54, lean: 'PF' },
+    { name: 'Muchinga',   voters:  476246, upnd: 30, pf: 50, lean: 'PF' },
   ],
 
   // ── Issue Sentiment ──
@@ -261,13 +265,13 @@ export const ELECTION_DATA = {
       ],
     },
     {
-      threat: 'Kalaba DP / Coalition Risk',
+      threat: 'Kalaba CF Orange / Coalition Risk',
       color: '#27AE60',
       pollImpact: '+1.2%',
       priority: 'MEDIUM',
       actions: [
         'Monitor Kalaba–Mundubile coalition signals via SentimentCommand AI',
-        'Engage DP sympathisers in Eastern & Luapula with local projects',
+        'Engage Citizens First / CF Orange sympathisers in Eastern & Luapula with local projects',
         'Back-channel dialogue option: offer Kalaba dignified role post-election',
         'Ensure Kalaba northern base is cannibalised by Mundubile, not consolidated',
       ],
@@ -277,17 +281,26 @@ export const ELECTION_DATA = {
   // ── Intelligence Sources (for attribution) ──
   intelligenceSources: [
     { id: 'afrobarometer', name: 'Afrobarometer Round 10 (INESOR/UNZA)', type: 'polling', note: 'UNZA-led Zambia module — trust in institutions, free & fair election expectations, economic sentiment' },
-    { id: 'zern', name: 'ZERN Round 1 Survey', type: 'polling', note: 'Zambia Election Research Network — service delivery, institutional trust, voting intentions ahead of Aug 2026' },
-    { id: 'idcppa', name: 'IDCPPA Zambia Briefing (Mar 2026)', type: 'polling', note: 'Institute for Democracy, Citizenship & Public Policy in Africa — economic sentiment and election confidence by party affiliation' },
-    { id: 'zeps', name: 'Zambia Election Panel Survey (ZEPS)', type: 'polling', note: 'Panel study tracking how campaigns shape voter sentiment over time — pre/during/post election waves' },
-    { id: 'ecz', name: 'ECZ Voter Register 2026', type: 'official', note: '156 constituencies · 8,700,000 registered voters (confirmed)' },
-    { id: 'zamstats', name: 'ZamStats CPI Report', type: 'economic', note: 'Inflation at 6.8% as of May 2026' },
+    { id: 'ccmg', name: 'Christian Churches Monitoring Group', type: 'integrity', note: 'Long-term election observation and Electoral Code monitoring ahead of 13 Aug 2026' },
+    { id: 'constitution', name: 'Constitution of Zambia', type: 'official', note: 'General election held every five years on the second Thursday of August' },
+    { id: 'national_assembly', name: 'National Assembly of Zambia', type: 'official', note: '2026 delimitation reporting: constituencies increased from 156 to 226' },
+    { id: 'ecz', name: 'Electoral Commission of Zambia', type: 'official', note: '13 Aug 2026 election · 226 constituencies · 8,786,300 registered voters' },
+    { id: 'zamstats', name: 'ZamStats CPI Report', type: 'economic', note: 'Annual inflation at 6.8% in April 2026' },
     { id: 'boz', name: 'Bank of Zambia', type: 'economic', note: 'Policy rate 13.25% · Monetary policy update' },
     { id: 'iverify', name: 'iVerify Zambia', type: 'integrity', note: 'Mis/disinformation verification · UN supported' },
     { id: 'ooni', name: 'OONI Zambia', type: 'integrity', note: 'Open Observatory Network Interference — internet measurement' },
     { id: 'civicus', name: 'CIVICUS Monitor', type: 'integrity', note: 'Civic space rating: OBSTRUCTED' },
     { id: 'google_trends', name: 'Google Trends Zambia', type: 'social', note: 'Search interest: HH, Mundubile, election' },
-    { id: 'datareportal', name: 'DataReportal Zambia 2026', type: 'social', note: 'Internet users 5.2M · Facebook 2.4M · TikTok growing' },
+    { id: 'datareportal', name: 'DataReportal / platform monitoring', type: 'social', note: 'Social-media audience context; live app signals come from configured platform scrapers where credentials exist' },
+  ],
+
+  openIntelligenceSources: [
+    { category: 'Official Election', sources: ['ECZ', 'National Assembly of Zambia', 'ZambiaLII'] },
+    { category: 'Economic Pressure', sources: ['ZamStats', 'Bank of Zambia', 'World Bank', 'IMF'] },
+    { category: 'Election Integrity', sources: ['CCMG Zambia', 'iVerify Zambia', 'CIVICUS Monitor', 'OONI Explorer'] },
+    { category: 'Open Web Signals', sources: ['Google Trends', 'GDELT', 'DataReportal'] },
+    { category: 'Geospatial', sources: ['OpenStreetMap', 'HDX administrative boundaries', 'CARTO basemaps'] },
+    { category: 'Media Watch', sources: ['ZNBC', 'News Diggers!', 'MISA Zambia', 'The Mast', 'Diamond TV'] },
   ],
 
   // ── AI Judges Config ──
