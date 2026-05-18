@@ -253,7 +253,9 @@ export default function ZambiaMap() {
             <div className="zambia-map-panel__audit">
               <strong>{selectedProv.classification}</strong>
               <p>{selectedProv.rationale}</p>
+              <small><b>Country pressure:</b> {selectedProv.nationalIssueEffect}</small>
               <small>{selectedProv.baseline2021}</small>
+              <span>Province-specific drivers</span>
               <div>
                 {selectedProv.issueDrivers.map(driver => <em key={driver}>{driver}</em>)}
               </div>

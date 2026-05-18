@@ -1203,6 +1203,18 @@ export default function Dashboard() {
           </div>
         </div>
 
+        <ChartCard title="COUNTRY-SPECIFIC VOTER PRESSURE LAYER" sub="National Zambia issues used before province-level adjustments are applied">
+          <div className="country-pressure-grid">
+            {ELECTION_DATA.nationalVoterPressures.map(item => (
+              <div key={item.issue} className="country-pressure-card">
+                <strong>{item.issue}</strong>
+                <p>{item.countrySignal}</p>
+                <small>{item.modelEffect}</small>
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 12, marginBottom: 16 }}>
