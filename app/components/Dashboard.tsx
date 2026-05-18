@@ -483,8 +483,8 @@ export default function Dashboard() {
   })
   const strongholdSplit = [
     { label: 'UPND anchors', provinces: 'Southern, Western, North-Western, Central', value: 4, color: C.upnd },
-    { label: 'Opposition anchors', provinces: 'Northern, Luapula, Muchinga, Copperbelt, Eastern', value: 5, color: C.pf },
-    { label: 'True battleground', provinces: 'Lusaka plus Copperbelt urban margins', value: 1, color: C.gold },
+    { label: 'Opposition anchors', provinces: 'Northern, Luapula, Muchinga, Eastern', value: 4, color: C.pf },
+    { label: 'True battleground', provinces: 'Lusaka and Copperbelt', value: 2, color: C.gold },
   ]
   const sentimentByProvince = provincePopularity.map(p => ({
     name: p.name,
@@ -1051,6 +1051,7 @@ export default function Dashboard() {
                   <div>
                     <div style={{ color: C.text, fontSize: 12, fontWeight: 900 }}>{p.name}</div>
                     <div style={{ color: C.muted, fontSize: 9 }}>{Math.round(p.voters / 1000)}k voters</div>
+                    <div style={{ color: p.lean === 'CONTESTED' ? C.gold : p.lean === 'PF' ? C.pf : C.upnd, fontSize: 9, marginTop: 2 }}>{p.classification}</div>
                   </div>
                   {[
                     ['HH', p.hh, C.upnd],
@@ -1194,7 +1195,7 @@ export default function Dashboard() {
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Eastern Province is now audited against the ECZ 2021 baseline and treated as an opposition-leaning lane, not an HH province lead. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
+              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. All provinces are now audited against ECZ 2021 provincial baselines plus Zambia-specific issue pressure: cost of living, electricity, jobs, farming, mining, roads, water, CDF/free education and opposition ticket consolidation. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
             </div>
           </div>
           <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>

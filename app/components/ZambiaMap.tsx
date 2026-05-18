@@ -248,6 +248,15 @@ export default function ZambiaMap() {
               <span>Lead margin <b>{selectedShares.length > 1 ? (selectedShares[0].pct - selectedShares[1].pct).toFixed(1) : '0'} pts</b></span>
               <span>Estimated lead votes <b>{selectedLead ? Math.round(selectedProv.voters * selectedLead.pct / 100).toLocaleString() : '0'}</b></span>
               <span>Status <b>{selectedProv.lean === 'CONTESTED' ? 'Battleground' : `${selectedLead?.label} advantage`}</b></span>
+              <span>Confidence <b>{selectedProv.confidence}</b></span>
+            </div>
+            <div className="zambia-map-panel__audit">
+              <strong>{selectedProv.classification}</strong>
+              <p>{selectedProv.rationale}</p>
+              <small>{selectedProv.baseline2021}</small>
+              <div>
+                {selectedProv.issueDrivers.map(driver => <em key={driver}>{driver}</em>)}
+              </div>
             </div>
             <button type="button" className="zambia-map-panel__reset" onClick={() => setSelected(null)}>
               Clear selection
@@ -264,7 +273,7 @@ export default function ZambiaMap() {
                   <button key={province.name} type="button" onClick={() => setSelected(province.name)}>
                     <span>{province.name}</span>
                     <strong style={{ color: lead.color }}>{lead.label} {lead.pct}%</strong>
-                    <em>Open</em>
+                    <em>{province.lean === 'CONTESTED' ? 'Toss-up' : 'Open'}</em>
                   </button>
                 )
               })}

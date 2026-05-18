@@ -760,6 +760,50 @@ body {
   color: var(--text);
 }
 
+.zambia-map-panel__audit {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(245,196,0,.22);
+  border-radius: 8px;
+  background: rgba(3,7,11,.34);
+  padding: 10px 12px;
+}
+
+.zambia-map-panel__audit strong {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.zambia-map-panel__audit p {
+  margin: 0;
+  color: var(--text);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.zambia-map-panel__audit small {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.zambia-map-panel__audit div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.zambia-map-panel__audit em {
+  border: 1px solid rgba(122,143,166,.32);
+  border-radius: 999px;
+  padding: 2px 6px;
+  color: var(--muted);
+  font-size: 8px;
+  font-style: normal;
+}
+
 .zambia-map-panel__reset,
 .zambia-map-panel__list button {
   width: 100%;
