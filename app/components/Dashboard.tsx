@@ -863,6 +863,7 @@ export default function Dashboard() {
                   <div className="race-board__meter">
                     <i style={{ width: `${Math.min(100, (candidate.poll / ELECTION_DATA.presidentialThreshold) * 100)}%`, background: candidate.color }} />
                   </div>
+                  <em>Click for analysis</em>
                 </button>
               ))}
             </div>
@@ -1130,6 +1131,7 @@ export default function Dashboard() {
               <p>{packet.analysis.mainPath}</p>
               <strong>Best path: {packet.scenarios[0]?.name}</strong>
               <small>{packet.strategy[0]}</small>
+              <em>Click to open in the analysis panel</em>
             </button>
           ))}
         </div>

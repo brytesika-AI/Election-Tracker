@@ -390,6 +390,21 @@ body {
   line-height: 1.35;
 }
 
+.race-board__candidate em,
+.narrative-strategy-card em {
+  display: inline-flex;
+  margin-top: 8px;
+  border: 1px solid rgba(0,201,167,.35);
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: var(--teal);
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .race-board__meter {
   height: 8px;
   margin-top: 8px;
@@ -401,6 +416,23 @@ body {
 .race-board__meter i {
   display: block;
   height: 100%;
+}
+
+.zambia-only-map .leaflet-container,
+.zambia-only-map {
+  background: radial-gradient(circle at 50% 45%, rgba(245,196,0,.12), rgba(7,17,31,.72) 46%, rgba(3,7,11,.96) 100%) !important;
+}
+
+.zambia-only-map .leaflet-control-container {
+  display: none;
+}
+
+.zambia-only-map .leaflet-tile-pane {
+  display: none;
+}
+
+.zambia-map-card {
+  isolation: isolate;
 }
 
 .map-clickthrough {

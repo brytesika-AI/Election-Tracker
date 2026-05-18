@@ -150,12 +150,14 @@ export default function ZambiaMap() {
       const map = L.map(mapRef.current, {
         center: [-13.5, 28.0],
         zoom: 6,
-        zoomControl: true,
-        attributionControl: true,
-        scrollWheelZoom: true,
+        zoomControl: false,
+        attributionControl: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
       })
 
       leafletMapRef.current = map
+      const provinceGroup = L.featureGroup().addTo(map)
 
       // OpenStreetMap dark-style tiles (Carto Dark)
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -163,6 +165,8 @@ export default function ZambiaMap() {
         subdomains: 'abcd',
         maxZoom: 19,
       }).addTo(map)
+      const tilePane = map.getPane('tilePane')
+      if (tilePane) tilePane.style.opacity = '0'
 
       // Add province GeoJSON layers
       ZAMBIA_GEOJSON.features.forEach(feature => {
@@ -176,18 +180,18 @@ export default function ZambiaMap() {
         const layer = L.geoJSON(feature as Parameters<typeof L.geoJSON>[0], {
           style: {
             fillColor: fill,
-            fillOpacity: 0.56,
-            color: '#F8FAFC',
-            weight: 1.3,
+            fillOpacity: 0.72,
+            color: '#E7EEF8',
+            weight: 1.6,
             opacity: 0.92,
           },
           onEachFeature: (feat, lyr) => {
             lyr.on({
               mouseover: () => {
-                (lyr as L.Path).setStyle({ fillOpacity: 0.82, weight: 2.3, color: '#FFFFFF' })
+                (lyr as L.Path).setStyle({ fillOpacity: 0.88, weight: 2.6, color: '#FFFFFF' })
               },
               mouseout: () => {
-                (lyr as L.Path).setStyle({ fillOpacity: 0.56, weight: 1.3, color: '#F8FAFC' })
+                (lyr as L.Path).setStyle({ fillOpacity: 0.72, weight: 1.6, color: '#E7EEF8' })
               },
               click: () => {
                 setSelected(prev => prev === provinceName ? null : provinceName)
@@ -216,10 +220,16 @@ export default function ZambiaMap() {
             }).addTo(map)
           },
         }).addTo(map)
+        provinceGroup.addLayer(layer)
 
         // Store reference for selection highlight
         ;(layer as unknown as { _provinceName: string })._provinceName = provinceName
       })
+
+      const bounds = provinceGroup.getBounds().pad(0.12)
+      map.fitBounds(bounds, { padding: [24, 24], animate: false })
+      map.setMaxBounds(bounds.pad(0.2))
+      map.setMinZoom(map.getZoom())
 
     }).catch(() => setMapError(true))
 
@@ -246,11 +256,12 @@ export default function ZambiaMap() {
     <div className="zambia-map-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 320px', gap: 16, alignItems: 'stretch' }}>
 
       {/* ── Broadcast-style Leaflet Map ── */}
-      <div style={{ background: 'linear-gradient(180deg,#07111F,#06120B)', borderRadius: 10, padding: 0, border: `1px solid ${C.gold}55`, overflow: 'hidden', position: 'relative', boxShadow: '0 16px 36px rgba(0,0,0,.35)' }}>
+      <div className="zambia-map-card" style={{ background: 'radial-gradient(circle at 50% 45%, rgba(245,196,0,.08), transparent 38%), linear-gradient(180deg,#07111F,#06120B)', borderRadius: 10, padding: 0, border: `1px solid ${C.gold}55`, overflow: 'hidden', position: 'relative', boxShadow: '0 16px 36px rgba(0,0,0,.35)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'linear-gradient(90deg,#0A2A16,#0A1626 58%,#2B1206)', borderBottom: `1px solid ${C.gold}33` }}>
           <div>
             <div style={{ fontSize: 10, fontWeight: 900, color: C.gold, letterSpacing: 1.2, fontFamily: 'monospace' }}>ZAMBIA ELECTION MAP</div>
-            <div style={{ fontSize: 18, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1 }}>Filled by leading presidential candidate number</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1 }}>Zambia-only province lead map</div>
+            <div style={{ fontSize: 10, color: C.teal, marginTop: 5, fontFamily: 'monospace', fontWeight: 800 }}>Click any province for deep-dive analysis</div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 11, color: C.muted }}>ECZ certified register</div>
@@ -274,7 +285,7 @@ export default function ZambiaMap() {
             Map failed to load — check connection
           </div>
         ) : (
-          <div ref={mapRef} style={{ height: 470, overflow: 'hidden' }} />
+          <div ref={mapRef} className="zambia-only-map" style={{ height: 470, overflow: 'hidden', background: 'radial-gradient(circle at 50% 45%, rgba(245,196,0,.12), rgba(7,17,31,.72) 46%, rgba(3,7,11,.96) 100%)' }} />
         )}
 
         {/* Legend */}
@@ -352,7 +363,7 @@ export default function ZambiaMap() {
 
             {/* All provinces minilist */}
             <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 12 }}>
-              <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 8, letterSpacing: 0.5 }}>ALL PROVINCES</div>
+              <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 8, letterSpacing: 0.5 }}>ALL PROVINCES · CLICK A ROW</div>
               {ELECTION_DATA.provinces.map(p => {
                 const lead = leadingCandidate(p)
                 return (
@@ -362,8 +373,8 @@ export default function ZambiaMap() {
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <span style={{ fontSize: 10, color: lead.color }}>{lead.label}</span>
                     <span style={{ fontSize: 10, color: lead.color, fontWeight: 900 }}>{lead.pct}%</span>
-                    <span style={{ fontSize: 8, fontFamily: 'monospace', padding: '1px 6px', borderRadius: 4, background: `${lead.color}20`, color: lead.color, border: `1px solid ${lead.color}40` }}>
-                      LEAD
+                  <span style={{ fontSize: 8, fontFamily: 'monospace', padding: '1px 6px', borderRadius: 4, background: `${lead.color}20`, color: lead.color, border: `1px solid ${lead.color}40` }}>
+                      OPEN
                     </span>
                   </div>
                 </div>
