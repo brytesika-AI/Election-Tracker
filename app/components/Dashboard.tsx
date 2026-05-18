@@ -81,45 +81,6 @@ function ZambiaFlag({ size = 40 }: { size?: number }) {
 }
 
 // ── Countdown ────────────────────────────────────────────
-function HeritageHero({ countdown }: { countdown: { days: number; hours: number; minutes: number } }) {
-  return (
-    <section
-      className="heritage-hero"
-      style={{
-        backgroundImage: `linear-gradient(90deg, rgba(3,12,9,.94) 0%, rgba(6,18,23,.83) 45%, rgba(6,12,20,.72) 100%), url(${VICTORIA_FALLS_IMAGE})`,
-      }}
-    >
-      <div className="heritage-hero__glow" />
-      <div className="heritage-hero__content">
-        <div className="heritage-hero__copy">
-          <div className="heritage-hero__kicker">MOSI-OA-TUNYA INTELLIGENCE ROOM</div>
-          <h2>Zambia 2026 Election Pulse</h2>
-          <p>
-            A national campaign dashboard grounded in ECZ facts, open intelligence, province-level signals, and the visual language of Zambia.
-          </p>
-          <div className="heritage-hero__chips">
-            <span>Victoria Falls backdrop</span>
-            <span>Fish eagle mark</span>
-            <span>Flag palette</span>
-            <span>Province intelligence</span>
-          </div>
-        </div>
-        <div className="heritage-hero__eagle" aria-hidden="true">
-          <ZambiaEagle size={142} />
-          <div>
-            <span>Election Day</span>
-            <strong>{countdown.days}d {countdown.hours}h {countdown.minutes}m</strong>
-            <small>13 August 2026</small>
-          </div>
-        </div>
-      </div>
-      <div className="heritage-hero__attribution">
-        Victoria Falls image: Zambia Tourism / Wikimedia Commons. Eagle image: South Luangwa African fish eagle, I&apos;ve Got It On Film! / CC BY 2.0
-      </div>
-    </section>
-  )
-}
-
 function useCountdown(targetDate: string) {
   const [diff, setDiff] = useState({ days: 0, hours: 0, minutes: 0 })
   useEffect(() => {
@@ -866,18 +827,15 @@ export default function Dashboard() {
       </div>
 
       <div style={{ padding: '16px 20px 40px', maxWidth: 1800, margin: '0 auto' }}>
-        <HeritageHero countdown={countdown} />
-
-        <div style={{ background: '#0B1220', border: `1px solid ${C.gold}`, borderLeft: `5px solid ${C.gold}`, borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ fontSize: 24, fontWeight: 900, color: C.gold, lineHeight: 1 }}>2026</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
-            </div>
+        <div className="context-strip" style={{ backgroundImage: `linear-gradient(90deg, rgba(3,12,9,.94), rgba(6,18,23,.86), rgba(6,12,20,.74)), url(${VICTORIA_FALLS_IMAGE})` }}>
+          <div>
+            <span>MOSI-OA-TUNYA INTELLIGENCE ROOM</span>
+            <strong>Zambia 2026 Election Pulse</strong>
           </div>
-          <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>
-            Voters: 8,786,300<br />Constituencies: 226
+          <p>ECZ facts, open intelligence, province signals and the 50%+1 presidential threshold.</p>
+          <div className="context-strip__meta">
+            <span>Voters: 8,786,300</span>
+            <span>226 constituencies</span>
           </div>
         </div>
 
@@ -1178,6 +1136,19 @@ export default function Dashboard() {
 
         <details className="model-details">
           <summary>Advanced model notes, agents and source detail</summary>
+
+        <div style={{ background: '#0B1220', border: `1px solid ${C.gold}`, borderLeft: `5px solid ${C.gold}`, borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: C.gold, lineHeight: 1 }}>2026</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
+            </div>
+          </div>
+          <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>
+            Voters: 8,786,300<br />Constituencies: 226
+          </div>
+        </div>
 
         <SectionLabel layer="LIVE DATA" title="Real-Time Election Intelligence"
           sub="Aggregated from Facebook, Twitter/X, Lusaka Times, Zambian Observer, ZNBC · Updated every 6 hours" />

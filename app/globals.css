@@ -192,6 +192,63 @@ body {
   font-family: 'Courier New', monospace;
 }
 
+.context-strip {
+  display: grid;
+  grid-template-columns: minmax(260px, .7fr) minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(245,196,0,.34);
+  border-left: 8px solid var(--zg);
+  border-radius: 10px;
+  background-position: center 42%;
+  background-size: cover;
+  box-shadow: 0 12px 30px rgba(0,0,0,.24);
+}
+
+.context-strip span {
+  display: block;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.context-strip strong {
+  display: block;
+  margin-top: 3px;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.context-strip p {
+  margin: 0;
+  color: rgba(226,232,240,.86);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.context-strip__meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.context-strip__meta span {
+  border: 1px solid rgba(245,196,0,.28);
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(6,12,20,.58);
+  color: var(--text);
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
 .ticker-wrap { overflow: hidden; white-space: nowrap; }
 .ticker-inner {
   display: inline-block;
@@ -789,6 +846,15 @@ body {
 
   .hybrid-model {
     grid-template-columns: 1fr !important;
+  }
+
+  .context-strip {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .context-strip__meta {
+    justify-content: flex-start;
   }
 
   .hybrid-model__agents {
