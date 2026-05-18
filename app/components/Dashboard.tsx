@@ -366,6 +366,7 @@ export default function Dashboard() {
   const [vercelStatus, setVercelStatus]     = useState('LIVE')
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
   const [nlpLoading, setNlpLoading]         = useState(false)
+  const [activeCandidateId, setActiveCandidateId] = useState('hh')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
 
   const fetchNlpSentiment = useCallback(async () => {
@@ -569,6 +570,7 @@ export default function Dashboard() {
       },
     }
   })
+  const activeCandidatePacket = candidateStrategyPackets.find(packet => packet.candidateId === activeCandidateId) ?? candidateStrategyPackets[0]
 
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
   const campaignLenses = [
@@ -882,78 +884,161 @@ export default function Dashboard() {
         {/* ── KPI ROW ─────────────────────────────────────── */}
         <SectionLabel layer="ELECTION BOARD" title="Simple Zambia 2026 Dashboard"
           sub="The model runs behind the scenes; this front view keeps the election call, rerun gate, provinces, strongholds and voter mood easy to read." />
-        <div className="simple-dashboard">
-          <div className="simple-dashboard__call" style={{ borderColor: leader.color }}>
-            <div className="race-board">
-              <div className="race-board__title">
-                <span>Race To 50%+1</span>
-                <strong>{ELECTION_DATA.presidentialThreshold}% to avoid rerun</strong>
-              </div>
-              <div className="race-board__scores">
-                {[leader, runnerUp].map((candidate) => (
-                  <div key={candidate.id} className="race-board__candidate" style={{ borderColor: candidate.color }}>
-                    <div style={{ color: candidate.color }}>{candidate.shortName}</div>
-                    <strong>{candidate.poll.toFixed(1)}%</strong>
-                    <span>{candidate.party}</span>
-                    <div className="race-board__meter">
-                      <i style={{ width: `${Math.min(100, (candidate.poll / ELECTION_DATA.presidentialThreshold) * 100)}%`, background: candidate.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="election-desk">
+          <div className="race-board race-board--compact">
+            <div className="race-board__title">
+              <span>Race To 50%+1</span>
+              <strong>{firstRoundGap.toFixed(1)} pts short of first-round win</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'start', marginBottom: 18 }}>
-              <div>
-                <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>OUTRIGHT WINNER</div>
-                <h2 style={{ color: C.text, fontSize: 34, lineHeight: 1.02, margin: '8px 0 6px', fontWeight: 950 }}>{outrightStatus}</h2>
-                <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.6 }}>
-                  {leader.shortName} leads the model, but Zambia requires more than 50% of valid votes. The public call stays at lead, not first-round win, until that gate clears.
-                </div>
-              </div>
-              <CandidatePhoto photo={leader.photo} shortName={leader.shortName} color={leader.color} size={72} />
-            </div>
-            <div className="candidate-bars">
-              {sortedFigures.map(f => (
-                <div key={f.id} className="candidate-bars__row">
-                  <div style={{ minWidth: 112 }}>
-                    <div style={{ color: f.color, fontSize: 12, fontWeight: 900 }}>{f.shortName}</div>
-                    <div style={{ color: C.muted, fontSize: 9 }}>{f.party}</div>
+            <div className="race-board__scores race-board__scores--all">
+              {sortedFigures.map((candidate) => (
+                <button
+                  key={candidate.id}
+                  type="button"
+                  className={`race-board__candidate ${activeCandidateId === candidate.id ? 'race-board__candidate--active' : ''}`}
+                  onClick={() => setActiveCandidateId(candidate.id)}
+                  style={{ borderColor: candidate.color }}
+                >
+                  <div style={{ color: candidate.color }}>{candidate.shortName}</div>
+                  <strong>{candidate.poll.toFixed(1)}%</strong>
+                  <span>{candidate.party}</span>
+                  <div className="race-board__meter">
+                    <i style={{ width: `${Math.min(100, (candidate.poll / ELECTION_DATA.presidentialThreshold) * 100)}%`, background: candidate.color }} />
                   </div>
-                  <div className="candidate-bars__track">
-                    <div style={{ width: `${Math.min(100, f.poll * 1.75)}%`, background: f.color }} />
-                  </div>
-                  <div style={{ color: C.text, fontSize: 16, fontWeight: 950, minWidth: 56, textAlign: 'right' }}>{f.poll.toFixed(1)}%</div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
-          <div className="simple-dashboard__side">
-            <div className="simple-card">
-              <div style={{ color: C.warn, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>RERUN FIGURES</div>
-              <div style={{ color: C.text, fontSize: 24, fontWeight: 950, marginTop: 8 }}>{firstRoundGap.toFixed(1)} pts short</div>
-              <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, margin: '6px 0 12px' }}>If no candidate crosses 50%+1, the model shifts to a runoff-transfer view.</div>
-              {runoffData.map(item => (
-                <div key={item.name} style={{ marginBottom: 9 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                    <span style={{ color: item.color, fontSize: 11, fontWeight: 900 }}>{item.name}</span>
-                    <span style={{ color: C.text, fontSize: 11, fontWeight: 900 }}>{item.value.toFixed(1)}%</span>
-                  </div>
-                  <div style={{ height: 7, borderRadius: 999, background: C.line, overflow: 'hidden', margin: '4px 0' }}>
-                    <div style={{ width: `${Math.min(100, item.value * 1.8)}%`, background: item.color, height: '100%' }} />
-                  </div>
-                  <div style={{ color: C.muted, fontSize: 9 }}>{item.note}</div>
+          <div className="map-clickthrough">
+            <div>
+              <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"
+                sub="Click a province for its breakdown; click a candidate above for the strategic narrative." />
+              <ZambiaMap />
+              <div className="results-lower-third">
+                <div className="results-lower-third__label">
+                  <strong>Election Map</strong>
+                  <span>Modelled province lead · not official ECZ results</span>
                 </div>
-              ))}
-            </div>
-            <div className="simple-card">
-              <div style={{ color: C.teal, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>QUICK READ</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10 }}>
-                <KpiCard label="LEADER" value={leader.shortName} sub={leader.name} borderColor={leader.color} />
-                <KpiCard label="NEXT CANDIDATE" value={runnerUp.shortName} sub={runnerUp.name} borderColor={runnerUp.color} />
+                {lowerStripItems.map(item => (
+                  <div key={item.label} className="results-lower-third__item" style={{ borderColor: `${item.color}66` }}>
+                    <span>{item.label}</span>
+                    <strong style={{ color: item.color }}>{item.value}</strong>
+                  </div>
+                ))}
               </div>
             </div>
+
+            {activeCandidatePacket && (
+              <aside className="candidate-analysis-panel" style={{ borderColor: activeCandidatePacket.figure?.color ?? C.line }}>
+                <div className="candidate-analysis-panel__head">
+                  <div>
+                    <span style={{ color: activeCandidatePacket.figure?.color ?? C.gold }}>Candidate Click-Through</span>
+                    <h3>{activeCandidatePacket.figure?.name ?? activeCandidatePacket.candidateId}</h3>
+                    <p>{activeCandidatePacket.figure?.party}</p>
+                  </div>
+                  {activeCandidatePacket.figure && (
+                    <CandidatePhoto photo={activeCandidatePacket.figure.photo} shortName={activeCandidatePacket.figure.shortName} color={activeCandidatePacket.figure.color} size={66} />
+                  )}
+                </div>
+
+                <div className="candidate-analysis-panel__call">
+                  <strong>{activeCandidatePacket.analysis.currentCall}</strong>
+                  <span>{activeCandidatePacket.analysis.baselineShare.toFixed(1)}% baseline · {activeCandidatePacket.analysis.thresholdGap.toFixed(1)} pts to 50%+1</span>
+                </div>
+
+                <div className="candidate-analysis-panel__section">
+                  <h4>What the model sees</h4>
+                  <p>{activeCandidatePacket.analysis.mainPath}</p>
+                  <div className="narrative-tags">
+                    {activeCandidatePacket.analysis.keyRisks.map(risk => <span key={risk}>{risk}</span>)}
+                  </div>
+                </div>
+
+                <div className="candidate-analysis-panel__section">
+                  <h4>Scenario plan</h4>
+                  {activeCandidatePacket.scenarios.map(scenario => (
+                    <div key={scenario.name} className="narrative-row">
+                      <strong>{scenario.name}</strong>
+                      <span>{scenario.projectedShare.toFixed(1)}% · {scenario.probability}</span>
+                      <p>{scenario.trigger}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="candidate-analysis-panel__section">
+                  <h4>Possible strategy</h4>
+                  <ul>
+                    {activeCandidatePacket.strategy.slice(0, 4).map(action => <li key={action}>{action}</li>)}
+                  </ul>
+                </div>
+
+                <div className="candidate-analysis-panel__validation">
+                  <span>{activeCandidatePacket.validationResult.status}</span>
+                  {activeCandidatePacket.validationResult.passedChecks.length} validation checks passed
+                </div>
+              </aside>
+            )}
           </div>
+
+          <details className="dashboard-drilldown">
+            <summary>More dashboard views</summary>
+            <div className="simple-dashboard simple-dashboard--drilldown">
+              <div className="simple-dashboard__call" style={{ borderColor: leader.color }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'start', marginBottom: 18 }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>OUTRIGHT WINNER</div>
+                    <h2 style={{ color: C.text, fontSize: 34, lineHeight: 1.02, margin: '8px 0 6px', fontWeight: 950 }}>{outrightStatus}</h2>
+                    <div style={{ color: C.muted, fontSize: 12, lineHeight: 1.6 }}>
+                      {leader.shortName} leads the model, but Zambia requires more than 50% of valid votes. The public call stays at lead, not first-round win, until that gate clears.
+                    </div>
+                  </div>
+                  <CandidatePhoto photo={leader.photo} shortName={leader.shortName} color={leader.color} size={72} />
+                </div>
+                <div className="candidate-bars">
+                  {sortedFigures.map(f => (
+                    <div key={f.id} className="candidate-bars__row">
+                      <div style={{ minWidth: 112 }}>
+                        <div style={{ color: f.color, fontSize: 12, fontWeight: 900 }}>{f.shortName}</div>
+                        <div style={{ color: C.muted, fontSize: 9 }}>{f.party}</div>
+                      </div>
+                      <div className="candidate-bars__track">
+                        <div style={{ width: `${Math.min(100, f.poll * 1.75)}%`, background: f.color }} />
+                      </div>
+                      <div style={{ color: C.text, fontSize: 16, fontWeight: 950, minWidth: 56, textAlign: 'right' }}>{f.poll.toFixed(1)}%</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="simple-dashboard__side">
+                <div className="simple-card">
+                  <div style={{ color: C.warn, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>RERUN FIGURES</div>
+                  <div style={{ color: C.text, fontSize: 24, fontWeight: 950, marginTop: 8 }}>{firstRoundGap.toFixed(1)} pts short</div>
+                  <div style={{ color: C.muted, fontSize: 11, lineHeight: 1.55, margin: '6px 0 12px' }}>If no candidate crosses 50%+1, the model shifts to a runoff-transfer view.</div>
+                  {runoffData.map(item => (
+                    <div key={item.name} style={{ marginBottom: 9 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                        <span style={{ color: item.color, fontSize: 11, fontWeight: 900 }}>{item.name}</span>
+                        <span style={{ color: C.text, fontSize: 11, fontWeight: 900 }}>{item.value.toFixed(1)}%</span>
+                      </div>
+                      <div style={{ height: 7, borderRadius: 999, background: C.line, overflow: 'hidden', margin: '4px 0' }}>
+                        <div style={{ width: `${Math.min(100, item.value * 1.8)}%`, background: item.color, height: '100%' }} />
+                      </div>
+                      <div style={{ color: C.muted, fontSize: 9 }}>{item.note}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="simple-card">
+                  <div style={{ color: C.teal, fontSize: 10, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>QUICK READ</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 10 }}>
+                    <KpiCard label="LEADER" value={leader.shortName} sub={leader.name} borderColor={leader.color} />
+                    <KpiCard label="NEXT CANDIDATE" value={runnerUp.shortName} sub={runnerUp.name} borderColor={runnerUp.color} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div className="simple-grid">
@@ -1060,11 +1145,17 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <SectionLabel layer="JSON STRATEGY" title="Candidate Scenario Plans + Validation"
-          sub="Whitebox packets for each candidate: analysis, scenario plan, possible strategy and validation status in JSON format." />
-        <div className="json-strategy-grid">
+        <SectionLabel layer="STRATEGY NARRATIVES" title="Candidate Scenario Plans"
+          sub="Readable whitebox analysis. Structured JSON still powers validation in the backend data layer." />
+        <div className="json-strategy-grid narrative-strategy-grid">
           {candidateStrategyPackets.map(packet => (
-            <div key={packet.candidateId} className="json-strategy-card" style={{ borderColor: packet.figure?.color ?? C.line }}>
+            <button
+              key={packet.candidateId}
+              type="button"
+              className="json-strategy-card narrative-strategy-card"
+              onClick={() => setActiveCandidateId(packet.candidateId)}
+              style={{ borderColor: packet.figure?.color ?? C.line }}
+            >
               <div className="json-strategy-card__head">
                 <div>
                   <div style={{ color: packet.figure?.color ?? C.text, fontSize: 12, fontWeight: 950 }}>
@@ -1078,26 +1169,10 @@ export default function Dashboard() {
                   {packet.validationResult.status}
                 </span>
               </div>
-              <pre className="json-block">{JSON.stringify(packet.displayJson, null, 2)}</pre>
-            </div>
-          ))}
-        </div>
-
-        <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"
-          sub="A filled Zambia map makes the lead geography readable immediately: orange for UPND, red for the opposition lane, gold for contested." />
-        <div style={{ marginBottom: 16 }}>
-          <ZambiaMap />
-        </div>
-        <div className="results-lower-third">
-          <div className="results-lower-third__label">
-            <strong>Election Map</strong>
-            <span>Modelled province lead · not official ECZ results</span>
-          </div>
-          {lowerStripItems.map(item => (
-            <div key={item.label} className="results-lower-third__item" style={{ borderColor: `${item.color}66` }}>
-              <span>{item.label}</span>
-              <strong style={{ color: item.color }}>{item.value}</strong>
-            </div>
+              <p>{packet.analysis.mainPath}</p>
+              <strong>Best path: {packet.scenarios[0]?.name}</strong>
+              <small>{packet.strategy[0]}</small>
+            </button>
           ))}
         </div>
 
