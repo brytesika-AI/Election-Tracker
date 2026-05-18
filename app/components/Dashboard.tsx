@@ -482,6 +482,13 @@ export default function Dashboard() {
     { name: 'All others', value: Math.max(0, nationalAccounted - leader.poll - runnerUp.poll), color: C.gold, note: 'Minor candidates and issue lanes' },
     { name: 'Undecided', value: ELECTION_DATA.nationalPoll.others_undecided, color: C.muted, note: 'Available pool before first round' },
   ]
+  const lowerStripItems = [
+    { label: 'Leader', value: `${leader.shortName} ${leader.poll.toFixed(1)}%`, color: leader.color },
+    { label: 'Next', value: `${runnerUp.shortName} ${runnerUp.poll.toFixed(1)}%`, color: runnerUp.color },
+    { label: '50%+1 gap', value: `${firstRoundGap.toFixed(1)} pts`, color: C.warn },
+    { label: 'Undecided', value: `${ELECTION_DATA.nationalPoll.others_undecided.toFixed(1)}%`, color: C.gold },
+    { label: 'Call', value: runoffRisk === 'HIGH' ? 'Rerun risk' : 'First-round path', color: runoffRisk === 'HIGH' ? C.warn : C.teal },
+  ]
   const mundubileTicket = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')
   const ticketReadout = [
     { label: 'Candidate', value: 'Brian Mundubile', note: 'Northern/PF-linked machinery and Tonse visibility' },
@@ -877,6 +884,24 @@ export default function Dashboard() {
           sub="The model runs behind the scenes; this front view keeps the election call, rerun gate, provinces, strongholds and voter mood easy to read." />
         <div className="simple-dashboard">
           <div className="simple-dashboard__call" style={{ borderColor: leader.color }}>
+            <div className="race-board">
+              <div className="race-board__title">
+                <span>Race To 50%+1</span>
+                <strong>{ELECTION_DATA.presidentialThreshold}% to avoid rerun</strong>
+              </div>
+              <div className="race-board__scores">
+                {[leader, runnerUp].map((candidate) => (
+                  <div key={candidate.id} className="race-board__candidate" style={{ borderColor: candidate.color }}>
+                    <div style={{ color: candidate.color }}>{candidate.shortName}</div>
+                    <strong>{candidate.poll.toFixed(1)}%</strong>
+                    <span>{candidate.party}</span>
+                    <div className="race-board__meter">
+                      <i style={{ width: `${Math.min(100, (candidate.poll / ELECTION_DATA.presidentialThreshold) * 100)}%`, background: candidate.color }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'start', marginBottom: 18 }}>
               <div>
                 <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 900, letterSpacing: 1 }}>OUTRIGHT WINNER</div>
@@ -1062,6 +1087,18 @@ export default function Dashboard() {
           sub="A filled Zambia map makes the lead geography readable immediately: orange for UPND, red for the opposition lane, gold for contested." />
         <div style={{ marginBottom: 16 }}>
           <ZambiaMap />
+        </div>
+        <div className="results-lower-third">
+          <div className="results-lower-third__label">
+            <strong>Election Map</strong>
+            <span>Modelled province lead · not official ECZ results</span>
+          </div>
+          {lowerStripItems.map(item => (
+            <div key={item.label} className="results-lower-third__item" style={{ borderColor: `${item.color}66` }}>
+              <span>{item.label}</span>
+              <strong style={{ color: item.color }}>{item.value}</strong>
+            </div>
+          ))}
         </div>
 
         <details className="model-details">

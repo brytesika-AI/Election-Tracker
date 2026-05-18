@@ -241,6 +241,87 @@ body {
   border-left-width: 5px;
 }
 
+.race-board {
+  display: grid;
+  grid-template-columns: minmax(160px, .46fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(245,196,0,.35);
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(2,8,14,.96), rgba(8,22,38,.9));
+}
+
+.race-board__title {
+  display: grid;
+  align-content: center;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(245,196,0,.98), rgba(224,123,0,.92));
+  color: #07111F;
+}
+
+.race-board__title span {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.race-board__title strong {
+  margin-top: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.race-board__scores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+
+.race-board__candidate {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(7,17,31,.74);
+}
+
+.race-board__candidate div {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.race-board__candidate strong {
+  display: block;
+  margin: 2px 0;
+  color: #fff;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.race-board__candidate span {
+  display: block;
+  min-height: 26px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.race-board__meter {
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden;
+}
+
+.race-board__meter i {
+  display: block;
+  height: 100%;
+}
+
 .simple-dashboard__side {
   display: grid;
   gap: 14px;
@@ -395,6 +476,57 @@ body {
   word-break: break-word;
 }
 
+.results-lower-third {
+  display: grid;
+  grid-template-columns: minmax(190px, 1.15fr) repeat(5, minmax(110px, 1fr));
+  gap: 8px;
+  align-items: stretch;
+  margin: -6px 0 18px;
+  padding: 8px;
+  border: 1px solid rgba(245,196,0,.34);
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(3,7,11,.96), rgba(10,18,30,.94));
+  box-shadow: 0 16px 34px rgba(0,0,0,.28);
+}
+
+.results-lower-third__label,
+.results-lower-third__item {
+  min-width: 0;
+  border-radius: 6px;
+  background: rgba(18,28,44,.82);
+  padding: 9px 10px;
+}
+
+.results-lower-third__label {
+  border-left: 5px solid var(--gold);
+}
+
+.results-lower-third__label strong,
+.results-lower-third__item strong {
+  display: block;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 950;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.results-lower-third__label span,
+.results-lower-third__item span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.results-lower-third__item {
+  border: 1px solid var(--line);
+}
+
 @media (max-width: 900px) {
   .zambia-map-grid {
     grid-template-columns: 1fr !important;
@@ -403,7 +535,13 @@ body {
   .simple-dashboard,
   .simple-grid,
   .ticket-stack,
-  .json-strategy-grid {
+  .json-strategy-grid,
+  .race-board,
+  .results-lower-third {
+    grid-template-columns: 1fr;
+  }
+
+  .race-board__scores {
     grid-template-columns: 1fr;
   }
 
