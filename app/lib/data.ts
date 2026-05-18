@@ -334,6 +334,136 @@ export const ELECTION_DATA = {
     { category: 'Media Watch', sources: ['ZNBC', 'News Diggers!', 'MISA Zambia', 'The Mast', 'Diamond TV'] },
   ],
 
+  candidateStrategyPackets: [
+    {
+      schemaVersion: 'candidate-strategy.v1',
+      candidateId: 'hh',
+      analysis: {
+        currentCall: 'Lead, not outright win',
+        baselineShare: 47.2,
+        thresholdGap: 2.8,
+        mainPath: 'Convert undecided voters in Lusaka, Copperbelt and Northern while holding Southern, Western and North-Western anchors.',
+        keyRisks: ['Load shedding blame', 'mealie meal and fuel prices', 'Copperbelt jobs', 'urban youth turnout']
+      },
+      scenarios: [
+        { name: 'First-round recovery', probability: 'medium', projectedShare: 51.8, trigger: 'Visible electricity and food-price relief plus youth turnout recovery.' },
+        { name: 'Rerun exposure', probability: 'high at baseline', projectedShare: 47.2, trigger: 'Undecided voters split against the incumbent and opposition ticket consolidates.' },
+        { name: 'Strong mandate', probability: 'low-medium', projectedShare: 56.1, trigger: 'Economic confidence improves and opposition remains fragmented outside PF-linked provinces.' }
+      ],
+      strategy: [
+        'Publish province-level delivery proof on power, maize, health workers and CDF execution.',
+        'Use Copperbelt job, supplier-payment and mining-community numbers rather than generic national promises.',
+        'Target undecided urban voters with short evidence-led radio, Facebook, WhatsApp and TikTok explainers.',
+        'Prepare runoff transfer outreach to smaller candidates before first-round bargaining hardens.'
+      ],
+      validation: {
+        status: 'validated',
+        checks: ['baselineShare is numeric', '50%+1 threshold modelled', 'Zambia issue drivers included', 'projection caveat retained']
+      }
+    },
+    {
+      schemaVersion: 'candidate-strategy.v1',
+      candidateId: 'pf_ndc',
+      analysis: {
+        currentCall: 'Main opposition ticket lane',
+        baselineShare: 20.3,
+        thresholdGap: 29.7,
+        mainPath: 'Treat Brian Mundubile and Makebi Zulu as a combined ticket lane that can consolidate Northern, Luapula, Muchinga, Eastern and parts of Copperbelt.',
+        keyRisks: ['Final ECZ ticket filing uncertainty', 'PF legacy drag', 'alliance discipline', 'weak Southern and Western conversion']
+      },
+      scenarios: [
+        { name: 'Consolidated surge', probability: 'medium', projectedShare: 24.2, trigger: 'Tonse/PF-aligned structures campaign as one machine and Eastern transfer improves.' },
+        { name: 'Fragmented opposition', probability: 'medium', projectedShare: 18.0, trigger: 'Multiple opposition personalities split anti-incumbent votes.' },
+        { name: 'Rerun challenger', probability: 'conditional', projectedShare: 30.0, trigger: 'HH stays below 50%+1 and smaller opposition voters transfer tactically.' }
+      ],
+      strategy: [
+        'Lock the public ticket narrative early: candidate, running mate, province role and field command.',
+        'Prioritize Bemba/Nyanja radio, market visits and church/community networks with a disciplined cost-of-living message.',
+        'Offer a costed Copperbelt jobs and mining supplier plan that can be compared against UPND delivery claims.',
+        'Build a runoff-transfer map by province before election day, especially Kalaba, Socialist Party and undecided issue voters.'
+      ],
+      validation: {
+        status: 'caution',
+        checks: ['baselineShare is numeric', 'ticket treated as combined lane', 'ECZ filing caveat included', '50%+1 threshold modelled']
+      }
+    },
+    {
+      schemaVersion: 'candidate-strategy.v1',
+      candidateId: 'kalaba',
+      analysis: {
+        currentCall: 'Spoiler and coalition-transfer actor',
+        baselineShare: 3.8,
+        thresholdGap: 46.2,
+        mainPath: 'Win enough Northern/Luapula and anti-corruption voters to become strategically valuable in a rerun.',
+        keyRisks: ['Low national structure', 'squeeze by Mundubile-Makebi lane', 'limited media oxygen']
+      },
+      scenarios: [
+        { name: 'Transfer kingmaker', probability: 'medium', projectedShare: 5.2, trigger: 'Anti-corruption and regional credibility hold while major parties stay below 50%+1.' },
+        { name: 'Squeezed vote', probability: 'medium-high', projectedShare: 2.4, trigger: 'Opposition voters consolidate behind the main ticket late.' },
+        { name: 'Regional breakout', probability: 'low', projectedShare: 7.0, trigger: 'Luapula/Northern field network outperforms national visibility.' }
+      ],
+      strategy: [
+        'Focus on clean-government credibility and local delivery failures, not broad presidential messaging.',
+        'Defend a clear transfer-negotiation position for any rerun.',
+        'Use constituency-level field captains in Luapula and Northern where small vote gains matter most.'
+      ],
+      validation: {
+        status: 'validated',
+        checks: ['baselineShare is numeric', 'rerun transfer role explicit', 'province-specific strategy included']
+      }
+    },
+    {
+      schemaVersion: 'candidate-strategy.v1',
+      candidateId: 'membe',
+      analysis: {
+        currentCall: 'Youth, mining-inequality and protest lane',
+        baselineShare: 4.1,
+        thresholdGap: 45.9,
+        mainPath: 'Grow protest support among youth, labour, mining-community and ideological voters without losing credibility to tactical-vote pressure.',
+        keyRisks: ['Anti-incumbent tactical squeeze', 'elite distrust', 'urban turnout volatility']
+      },
+      scenarios: [
+        { name: 'Protest vote expands', probability: 'medium', projectedShare: 6.4, trigger: 'Load shedding, inequality and mining grievances dominate final campaign conversation.' },
+        { name: 'Tactical squeeze', probability: 'medium', projectedShare: 2.8, trigger: 'Voters move to the strongest anti-HH challenger to force a rerun.' },
+        { name: 'Runoff broker', probability: 'conditional', projectedShare: 5.5, trigger: 'First round misses 50%+1 and ideological voters become transferable.' }
+      ],
+      strategy: [
+        'Convert anger into a visible province-by-province worker, youth and mining-community platform.',
+        'Explain what Socialist Party voters should demand in a rerun before other campaigns define it.',
+        'Use issue receipts and local testimonies rather than abstract ideology.'
+      ],
+      validation: {
+        status: 'validated',
+        checks: ['baselineShare is numeric', 'sentiment drivers included', '50%+1 rerun effect included']
+      }
+    },
+    {
+      schemaVersion: 'candidate-strategy.v1',
+      candidateId: 'kateka',
+      analysis: {
+        currentCall: 'Governance reform signal',
+        baselineShare: 1.5,
+        thresholdGap: 48.5,
+        mainPath: 'Use integrity, women leadership and governance reform to attract undecided civic-minded voters and shape post-first-round negotiation.',
+        keyRisks: ['Low awareness', 'limited provincial machinery', 'vote squeezed by larger anti-incumbent choices']
+      },
+      scenarios: [
+        { name: 'Civic reform lift', probability: 'low-medium', projectedShare: 2.6, trigger: 'Debate visibility and integrity messaging cut through among undecided voters.' },
+        { name: 'Visibility ceiling', probability: 'high', projectedShare: 1.2, trigger: 'Media attention remains concentrated on HH and the Mundubile-Makebi lane.' },
+        { name: 'Runoff values bloc', probability: 'conditional', projectedShare: 2.0, trigger: 'Her supporters become a small but explainable reform-transfer bloc.' }
+      ],
+      strategy: [
+        'Own the governance, anti-corruption and women-leadership lane with measurable reform pledges.',
+        'Target high-information undecided voters in Lusaka, Copperbelt and university communities.',
+        'Publish a transparent rerun negotiation test so supporters know what any endorsement would require.'
+      ],
+      validation: {
+        status: 'validated',
+        checks: ['baselineShare is numeric', 'undecided conversion path included', 'strategy tied to Zambian voter segments']
+      }
+    }
+  ],
+
   // ── AI Judges Config ──
   judgePersonas: [
     {

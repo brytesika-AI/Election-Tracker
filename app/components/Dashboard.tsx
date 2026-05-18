@@ -523,6 +523,45 @@ export default function Dashboard() {
     { layer: 'Simulation', question: 'What could happen?', answer: 'Run first-round win vs rerun scenarios under ticket clarity, Copperbelt swing, and undecided allocation.', color: C.ndc },
     { layer: 'Optimization', question: 'What should be done?', answer: 'Prioritize actions that close the 2.8 pt 50%+1 gap or prepare credible runoff-transfer strategy.', color: C.zg },
   ]
+  const candidateStrategyPackets = ELECTION_DATA.candidateStrategyPackets.map((packet) => {
+    const figure = ELECTION_DATA.figures.find(f => f.id === packet.candidateId)
+    const serializedPacket = JSON.stringify([packet.analysis, packet.scenarios, packet.strategy, packet.validation]).toLowerCase()
+    const validationRules = [
+      { pass: Boolean(packet.schemaVersion), check: 'schemaVersion present', error: 'schemaVersion missing' },
+      { pass: Boolean(figure), check: 'candidate mapped to figure registry', error: 'candidateId does not match a tracked candidate' },
+      { pass: Number.isFinite(packet.analysis.baselineShare), check: 'baselineShare is numeric', error: 'analysis.baselineShare must be numeric' },
+      { pass: Number.isFinite(packet.analysis.thresholdGap) && packet.analysis.thresholdGap >= 0, check: 'thresholdGap is numeric and non-negative', error: 'analysis.thresholdGap must be numeric and non-negative' },
+      { pass: packet.scenarios.length >= 3, check: 'scenario plan has three or more cases', error: 'at least three scenarios required' },
+      { pass: packet.strategy.length >= 3, check: 'strategy has three or more actions', error: 'at least three strategy actions required' },
+      { pass: serializedPacket.includes('50%+1') || serializedPacket.includes('rerun'), check: '50%+1 or rerun rule included', error: '50%+1 or rerun rule must be explicit' },
+    ]
+    const errors = validationRules.filter(rule => !rule.pass).map(rule => rule.error)
+    const passedChecks = validationRules.filter(rule => rule.pass).map(rule => rule.check)
+
+    return {
+      ...packet,
+      figure,
+      validationResult: {
+        status: errors.length === 0 ? packet.validation.status : 'invalid',
+        passedChecks,
+        errors,
+        checkedAt: ELECTION_DATA.electionDate,
+      },
+      displayJson: {
+        schemaVersion: packet.schemaVersion,
+        candidateId: packet.candidateId,
+        candidate: figure ? `${figure.name} (${figure.party})` : 'unmatched',
+        analysis: packet.analysis,
+        scenarios: packet.scenarios,
+        strategy: packet.strategy,
+        validationResult: {
+          status: errors.length === 0 ? packet.validation.status : 'invalid',
+          passedChecks,
+          errors,
+        },
+      },
+    }
+  })
 
   const tooltipStyle = { background: C.card2, border: `1px solid ${C.line}`, borderRadius: 6 }
   const campaignLenses = [
@@ -994,6 +1033,29 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+        </div>
+
+        <SectionLabel layer="JSON STRATEGY" title="Candidate Scenario Plans + Validation"
+          sub="Whitebox packets for each candidate: analysis, scenario plan, possible strategy and validation status in JSON format." />
+        <div className="json-strategy-grid">
+          {candidateStrategyPackets.map(packet => (
+            <div key={packet.candidateId} className="json-strategy-card" style={{ borderColor: packet.figure?.color ?? C.line }}>
+              <div className="json-strategy-card__head">
+                <div>
+                  <div style={{ color: packet.figure?.color ?? C.text, fontSize: 12, fontWeight: 950 }}>
+                    {packet.figure?.shortName ?? packet.candidateId}
+                  </div>
+                  <div style={{ color: C.muted, fontSize: 10, lineHeight: 1.45 }}>
+                    {packet.analysis.currentCall} · {packet.analysis.baselineShare.toFixed(1)}% baseline · {packet.analysis.thresholdGap.toFixed(1)} pts to 50%+1
+                  </div>
+                </div>
+                <span className="json-strategy-card__status" style={{ borderColor: packet.validationResult.status === 'invalid' ? C.warn : C.teal, color: packet.validationResult.status === 'invalid' ? C.warn : C.teal }}>
+                  {packet.validationResult.status}
+                </span>
+              </div>
+              <pre className="json-block">{JSON.stringify(packet.displayJson, null, 2)}</pre>
+            </div>
+          ))}
         </div>
 
         <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"

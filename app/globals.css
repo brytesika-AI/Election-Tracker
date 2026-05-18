@@ -344,6 +344,57 @@ body {
   border-left-width: 5px;
 }
 
+.json-strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.json-strategy-card {
+  background: rgba(14,23,36,.94);
+  border: 1px solid var(--line);
+  border-left-width: 5px;
+  border-radius: 10px;
+  padding: 14px;
+  min-width: 0;
+}
+
+.json-strategy-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.json-strategy-card__status {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.json-block {
+  max-height: 340px;
+  overflow: auto;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(28,42,58,.9);
+  border-radius: 8px;
+  background: rgba(3,7,11,.72);
+  color: #DCE7F3;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 @media (max-width: 900px) {
   .zambia-map-grid {
     grid-template-columns: 1fr !important;
@@ -351,7 +402,8 @@ body {
 
   .simple-dashboard,
   .simple-grid,
-  .ticket-stack {
+  .ticket-stack,
+  .json-strategy-grid {
     grid-template-columns: 1fr;
   }
 
