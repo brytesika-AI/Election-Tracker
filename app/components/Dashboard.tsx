@@ -483,8 +483,8 @@ export default function Dashboard() {
   })
   const strongholdSplit = [
     { label: 'UPND anchors', provinces: 'Southern, Western, North-Western, Central', value: 4, color: C.upnd },
-    { label: 'Opposition anchors', provinces: 'Northern, Luapula, Muchinga, Copperbelt', value: 4, color: C.pf },
-    { label: 'True battleground', provinces: 'Lusaka and Copperbelt urban margins', value: 2, color: C.gold },
+    { label: 'Opposition anchors', provinces: 'Northern, Luapula, Muchinga, Copperbelt, Eastern', value: 5, color: C.pf },
+    { label: 'True battleground', provinces: 'Lusaka plus Copperbelt urban margins', value: 1, color: C.gold },
   ]
   const sentimentByProvince = provincePopularity.map(p => ({
     name: p.name,
@@ -1194,7 +1194,7 @@ export default function Dashboard() {
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 12, fontWeight: 900, color: C.text, marginBottom: 3 }}>Data audit status</div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
+              Official facts are ECZ/ZamStats/BoZ sourced. Zambia&apos;s presidential win condition is more than 50% of valid votes cast; below that, the model treats the race as runoff-risk. Eastern Province is now audited against the ECZ 2021 baseline and treated as an opposition-leaning lane, not an HH province lead. Candidate support, trends and strategy scores are model estimates for planning, not certified polling or ECZ results.
             </div>
           </div>
           <div style={{ textAlign: 'right', fontSize: 10, color: C.muted, fontFamily: 'monospace' }}>

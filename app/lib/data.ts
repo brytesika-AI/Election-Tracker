@@ -197,7 +197,10 @@ export const ELECTION_DATA = {
   provinces: [
     { name: 'Lusaka',     voters: 1430889, upnd: 44, pf: 36, lean: 'CONTESTED' },
     { name: 'Copperbelt', voters: 1296446, upnd: 38, pf: 46, lean: 'PF' },
-    { name: 'Eastern',    voters: 1129444, upnd: 58, pf: 24, lean: 'UPND' },
+    // Eastern is audited against ECZ 2021 provincial presidential totals: PF/Lungu led HH there.
+    // For 2026 the model keeps it opposition-leaning because Makebi/Eastern transfer potential,
+    // Kalaba pockets, and PF-linked structures make an outright HH lead unsupported by baseline data.
+    { name: 'Eastern',    voters: 1129444, upnd: 35, pf: 44, lean: 'PF' },
     { name: 'Southern',   voters: 1103275, upnd: 76, pf: 12, lean: 'UPND' },
     { name: 'Central',    voters:  760000, upnd: 52, pf: 30, lean: 'UPND' },
     { name: 'Northern',   voters:  705000, upnd: 28, pf: 52, lean: 'PF' },
