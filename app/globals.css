@@ -418,6 +418,54 @@ body {
   height: 100%;
 }
 
+.leader-comparison {
+  display: grid;
+  grid-template-columns: minmax(180px, .8fr) minmax(220px, 1fr) minmax(180px, .8fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.leader-comparison__item,
+.leader-comparison__gap {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(14,23,36,.92), rgba(6,12,20,.96));
+  padding: 12px 14px;
+}
+
+.leader-comparison__gap {
+  border-color: rgba(245,196,0,.46);
+  text-align: center;
+  background: linear-gradient(180deg, rgba(245,196,0,.15), rgba(14,23,36,.92));
+}
+
+.leader-comparison span,
+.leader-comparison em {
+  display: block;
+  color: var(--muted);
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.leader-comparison strong {
+  display: block;
+  margin: 3px 0;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.leader-comparison__gap strong {
+  color: var(--gold);
+  font-size: 30px;
+}
+
 .zambia-only-map .leaflet-container,
 .zambia-only-map {
   background: radial-gradient(circle at 50% 45%, rgba(245,196,0,.12), rgba(7,17,31,.72) 46%, rgba(3,7,11,.96) 100%) !important;
@@ -431,8 +479,343 @@ body {
   display: none;
 }
 
+.zambia-map-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 14px;
+  align-items: stretch;
+}
+
 .zambia-map-card {
   isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(245,196,0,.36);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #07111F, #06120B);
+  box-shadow: 0 18px 38px rgba(0,0,0,.34);
+}
+
+.zambia-map-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(245,196,0,.22);
+  background: linear-gradient(90deg, #0A2A16, #0A1626 58%, #2B1206);
+}
+
+.zambia-map-card__head span,
+.zambia-map-card__head em {
+  display: block;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.zambia-map-card__head strong {
+  display: block;
+  margin-top: 3px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.12;
+  font-weight: 950;
+}
+
+.zambia-map-card__head > div:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.zambia-map-card__head > div:last-child span {
+  color: var(--muted);
+}
+
+.zambia-map-card__summary {
+  display: grid;
+  border-bottom: 1px solid rgba(245,196,0,.15);
+  background: rgba(6,18,12,.72);
+}
+
+.zambia-map-card__summary div {
+  min-width: 0;
+  padding: 10px 14px;
+  border-right: 1px solid var(--line);
+}
+
+.zambia-map-card__summary strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.zambia-map-card__summary span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zambia-svg-map {
+  position: relative;
+  min-height: 500px;
+  background: radial-gradient(circle at 50% 42%, rgba(245,196,0,.09), rgba(7,17,31,.86) 48%, rgba(3,7,11,.98) 100%);
+}
+
+.zambia-svg-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 500px;
+}
+
+.zambia-svg-map__province {
+  cursor: pointer;
+  transition: fill-opacity .18s ease, stroke-width .18s ease, transform .18s ease;
+}
+
+.zambia-svg-map__province:hover,
+.zambia-svg-map__province:focus {
+  fill-opacity: .96;
+  outline: none;
+  stroke: #fff;
+  stroke-width: 4;
+}
+
+.zambia-svg-map__province--selected {
+  filter: brightness(1.16);
+}
+
+.zambia-svg-map__province-name {
+  fill: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 950;
+  paint-order: stroke;
+  stroke: rgba(0,0,0,.78);
+  stroke-width: 5px;
+}
+
+.zambia-svg-map__province-score {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.zambia-svg-map__hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: 1px solid rgba(0,201,167,.42);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(3,7,11,.72);
+  color: var(--teal);
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+
+.zambia-map-card__legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px 12px 12px;
+  border-top: 1px solid rgba(245,196,0,.14);
+  background: rgba(3,12,9,.82);
+}
+
+.zambia-map-card__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zambia-map-card__legend i {
+  width: 14px;
+  height: 10px;
+  border: 1.5px solid;
+  border-radius: 2px;
+}
+
+.zambia-map-card__legend small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zambia-map-panel {
+  min-height: 100%;
+  border: 1px solid rgba(245,196,0,.3);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(11,31,17,.95), rgba(11,18,32,.96));
+  padding: 16px;
+  box-shadow: 0 18px 38px rgba(0,0,0,.24);
+}
+
+.zambia-map-panel__title {
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+.zambia-map-panel p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.zambia-map-panel__pill {
+  display: inline-flex;
+  margin-bottom: 16px;
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.zambia-map-panel__metric {
+  margin-bottom: 14px;
+}
+
+.zambia-map-panel__metric span,
+.zambia-map-panel__metric em {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.zambia-map-panel__metric strong {
+  display: block;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.zambia-map-panel__bars {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.zambia-map-panel__bars span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zambia-map-panel__bars i {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.zambia-map-panel__bars em {
+  display: block;
+  height: 100%;
+}
+
+.zambia-map-panel__readout {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(18,28,44,.72);
+  padding: 10px 12px;
+}
+
+.zambia-map-panel__readout span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.zambia-map-panel__readout b {
+  color: var(--text);
+}
+
+.zambia-map-panel__reset,
+.zambia-map-panel__list button {
+  width: 100%;
+  cursor: pointer;
+  color: inherit;
+}
+
+.zambia-map-panel__reset {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  padding: 7px;
+  color: var(--muted);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.zambia-map-panel__list {
+  display: grid;
+  gap: 6px;
+}
+
+.zambia-map-panel__list button {
+  display: grid;
+  grid-template-columns: minmax(86px, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid rgba(28,42,58,.7);
+  border-radius: 7px;
+  background: rgba(18,28,44,.44);
+  padding: 7px 8px;
+  text-align: left;
+}
+
+.zambia-map-panel__list span {
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.zambia-map-panel__list strong {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.zambia-map-panel__list em {
+  border: 1px solid rgba(0,201,167,.36);
+  border-radius: 999px;
+  padding: 2px 6px;
+  color: var(--teal);
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .map-clickthrough {
@@ -641,6 +1024,62 @@ body {
   margin-bottom: 14px;
 }
 
+.dashboard-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 18;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0 14px;
+  padding: 8px;
+  border: 1px solid rgba(245,196,0,.28);
+  border-radius: 10px;
+  background: rgba(3,7,11,.9);
+  backdrop-filter: blur(12px);
+}
+
+.dashboard-tabs__tab {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(14,23,36,.84);
+  padding: 10px 12px;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dashboard-tabs__tab strong,
+.dashboard-tabs__tab span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-tabs__tab strong {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.dashboard-tabs__tab span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.dashboard-tabs__tab--active {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, rgba(245,196,0,.18), rgba(14,23,36,.92));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.dashboard-tabs__tab--active span {
+  color: var(--gold);
+}
+
 .province-popularity {
   display: grid;
   gap: 8px;
@@ -842,6 +1281,8 @@ body {
   .json-strategy-grid,
   .race-board,
   .race-board__scores--all,
+  .leader-comparison,
+  .dashboard-tabs,
   .map-clickthrough,
   .results-lower-third {
     grid-template-columns: 1fr;
@@ -853,6 +1294,24 @@ body {
 
   .sentiment-strip {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .zambia-svg-map,
+  .zambia-svg-map svg {
+    min-height: 360px;
+  }
+
+  .zambia-map-card__head,
+  .zambia-map-card__legend {
+    align-items: flex-start;
+  }
+
+  .zambia-map-card__head {
+    flex-direction: column;
+  }
+
+  .zambia-map-card__head > div:last-child {
+    text-align: left;
   }
 
   .province-popularity__row {

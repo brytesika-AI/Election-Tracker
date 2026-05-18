@@ -328,6 +328,7 @@ export default function Dashboard() {
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
   const [nlpLoading, setNlpLoading]         = useState(false)
   const [activeCandidateId, setActiveCandidateId] = useState('hh')
+  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model'>('overview')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
 
   const fetchNlpSentiment = useCallback(async () => {
@@ -450,6 +451,12 @@ export default function Dashboard() {
     { label: '50%+1 gap', value: `${firstRoundGap.toFixed(1)} pts`, color: C.warn },
     { label: 'Undecided', value: `${ELECTION_DATA.nationalPoll.others_undecided.toFixed(1)}%`, color: C.gold },
     { label: 'Call', value: runoffRisk === 'HIGH' ? 'Rerun risk' : 'First-round path', color: runoffRisk === 'HIGH' ? C.warn : C.teal },
+  ]
+  const dashboardTabs = [
+    { id: 'overview' as const, label: 'Overview', note: 'Race, call and map' },
+    { id: 'provinces' as const, label: 'Provinces', note: 'Popularity and mood' },
+    { id: 'strategy' as const, label: 'Strategy', note: 'Tickets and scenarios' },
+    { id: 'model' as const, label: 'Model Notes', note: 'Sources and validation' },
   ]
   const mundubileTicket = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')
   const ticketReadout = [
@@ -869,6 +876,24 @@ export default function Dashboard() {
             </div>
           </div>
 
+          <div className="leader-comparison" aria-label="Leading candidate comparison">
+            <div className="leader-comparison__item" style={{ borderColor: `${leader.color}88` }}>
+              <span>Leader</span>
+              <strong style={{ color: leader.color }}>{leader.shortName}</strong>
+              <em>{leader.poll.toFixed(1)}% model share</em>
+            </div>
+            <div className="leader-comparison__gap">
+              <span>Lead margin</span>
+              <strong>{(leader.poll - runnerUp.poll).toFixed(1)} pts</strong>
+              <em>{firstRoundGap.toFixed(1)} pts short of 50%+1 gate</em>
+            </div>
+            <div className="leader-comparison__item" style={{ borderColor: `${runnerUp.color}88` }}>
+              <span>Closest challenger</span>
+              <strong style={{ color: runnerUp.color }}>{runnerUp.shortName}</strong>
+              <em>{runnerUp.poll.toFixed(1)}% model share</em>
+            </div>
+          </div>
+
           <div className="map-clickthrough">
             <div>
               <SectionLabel layer="FILLED MAP" title="Province Winners At A Glance"
@@ -1000,6 +1025,24 @@ export default function Dashboard() {
           </details>
         </div>
 
+        <div className="dashboard-tabs" role="tablist" aria-label="Dashboard sections">
+          {dashboardTabs.map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeDashboardTab === tab.id}
+              className={`dashboard-tabs__tab ${activeDashboardTab === tab.id ? 'dashboard-tabs__tab--active' : ''}`}
+              onClick={() => setActiveDashboardTab(tab.id)}
+            >
+              <strong>{tab.label}</strong>
+              <span>{tab.note}</span>
+            </button>
+          ))}
+        </div>
+
+        {activeDashboardTab === 'provinces' && (
+        <>
         <div className="simple-grid">
           <ChartCard title="POPULARITY PER PRESIDENTIAL CANDIDATE PER PROVINCE" sub="Clean province readout; detailed weighting is kept in the model layer">
             <div className="province-popularity">
@@ -1063,7 +1106,11 @@ export default function Dashboard() {
             ))}
           </div>
         </ChartCard>
+        </>
+        )}
 
+        {activeDashboardTab === 'strategy' && (
+        <>
         <div className="ticket-stack">
           <div className="ticket-stack__ticket" style={{ borderColor: mundubileTicket?.color ?? C.pf }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'start', marginBottom: 12 }}>
@@ -1135,7 +1182,10 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
+        </>
+        )}
 
+        {activeDashboardTab === 'model' && (
         <details className="model-details">
           <summary>Advanced model notes, agents and source detail</summary>
 
@@ -2024,6 +2074,7 @@ export default function Dashboard() {
         </div>
 
         </details>
+        )}
 
       </div>
 
