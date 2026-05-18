@@ -328,7 +328,7 @@ export default function Dashboard() {
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
   const [nlpLoading, setNlpLoading]         = useState(false)
   const [activeCandidateId, setActiveCandidateId] = useState('hh')
-  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model'>('overview')
+  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity'>('overview')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
 
   const fetchNlpSentiment = useCallback(async () => {
@@ -452,10 +452,49 @@ export default function Dashboard() {
     { label: 'Undecided', value: `${ELECTION_DATA.nationalPoll.others_undecided.toFixed(1)}%`, color: C.gold },
     { label: 'Call', value: runoffRisk === 'HIGH' ? 'Rerun risk' : 'First-round path', color: runoffRisk === 'HIGH' ? C.warn : C.teal },
   ]
+  // ── Historical elections chart data ──
+  const historicalChartData = ELECTION_DATA.historicalElections.map(e => ({
+    year: String(e.year) + (e.type === 'BY-ELECTION' ? '*' : ''),
+    winner: e.winnerPct,
+    runnerUp: e.runnerUpPct,
+    turnout: e.turnout,
+    winnerParty: e.winnerParty,
+    runnerUpParty: e.runnerUpParty,
+    context: e.context,
+  }))
+
+  // ── 20-factor scores data ──
+  const factorScoreData = ELECTION_DATA.electionFactors.map(f => ({
+    label: f.label.length > 22 ? f.label.substring(0, 22) + '…' : f.label,
+    UPND: f.upndAdvantage,
+    Opposition: f.oppositionAdvantage,
+    riskFlag: f.riskFlag,
+    weight: f.weight,
+    trend: f.trend,
+  }))
+
+  // ── Runoff scenario data ──
+  const runoffScenarioData = ELECTION_DATA.runoffProbability.scenarioMatrix.map(s => ({
+    scenario: s.scenario.length > 26 ? s.scenario.substring(0, 26) + '…' : s.scenario,
+    'Win Prob %': s.firstRoundWin,
+    'Vote Share': s.upndShare,
+    note: s.note,
+  }))
+
+  // ── Institutional trust data ──
+  const trustData = Object.values(ELECTION_DATA.institutionalTrust).map(t => ({
+    institution: t.label,
+    score: t.score,
+    trend: t.trend,
+    color: t.score >= 65 ? C.teal : t.score >= 50 ? C.gold : C.warn,
+  }))
+
   const dashboardTabs = [
     { id: 'overview' as const, label: 'Overview', note: 'Race, call and map' },
     { id: 'provinces' as const, label: 'Provinces', note: 'Popularity and mood' },
     { id: 'strategy' as const, label: 'Strategy', note: 'Tickets and scenarios' },
+    { id: 'history' as const, label: 'History & Risk', note: 'Elections 1991–2026 · 20 factors' },
+    { id: 'integrity' as const, label: 'Integrity', note: 'Runoff engine · Institutions · Agriculture · Mining' },
     { id: 'model' as const, label: 'Model Notes', note: 'Sources and validation' },
   ]
   const mundubileTicket = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')
@@ -1183,6 +1222,297 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
+        </>
+        )}
+
+        {/* ── HISTORY & RISK TAB ───────────────────────── */}
+        {activeDashboardTab === 'history' && (
+        <>
+          <SectionLabel layer="ELECTION HISTORY" title="Zambia Presidential Elections 1991–2026"
+            sub="ECZ official results and AU/SADC observer records. * = by-election. Turnout line shows electoral participation." />
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>WINNER vs RUNNER-UP VOTE SHARE BY ELECTION</div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Stacked by election year. * = by-election (lower turnout expected). Hover for context.</div>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={historicalChartData} margin={{ top: 10, right: 20, left: 0, bottom: 40 }}>
+                <XAxis dataKey="year" tick={{ fill: C.muted, fontSize: 11 }} />
+                <YAxis tick={{ fill: C.muted, fontSize: 10 }} domain={[0, 80]} tickFormatter={v => `${v}%`} />
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.line}` }}
+                  formatter={(value: unknown, name: unknown) => [`${value as number}%`, name as string]} />
+                <Legend wrapperStyle={{ color: C.muted, fontSize: 11, paddingTop: 8 }} />
+                <Bar dataKey="winner" name="Winner %" fill={C.teal} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="runnerUp" name="Runner-up %" fill={C.gold} radius={[3, 3, 0, 0]} />
+                <ReferenceLine y={50} stroke={C.warn} strokeDasharray="4 4" label={{ value: '50%+1 gate', fill: C.warn, fontSize: 10 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>VOTER TURNOUT HISTORY (%)</div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>General elections in orange, by-elections in grey. Shaded band shows projected 2026 range (55–70%). Turnout is the single most important model uncertainty variable.</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={ELECTION_DATA.turnoutHistory} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+                <XAxis dataKey="year" tick={{ fill: C.muted, fontSize: 11 }} />
+                <YAxis tick={{ fill: C.muted, fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} />
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.line}` }}
+                  formatter={(value: unknown) => [`${value as number}%`, 'Turnout']}
+                  labelFormatter={(label, payload) => {
+                    const item = payload?.[0]?.payload as { note?: string } | undefined
+                    return `${label}: ${item?.note ?? ''}`
+                  }} />
+                <Bar dataKey="turnout" radius={[3, 3, 0, 0]}>
+                  {ELECTION_DATA.turnoutHistory.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.type === 'BY-ELECTION' ? C.muted : entry.year === 2026 ? C.warn : C.zo} />
+                  ))}
+                </Bar>
+                <ReferenceLine y={62} stroke={C.warn} strokeDasharray="4 4" label={{ value: '2026 est 62%', fill: C.warn, fontSize: 10 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{ display: 'grid', gap: 12, marginBottom: 20 }}>
+            {ELECTION_DATA.historicalElections.map(e => (
+              <div key={e.year} style={{ background: C.card, border: `1px solid ${e.winnerParty === 'UPND' ? C.upnd : e.winnerParty === 'PF' ? C.pf : C.ndc}33`, borderRadius: 8, padding: '12px 16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
+                  <div style={{ fontWeight: 900, fontSize: 16, color: C.gold, fontFamily: 'monospace', minWidth: 42 }}>{e.year}</div>
+                  <div style={{ background: `${e.type === 'BY-ELECTION' ? C.muted : C.teal}22`, color: e.type === 'BY-ELECTION' ? C.muted : C.teal, fontSize: 9, fontFamily: 'monospace', fontWeight: 700, padding: '2px 8px', borderRadius: 10, border: `1px solid ${e.type === 'BY-ELECTION' ? C.muted : C.teal}44` }}>{e.type}</div>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: C.text }}>{e.winner} ({e.winnerParty})</div>
+                  <div style={{ color: e.winnerPct > 50 ? C.teal : C.warn, fontWeight: 900, fontFamily: 'monospace', fontSize: 13 }}>{e.winnerPct}%</div>
+                  <div style={{ color: C.muted, fontSize: 11, marginLeft: 'auto' }}>Turnout: {e.turnout}%</div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                  <div style={{ height: 10, borderRadius: 4, background: e.winnerParty === 'UPND' ? C.upnd : e.winnerParty === 'PF' ? C.pf : C.ndc, flex: e.winnerPct }} />
+                  <div style={{ height: 10, borderRadius: 4, background: C.gold, flex: e.runnerUpPct }} />
+                  <div style={{ height: 10, borderRadius: 4, background: C.line, flex: Math.max(0, 100 - e.winnerPct - e.runnerUpPct) }} />
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6, marginBottom: 6 }}>{e.context}</div>
+                <div style={{ fontSize: 10, color: `${C.warn}CC`, fontStyle: 'italic' }}>📘 Model lesson: {e.modelLesson}</div>
+              </div>
+            ))}
+          </div>
+
+          <SectionLabel layer="20-FACTOR RISK MATRIX" title="Electoral Factor Domain Scores"
+            sub="UPND advantage vs Opposition advantage for each of the 20 factors. Weight = electoral importance (1-10). 🚨 = active risk flag." />
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>UPND vs OPPOSITION ADVANTAGE BY FACTOR</div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Higher score = stronger position for each side. These are independent scales, not a zero-sum competition.</div>
+            <ResponsiveContainer width="100%" height={480}>
+              <BarChart data={factorScoreData} layout="vertical" margin={{ top: 0, right: 40, left: 8, bottom: 0 }}>
+                <XAxis type="number" domain={[0, 100]} tick={{ fill: C.muted, fontSize: 9 }} tickFormatter={v => `${v}`} />
+                <YAxis type="category" dataKey="label" width={185} tick={{ fill: C.muted, fontSize: 9 }} />
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.line}` }}
+                  formatter={(value: unknown, name: unknown) => [`${value as number}/100`, name as string]} />
+                <Legend wrapperStyle={{ color: C.muted, fontSize: 10 }} />
+                <Bar dataKey="UPND" fill={C.upnd} radius={[0, 3, 3, 0]} maxBarSize={10} />
+                <Bar dataKey="Opposition" fill={C.pf} radius={[0, 3, 3, 0]} maxBarSize={10} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10, marginBottom: 24 }}>
+            {ELECTION_DATA.electionFactors.map(f => (
+              <div key={f.id} style={{ background: C.card, border: `1px solid ${f.riskFlag ? C.warn + '66' : C.line}`, borderRadius: 8, padding: '10px 12px', position: 'relative' }}>
+                {f.riskFlag && <div style={{ position: 'absolute', top: 8, right: 10, fontSize: 12 }}>🚨</div>}
+                <div style={{ fontSize: 9, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>DOMAIN {f.domain} · WEIGHT {f.weight}/10</div>
+                <div style={{ fontWeight: 900, fontSize: 12, color: f.riskFlag ? C.warn : C.text, marginBottom: 6, paddingRight: 20 }}>{f.label}</div>
+                <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+                  <div style={{ flex: 1, background: `${C.upnd}22`, border: `1px solid ${C.upnd}44`, borderRadius: 6, padding: '4px 7px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 9, color: C.upnd, fontFamily: 'monospace', fontWeight: 700 }}>UPND</div>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: C.upnd }}>{f.upndAdvantage}</div>
+                  </div>
+                  <div style={{ flex: 1, background: `${C.pf}22`, border: `1px solid ${C.pf}44`, borderRadius: 6, padding: '4px 7px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 9, color: C.pf, fontFamily: 'monospace', fontWeight: 700 }}>OPPO</div>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: C.pf }}>{f.oppositionAdvantage}</div>
+                  </div>
+                </div>
+                <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', marginBottom: 5 }}>TREND: <span style={{ color: f.trend.includes('RISK') || f.trend.includes('HURTS') ? C.warn : f.trend.includes('UPND') ? C.teal : C.gold }}>{f.trend}</span></div>
+                <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{f.upndNote}</div>
+              </div>
+            ))}
+          </div>
+        </>
+        )}
+
+        {/* ── INTEGRITY TAB ────────────────────────────────── */}
+        {activeDashboardTab === 'integrity' && (
+        <>
+          <SectionLabel layer="RUNOFF PROBABILITY ENGINE" title="First-Round Win vs Runoff Risk"
+            sub="Monte Carlo simulation over UPND vote share distribution. P(UPND ≥ 50.01%) = 34% at baseline. Scenarios show how key levers shift this probability." />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 14, marginBottom: 20 }}>
+            <div style={{ background: C.card, border: `2px solid ${C.warn}`, borderRadius: 10, padding: 18 }}>
+              <div style={{ fontSize: 10, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>BASELINE RUNOFF RISK</div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: C.warn, fontFamily: 'monospace', lineHeight: 1 }}>{ELECTION_DATA.runoffProbability.runoffProbability}%</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>Probability of second ballot (no first-round winner)</div>
+              <div style={{ background: C.line, height: 8, borderRadius: 4, marginTop: 12, overflow: 'hidden' }}>
+                <div style={{ width: `${ELECTION_DATA.runoffProbability.runoffProbability}%`, height: '100%', background: C.warn }} />
+              </div>
+            </div>
+            <div style={{ background: C.card, border: `2px solid ${C.teal}`, borderRadius: 10, padding: 18 }}>
+              <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>FIRST-ROUND WIN PROBABILITY</div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: C.teal, fontFamily: 'monospace', lineHeight: 1 }}>{ELECTION_DATA.runoffProbability.firstRoundWinProbability}%</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>UPND clears 50%+1 in single round at baseline</div>
+              <div style={{ background: C.line, height: 8, borderRadius: 4, marginTop: 12, overflow: 'hidden' }}>
+                <div style={{ width: `${ELECTION_DATA.runoffProbability.firstRoundWinProbability}%`, height: '100%', background: C.teal }} />
+              </div>
+            </div>
+            <div style={{ background: C.card, border: `2px solid ${C.gold}`, borderRadius: 10, padding: 18 }}>
+              <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>UPND UNCERTAINTY BAND</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: C.gold, fontFamily: 'monospace', lineHeight: 1 }}>
+                {ELECTION_DATA.nationalPollUncertainty.upnd.low}–{ELECTION_DATA.nationalPollUncertainty.upnd.high}%
+              </div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>68% confidence interval · Point estimate: {ELECTION_DATA.nationalPollUncertainty.upnd.point}%</div>
+              <div style={{ background: C.line, height: 8, borderRadius: 4, marginTop: 12, overflow: 'hidden' }}>
+                <div style={{ width: `${ELECTION_DATA.nationalPollUncertainty.upnd.confidence}%`, height: '100%', background: C.gold }} />
+              </div>
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>Confidence: {ELECTION_DATA.nationalPollUncertainty.upnd.confidence}%</div>
+            </div>
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>SCENARIO RUNOFF MATRIX — P(FIRST-ROUND WIN) BY SCENARIO</div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Each bar shows the probability UPND clears 50%+1 under different conditions. Status quo at 34% — policy delivery and opposition fragmentation are the key levers.</div>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={runoffScenarioData} margin={{ top: 10, right: 20, left: 0, bottom: 80 }}>
+                <XAxis dataKey="scenario" tick={{ fill: C.muted, fontSize: 9 }} angle={-30} textAnchor="end" height={80} />
+                <YAxis tick={{ fill: C.muted, fontSize: 10 }} domain={[0, 100]} tickFormatter={v => `${v}%`} />
+                <Tooltip contentStyle={{ background: C.card2, border: `1px solid ${C.line}` }}
+                  formatter={(value: unknown, name: unknown) => [`${value as number}%`, name as string]} />
+                <ReferenceLine y={50} stroke={C.warn} strokeDasharray="4 4" label={{ value: '50% P', fill: C.warn, fontSize: 9 }} />
+                <Bar dataKey="Win Prob %" radius={[3, 3, 0, 0]}>
+                  {runoffScenarioData.map((entry, idx) => (
+                    <Cell key={idx} fill={entry['Win Prob %'] >= 50 ? C.teal : entry['Win Prob %'] >= 30 ? C.gold : C.warn} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>UNCERTAINTY BANDS — ALL CANDIDATES</div>
+            <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Point estimate ± confidence interval. Fear-of-disclosure correction may shift actual result 2–4pt. These are not certified polls.</div>
+            <div style={{ display: 'grid', gap: 12 }}>
+              {ELECTION_DATA.figures.map(f => {
+                const unc = ELECTION_DATA.nationalPollUncertainty[f.id as keyof typeof ELECTION_DATA.nationalPollUncertainty] as {point:number;low:number;high:number;confidence:number} | undefined
+                if (!unc || typeof unc !== 'object' || !('point' in unc)) return null
+                return (
+                  <div key={f.id} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                      <div style={{ fontWeight: 800, color: f.color, fontSize: 12, minWidth: 140 }}>{f.shortName} ({f.party.split(' ')[0]})</div>
+                      <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 900, color: f.color }}>{unc.point}%</div>
+                      <div style={{ color: C.muted, fontSize: 10 }}>Range: {unc.low}% – {unc.high}%</div>
+                      <div style={{ marginLeft: 'auto', fontSize: 10, color: C.muted }}>Confidence: {unc.confidence}%</div>
+                    </div>
+                    <div style={{ position: 'relative', height: 12, background: C.line, borderRadius: 6, overflow: 'visible' }}>
+                      <div style={{ position: 'absolute', left: `${(unc.low / 60) * 100}%`, width: `${((unc.high - unc.low) / 60) * 100}%`, height: '100%', background: `${f.color}55`, borderRadius: 4 }} />
+                      <div style={{ position: 'absolute', left: `${(unc.point / 60) * 100}%`, transform: 'translateX(-50%)', width: 4, height: '100%', background: f.color, borderRadius: 2 }} />
+                      {f.id === 'hh' && (
+                        <div style={{ position: 'absolute', left: `${(50 / 60) * 100}%`, width: 2, height: '100%', background: C.warn, borderRadius: 1 }} />
+                      )}
+                    </div>
+                    {f.id === 'hh' && <div style={{ fontSize: 9, color: C.warn, marginTop: 4 }}>▲ 50%+1 gate — orange line. Upper band reaches the gate; first-round win requires the high scenario.</div>}
+                  </div>
+                )
+              })}
+            </div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 14, fontStyle: 'italic', borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>{ELECTION_DATA.nationalPollUncertainty.methodologyNote}</div>
+          </div>
+
+          <SectionLabel layer="INSTITUTIONAL TRUST" title="ECZ · Courts · Police · Media · Observers"
+            sub="Afrobarometer Round 10 (INESOR/UNZA) · MISA Zambia · CCMG · CIVICUS. Scores are 0–100. Below 50 = trust deficit." />
+
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+              {trustData.map(t => (
+                <div key={t.institution} style={{ background: C.card2, border: `1px solid ${t.color}44`, borderRadius: 8, padding: '12px 14px' }}>
+                  <div style={{ fontSize: 10, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>{t.trend}</div>
+                  <div style={{ fontWeight: 900, fontSize: 13, color: C.text, marginBottom: 8 }}>{t.institution}</div>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: t.color, fontFamily: 'monospace', lineHeight: 1, marginBottom: 8 }}>{t.score}</div>
+                  <div style={{ background: C.line, height: 6, borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ width: `${t.score}%`, height: '100%', background: t.color }} />
+                  </div>
+                  <div style={{ fontSize: 9, color: C.muted, marginTop: 6 }}>
+                    {Object.values(ELECTION_DATA.institutionalTrust).find(inst => inst.label === t.institution)?.note}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <SectionLabel layer="ELECTION INTEGRITY" title="Process, Observer, Logistics & Dispute Risk"
+            sub="CCMG · ECZ · ACLED · ConCourt precedent. Overall integrity score: 65/100 — MODERATELY CREDIBLE, WATCH." />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12, marginBottom: 20 }}>
+            {Object.entries(ELECTION_DATA.integritySignals).filter(([k]) => k !== 'overallIntegrityScore' && k !== 'overallIntegrityRating').map(([key, val]) => {
+              if (typeof val !== 'object' || !('risk' in val)) return null
+              const riskColor = val.risk.startsWith('LOW') ? C.teal : val.risk.startsWith('MEDIUM') ? C.gold : val.risk.startsWith('HIGH') ? C.warn : C.muted
+              return (
+                <div key={key} style={{ background: C.card, border: `1px solid ${riskColor}44`, borderRadius: 8, padding: '10px 12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 700 }}>{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</div>
+                    <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: riskColor, background: `${riskColor}22`, padding: '2px 7px', borderRadius: 8, border: `1px solid ${riskColor}44` }}>{val.risk}</div>
+                  </div>
+                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{val.note}</div>
+                  <div style={{ fontSize: 9, color: C.gold, marginTop: 6, fontFamily: 'monospace' }}>Source: {val.source}</div>
+                </div>
+              )
+            })}
+          </div>
+
+          <SectionLabel layer="AGRICULTURE & MINING" title="Household Economy Swing Indicators"
+            sub="FISP delivery, rainfall, copper prices, and contractor payments are the 3–5pt swing variables in Copperbelt and Northern/Eastern provinces." />
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+            <div style={{ background: C.card, border: `1px solid ${C.zg}55`, borderRadius: 10, padding: '18px 20px' }}>
+              <div style={{ fontWeight: 800, fontSize: 13, color: C.teal, marginBottom: 4 }}>🌽 AGRICULTURE INDICATORS</div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 14 }}>{ELECTION_DATA.agricultureIndicators.season2025_26}</div>
+              <div style={{ display: 'grid', gap: 10 }}>
+                {[
+                  { label: 'Season', value: ELECTION_DATA.agricultureIndicators.season2025_26 },
+                  { label: 'Rainfall', value: ELECTION_DATA.agricultureIndicators.rainfallStatus },
+                  { label: 'Maize Price (50kg)', value: `K${ELECTION_DATA.agricultureIndicators.maizePriceZMW_50kg} — ${ELECTION_DATA.agricultureIndicators.maizePriceTrend}` },
+                  { label: 'FISP Delayed', value: ELECTION_DATA.agricultureIndicators.FISPDeliveryStatus.delayed.join(', ') || 'None' },
+                  { label: 'FRA Purchases', value: ELECTION_DATA.agricultureIndicators.FRAMaizePurchases },
+                  { label: 'Drought Provinces', value: ELECTION_DATA.agricultureIndicators.droughtAffectedProvinces.join(', ') },
+                ].map(item => (
+                  <div key={item.label} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+                    <div style={{ fontSize: 9, color: C.gold, fontFamily: 'monospace', fontWeight: 700 }}>{item.label}</div>
+                    <div style={{ fontSize: 11, color: C.text, marginTop: 3 }}>{item.value}</div>
+                  </div>
+                ))}
+                <div style={{ background: `${C.warn}11`, border: `1px solid ${C.warn}44`, borderRadius: 6, padding: '8px 10px', marginTop: 4 }}>
+                  <div style={{ fontSize: 10, color: C.warn, fontWeight: 700, marginBottom: 4 }}>Electoral Effect</div>
+                  <div style={{ fontSize: 10, color: C.muted }}>{ELECTION_DATA.agricultureIndicators.votingEffect}</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: C.card, border: `1px solid ${C.ndc}55`, borderRadius: 10, padding: '18px 20px' }}>
+              <div style={{ fontWeight: 800, fontSize: 13, color: C.ndc, marginBottom: 4 }}>⛏ MINING & COPPERBELT INDICATORS</div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 14 }}>{ELECTION_DATA.miningIndicators.resourceNationalismRisk}</div>
+              <div style={{ display: 'grid', gap: 10 }}>
+                {[
+                  { label: 'Copper Price (LME)', value: `$${ELECTION_DATA.miningIndicators.copperPriceLME_USD_t.toLocaleString()}/t — ${ELECTION_DATA.miningIndicators.copperPriceTrend}` },
+                  { label: 'KCM Status', value: ELECTION_DATA.miningIndicators.kcmStatus },
+                  { label: 'Mopani Status', value: ELECTION_DATA.miningIndicators.mopaniStatus },
+                  { label: 'CB Formal Employment', value: `~${ELECTION_DATA.miningIndicators.copperbeltFormalEmployment.toLocaleString()} workers` },
+                  { label: 'Contractor Payment Risk', value: ELECTION_DATA.miningIndicators.contractorPaymentRisk },
+                  { label: 'Supplier Grievances', value: ELECTION_DATA.miningIndicators.localSupplierGrievances },
+                ].map(item => (
+                  <div key={item.label} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+                    <div style={{ fontSize: 9, color: C.gold, fontFamily: 'monospace', fontWeight: 700 }}>{item.label}</div>
+                    <div style={{ fontSize: 11, color: C.text, marginTop: 3 }}>{item.value}</div>
+                  </div>
+                ))}
+                <div style={{ background: `${C.warn}11`, border: `1px solid ${C.warn}44`, borderRadius: 6, padding: '8px 10px', marginTop: 4 }}>
+                  <div style={{ fontSize: 10, color: C.warn, fontWeight: 700, marginBottom: 4 }}>Electoral Effect</div>
+                  <div style={{ fontSize: 10, color: C.muted }}>{ELECTION_DATA.miningIndicators.votingEffect}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </>
         )}
 

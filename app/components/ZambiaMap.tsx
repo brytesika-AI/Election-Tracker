@@ -1,288 +1,422 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ELECTION_DATA } from '@/app/lib/data'
 
 const C = {
-  card: '#0E1724',
-  card2: '#121C2C',
-  line: '#1C2A3A',
-  text: '#E2E8F0',
-  muted: '#7A8FA6',
-  gold: '#F5C400',
-  upnd: '#FF6B00',
-  pf: '#D71920',
-  kalaba: '#27AE60',
-  membe: '#E74C3C',
-  kateka: '#8E44AD',
-  teal: '#00C9A7',
+  bg:      '#060C14',
+  card:    '#0E1724',
+  card2:   '#121C2C',
+  line:    '#1C2A3A',
+  text:    '#E2E8F0',
+  muted:   '#7A8FA6',
+  gold:    '#F5C400',
+  upnd:    '#FF6B00',
+  pf:      '#CC0000',
+  contest: '#8B6914',
+  teal:    '#00C9A7',
+  ocean:   '#07111E',
 }
 
-const ZAMBIA_GEOJSON = {
-  type: 'FeatureCollection' as const,
-  features: [
-    { type: 'Feature' as const, properties: { name: 'Lusaka' }, geometry: { type: 'Polygon' as const, coordinates: [[[27.85, -14.65], [28.9, -14.65], [29.1, -15.3], [28.8, -15.7], [28.0, -15.7], [27.5, -15.3], [27.85, -14.65]]] } },
-    { type: 'Feature' as const, properties: { name: 'Copperbelt' }, geometry: { type: 'Polygon' as const, coordinates: [[[26.0, -11.0], [28.7, -11.0], [29.0, -12.0], [28.5, -13.0], [27.0, -13.5], [25.8, -12.5], [26.0, -11.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'Eastern' }, geometry: { type: 'Polygon' as const, coordinates: [[[31.0, -10.0], [32.9, -10.0], [33.0, -14.5], [32.0, -16.0], [30.5, -16.5], [29.5, -15.5], [29.1, -14.0], [30.0, -12.0], [31.0, -10.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'Southern' }, geometry: { type: 'Polygon' as const, coordinates: [[[25.5, -15.5], [27.5, -15.3], [28.0, -15.7], [28.8, -15.7], [29.1, -16.5], [28.0, -18.0], [26.5, -18.0], [25.0, -17.5], [24.5, -16.5], [25.5, -15.5]]] } },
-    { type: 'Feature' as const, properties: { name: 'Central' }, geometry: { type: 'Polygon' as const, coordinates: [[[27.0, -13.5], [28.5, -13.0], [29.0, -12.0], [29.5, -13.0], [29.5, -14.0], [29.1, -14.0], [28.9, -14.65], [27.85, -14.65], [27.5, -15.3], [25.5, -15.5], [26.0, -13.5], [27.0, -13.5]]] } },
-    { type: 'Feature' as const, properties: { name: 'Northern' }, geometry: { type: 'Polygon' as const, coordinates: [[[28.0, -8.0], [31.0, -8.0], [31.0, -10.0], [30.0, -12.0], [29.0, -12.0], [28.5, -13.0], [27.0, -13.5], [26.5, -12.0], [27.0, -10.0], [28.0, -8.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'Luapula' }, geometry: { type: 'Polygon' as const, coordinates: [[[28.0, -8.0], [28.8, -8.0], [29.5, -9.0], [29.5, -10.5], [28.7, -11.0], [28.0, -10.5], [27.0, -10.0], [27.0, -8.0], [28.0, -8.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'Muchinga' }, geometry: { type: 'Polygon' as const, coordinates: [[[31.0, -8.0], [32.0, -8.0], [32.9, -10.0], [31.0, -10.0], [29.5, -10.5], [29.5, -9.0], [31.0, -8.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'Western' }, geometry: { type: 'Polygon' as const, coordinates: [[[22.0, -14.0], [25.0, -14.0], [25.5, -15.5], [24.5, -16.5], [25.0, -17.5], [24.0, -18.0], [22.0, -18.0], [22.0, -14.0]]] } },
-    { type: 'Feature' as const, properties: { name: 'North-Western' }, geometry: { type: 'Polygon' as const, coordinates: [[[22.0, -8.0], [26.5, -8.0], [27.0, -8.0], [27.0, -10.0], [26.5, -12.0], [26.0, -13.5], [25.0, -14.0], [22.0, -14.0], [22.0, -8.0]]] } },
-  ],
+// ── Name normalisation: GeoJSON names → our province names ──────────
+const NAME_MAP: Record<string, string> = {
+  'Western':      'Western',
+  'North-Western': 'North-Western',
+  'North Western': 'North-Western',
+  'Copperbelt':   'Copperbelt',
+  'Luapula':      'Luapula',
+  'Northern':     'Northern',
+  'Muchinga':     'Muchinga',
+  'Eastern':      'Eastern',
+  'Central':      'Central',
+  'Lusaka':       'Lusaka',
+  'Southern':     'Southern',
 }
 
-type Province = typeof ELECTION_DATA.provinces[number]
-type CandidateShare = { id: string; label: string; pct: number; color: string }
-type Coordinate = [number, number]
-
-const VIEWBOX = { width: 920, height: 560, padX: 76, padY: 36 }
-const LABEL_OFFSETS: Record<string, { dx: number; dy: number; label: string }> = {
-  Lusaka: { dx: 30, dy: 18, label: 'LUSAKA' },
-  Copperbelt: { dx: -10, dy: -18, label: 'COPPERBELT' },
-  Eastern: { dx: 24, dy: 6, label: 'EASTERN' },
-  Southern: { dx: 0, dy: 22, label: 'SOUTHERN' },
-  Central: { dx: 6, dy: 14, label: 'CENTRAL' },
-  Northern: { dx: 18, dy: 0, label: 'NORTHERN' },
-  Luapula: { dx: 2, dy: -26, label: 'LUAPULA' },
-  Muchinga: { dx: 36, dy: -8, label: 'MUCHINGA' },
-  Western: { dx: -18, dy: 12, label: 'WESTERN' },
-  'North-Western': { dx: -34, dy: -16, label: 'N. WESTERN' },
+type GeoFeature = {
+  type: string
+  properties: { shapeName?: string; name?: string; NAME_1?: string; [k: string]: unknown }
+  geometry: {
+    type: string
+    coordinates: number[][][] | number[][][][]
+  }
 }
 
-function candidateShares(province: Province): CandidateShare[] {
-  const kalaba = Math.max(1, Math.min(8, province.name === 'Luapula' ? 7 : province.name === 'Eastern' ? 5 : Math.round(ELECTION_DATA.nationalPoll.kalaba_cf)))
-  const membe = Math.max(2, Math.min(9, ['Copperbelt', 'Lusaka'].includes(province.name) ? 6 : Math.round(ELECTION_DATA.nationalPoll.membe_sp)))
-  const kateka = Math.max(1, Math.min(3, ['Lusaka', 'Central'].includes(province.name) ? 2 : 1))
-  const undecided = Math.max(0, 100 - province.upnd - province.pf - kalaba - membe - kateka)
+type Coord = [number, number]
+type Projected = { name: string; paths: string[]; cx: number; cy: number }
 
-  return [
-    { id: 'hh', label: 'HH', pct: province.upnd, color: C.upnd },
-    { id: 'bm_mz', label: 'BM/MZ', pct: province.pf, color: C.pf },
-    { id: 'kalaba', label: 'Kalaba', pct: kalaba, color: C.kalaba },
-    { id: 'membe', label: "M'membe", pct: membe, color: C.membe },
-    { id: 'kateka', label: 'Kateka', pct: kateka, color: C.kateka },
-    { id: 'undecided', label: 'Undecided', pct: undecided, color: C.muted },
+function getLean(p: typeof ELECTION_DATA.provinces[number]): 'UPND' | 'PF' | 'CONTESTED' {
+  if (p.lean === 'UPND') return 'UPND'
+  if (p.lean === 'PF')   return 'PF'
+  return 'CONTESTED'
+}
+
+const W = 820, H = 600, PAD = 24
+
+function buildProjection(features: GeoFeature[]) {
+  const allCoords: Coord[] = []
+  features.forEach(f => {
+    const rings = f.geometry.type === 'MultiPolygon'
+      ? (f.geometry.coordinates as number[][][][]).flat()
+      : (f.geometry.coordinates as number[][][])
+    rings.forEach(ring => ring.forEach(pt => allCoords.push([pt[0], pt[1]])))
+  })
+  const lons = allCoords.map(c => c[0])
+  const lats = allCoords.map(c => c[1])
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons)
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats)
+
+  const project = ([lon, lat]: Coord): Coord => [
+    PAD + ((lon - minLon) / (maxLon - minLon)) * (W - PAD * 2),
+    PAD + ((maxLat - lat) / (maxLat - minLat)) * (H - PAD * 2),
   ]
-}
 
-function leadingCandidate(province: Province) {
-  return candidateShares(province).filter(share => share.id !== 'undecided').sort((a, b) => b.pct - a.pct)[0]
+  return (feature: GeoFeature): Projected => {
+    const rawName =
+      (feature.properties.shapeName as string) ||
+      (feature.properties.NAME_1 as string) ||
+      (feature.properties.name as string) || ''
+    const name = NAME_MAP[rawName] ?? rawName
+
+    const rings = feature.geometry.type === 'MultiPolygon'
+      ? (feature.geometry.coordinates as number[][][][]).flat()
+      : (feature.geometry.coordinates as number[][][])
+
+    let allPts: Coord[] = []
+    const paths = rings.map(ring => {
+      const pts = ring.map(pt => project([pt[0], pt[1]]))
+      allPts = allPts.concat(pts)
+      return pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('') + 'Z'
+    })
+
+    const cx = allPts.reduce((a, p) => a + p[0], 0) / allPts.length
+    const cy = allPts.reduce((a, p) => a + p[1], 0) / allPts.length
+    return { name, paths, cx, cy }
+  }
 }
 
 export default function ZambiaMap() {
+  const [features, setFeatures] = useState<GeoFeature[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState<string | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
 
-  const projected = useMemo(() => {
-    const allPoints = ZAMBIA_GEOJSON.features.flatMap(feature => feature.geometry.coordinates[0]) as Coordinate[]
-    const lons = allPoints.map(point => point[0])
-    const lats = allPoints.map(point => point[1])
-    const minLon = Math.min(...lons)
-    const maxLon = Math.max(...lons)
-    const minLat = Math.min(...lats)
-    const maxLat = Math.max(...lats)
-
-    const project = ([lon, lat]: Coordinate) => {
-      const x = VIEWBOX.padX + ((lon - minLon) / (maxLon - minLon)) * (VIEWBOX.width - VIEWBOX.padX * 2)
-      const y = VIEWBOX.padY + ((maxLat - lat) / (maxLat - minLat)) * (VIEWBOX.height - VIEWBOX.padY * 2)
-      return { x, y }
-    }
-
-    return ZAMBIA_GEOJSON.features.map(feature => {
-      const province = ELECTION_DATA.provinces.find(item => item.name === feature.properties.name)
-      const points = feature.geometry.coordinates[0] as Coordinate[]
-      const projectedPoints = points.map(project)
-      const path = projectedPoints.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ') + ' Z'
-      const centroid = projectedPoints.reduce((acc, point) => ({ x: acc.x + point.x, y: acc.y + point.y }), { x: 0, y: 0 })
-      const labelBase = { x: centroid.x / projectedPoints.length, y: centroid.y / projectedPoints.length }
-      const offset = LABEL_OFFSETS[feature.properties.name] ?? { dx: 0, dy: 0, label: feature.properties.name.toUpperCase() }
-      const lead = province ? leadingCandidate(province) : null
-
-      return {
-        name: feature.properties.name,
-        province,
-        lead,
-        path,
-        label: {
-          x: labelBase.x + offset.dx,
-          y: labelBase.y + offset.dy,
-          text: offset.label,
-        },
-      }
-    })
+  // Fetch accurate Zambia province GeoJSON from geoBoundaries open dataset
+  useEffect(() => {
+    let cancelled = false
+    fetch('/zambia-provinces.geojson', { cache: 'force-cache' })
+      .then(r => r.json())
+      .then(data => { if (!cancelled) { setFeatures(data.features ?? []); setLoading(false) } })
+      .catch(() => { if (!cancelled) { setLoading(false); setError('Province map unavailable') } })
+    return () => { cancelled = true }
   }, [])
 
-  const selectedProv = selected ? ELECTION_DATA.provinces.find(province => province.name === selected) : null
-  const selectedShares = selectedProv ? candidateShares(selectedProv).sort((a, b) => b.pct - a.pct) : []
-  const selectedLead = selectedProv ? leadingCandidate(selectedProv) : null
-  const leaderSummary = ELECTION_DATA.provinces.reduce<Record<string, { label: string; value: number; color: string }>>((acc, province) => {
-    const lead = leadingCandidate(province)
-    acc[lead.id] = acc[lead.id] ?? { label: `${lead.label} leads`, value: 0, color: lead.color }
-    acc[lead.id].value += 1
-    return acc
-  }, {})
-  const summaryItems = Object.values(leaderSummary).sort((a, b) => b.value - a.value)
+  // Build province projections once features are loaded
+  const projected = useMemo<Projected[]>(() => {
+    if (!features.length) return []
+    const project = buildProjection(features)
+    return features.map(project)
+  }, [features])
+
+  const counts = useMemo(() => {
+    const r = { UPND: 0, PF: 0, CONTESTED: 0 }
+    ELECTION_DATA.provinces.forEach(p => { r[getLean(p)]++ })
+    return r
+  }, [])
+
+  const hhFig  = ELECTION_DATA.figures.find(f => f.id === 'hh')!
+  const pfFig  = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')!
+  const selectedProv = selected ? ELECTION_DATA.provinces.find(p => p.name === selected) : null
+  const selectedLean = selectedProv ? getLean(selectedProv) : null
+  const selColor = selectedLean === 'UPND' ? C.upnd : selectedLean === 'PF' ? C.pf : C.gold
+
+  function getProvinceStyle(name: string) {
+    const prov = ELECTION_DATA.provinces.find(p => p.name === name)
+    if (!prov) return { fill: C.card2, lean: null as null }
+    const lean = getLean(prov)
+    const fill = lean === 'UPND' ? C.upnd : lean === 'PF' ? C.pf : C.contest
+    return { fill, lean, prov }
+  }
 
   return (
-    <div className="zambia-map-grid">
-      <div className="zambia-map-card">
-        <div className="zambia-map-card__head">
+    <div style={{ background: C.bg, border: `1px solid ${C.line}`, borderRadius: 16, overflow: 'hidden', fontFamily: 'system-ui, sans-serif' }}>
+
+      {/* ── Electoral header ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', background: '#080F1A', borderBottom: `1px solid ${C.line}` }}>
+        {/* HH */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: `${C.upnd}16` }}>
+          <img src={hhFig.photo} alt="HH" width={52} height={52}
+            style={{ borderRadius: '50%', objectFit: 'cover', border: `3px solid ${C.upnd}` }}
+            onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=HH&background=FF6B00&color=fff` }} />
           <div>
-            <span>Zambia Election Map</span>
-            <strong>Zambia-only province lead map</strong>
-            <em>Click any province for deep-dive analysis</em>
+            <div style={{ color: C.upnd, fontWeight: 800, fontSize: 15 }}>{hhFig.name}</div>
+            <div style={{ color: C.muted, fontSize: 11 }}>UPND · INCUMBENT</div>
           </div>
-          <div>
-            <span>ECZ certified register</span>
-            <strong>{ELECTION_DATA.voterTotal.toLocaleString()}</strong>
+          <div style={{ marginLeft: 'auto', background: C.upnd, color: '#fff', borderRadius: 10, padding: '6px 16px', textAlign: 'center' }}>
+            <div style={{ fontSize: 32, fontWeight: 900, lineHeight: 1 }}>{counts.UPND}</div>
+            <div style={{ fontSize: 9, fontWeight: 700 }}>PROVINCES</div>
           </div>
         </div>
 
-        <div className="zambia-map-card__summary" style={{ gridTemplateColumns: `repeat(${Math.max(1, summaryItems.length)}, minmax(0, 1fr))` }}>
-          {summaryItems.map(item => (
-            <div key={item.label}>
-              <strong style={{ color: item.color }}>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
+        {/* Centre */}
+        <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#080F1A' }}>
+          <div style={{ color: C.gold, fontWeight: 700, fontSize: 10, letterSpacing: '0.1em' }}>PROVINCE MODEL</div>
+          <div style={{ color: C.muted, fontSize: 9, marginTop: 2 }}>{ELECTION_DATA.provinces.length} provinces</div>
+          <div style={{ color: C.contest, fontSize: 9 }}>{counts.CONTESTED} toss-up</div>
         </div>
 
-        <div className="zambia-svg-map">
-          <svg viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`} role="img" aria-label="Zambia province election map">
-            <defs>
-              <filter id="province-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="9" stdDeviation="9" floodColor="#000000" floodOpacity="0.42" />
-              </filter>
-              <radialGradient id="map-glow" cx="50%" cy="45%" r="62%">
-                <stop offset="0%" stopColor="#F5C400" stopOpacity="0.13" />
-                <stop offset="58%" stopColor="#07111F" stopOpacity="0.94" />
-                <stop offset="100%" stopColor="#03070B" stopOpacity="1" />
-              </radialGradient>
-            </defs>
-            <rect width={VIEWBOX.width} height={VIEWBOX.height} fill="url(#map-glow)" />
-            <g filter="url(#province-shadow)">
-              {projected.map(item => {
-                const isSelected = selected === item.name
-                return (
-                  <path
-                    key={item.name}
-                    d={item.path}
-                    className={`zambia-svg-map__province ${isSelected ? 'zambia-svg-map__province--selected' : ''}`}
-                    fill={item.lead?.color ?? C.gold}
-                    fillOpacity={isSelected ? 0.96 : 0.78}
-                    stroke={isSelected ? '#FFFFFF' : '#DDE7F3'}
-                    strokeWidth={isSelected ? 4 : 2.2}
-                    onClick={() => setSelected(prev => prev === item.name ? null : item.name)}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`${item.name} province ${item.lead?.label ?? 'model'} lead`}
-                    onKeyDown={event => {
-                      if (event.key === 'Enter' || event.key === ' ') setSelected(prev => prev === item.name ? null : item.name)
-                    }}
-                  />
-                )
-              })}
-            </g>
-            <g className="zambia-svg-map__labels">
-              {projected.map(item => {
-                const pillWidth = item.lead?.label === 'BM/MZ' ? 86 : 68
-                return (
-                  <g key={`${item.name}-label`} pointerEvents="none">
-                    <text x={item.label.x} y={item.label.y} className="zambia-svg-map__province-name" textAnchor="middle">
-                      {item.label.text}
-                    </text>
-                    <rect x={item.label.x - pillWidth / 2} y={item.label.y + 8} width={pillWidth} height="22" rx="11" fill="rgba(0,0,0,.66)" stroke={item.lead?.color ?? C.gold} strokeOpacity=".42" />
-                    <text x={item.label.x} y={item.label.y + 23} className="zambia-svg-map__province-score" textAnchor="middle" fill={item.lead?.color ?? C.gold}>
-                      {item.lead?.label} {item.lead?.pct}%
-                    </text>
-                  </g>
-                )
-              })}
-            </g>
-          </svg>
-          <div className="zambia-svg-map__hint">Clickable Zambia map</div>
-        </div>
-
-        <div className="zambia-map-card__legend">
-          {[
-            ['HH', C.upnd],
-            ['BM/MZ', C.pf],
-            ['Kalaba', C.kalaba],
-            ["M'membe", C.membe],
-            ['Kateka', C.kateka],
-          ].map(([label, color]) => (
-            <span key={label as string}>
-              <i style={{ borderColor: color as string, background: `${color}55` }} />
-              {label as string}
-            </span>
-          ))}
-          <small>Fill = highest candidate/ticket model share in each province</small>
+        {/* BM/MZ */}
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row-reverse', gap: 12, padding: '14px 18px', background: `${C.pf}16` }}>
+          <img src={pfFig.photo} alt="BM/MZ" width={52} height={52}
+            style={{ borderRadius: '50%', objectFit: 'cover', border: `3px solid ${C.pf}` }}
+            onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=BM&background=CC0000&color=fff` }} />
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ color: C.pf, fontWeight: 800, fontSize: 15 }}>{pfFig.name}</div>
+            <div style={{ color: C.muted, fontSize: 11 }}>Tonse / PF-Pamodzi</div>
+          </div>
+          <div style={{ marginRight: 'auto', background: C.pf, color: '#fff', borderRadius: 10, padding: '6px 16px', textAlign: 'center' }}>
+            <div style={{ fontSize: 32, fontWeight: 900, lineHeight: 1 }}>{counts.PF}</div>
+            <div style={{ fontSize: 9, fontWeight: 700 }}>PROVINCES</div>
+          </div>
         </div>
       </div>
 
-      <aside className="zambia-map-panel">
-        {selectedProv ? (
-          <>
-            <div className="zambia-map-panel__title" style={{ color: selectedLead?.color ?? C.gold }}>
-              {selectedProv.name} Province
+      {/* Province split bar */}
+      <div style={{ display: 'flex', height: 6 }}>
+        <div style={{ flex: counts.UPND, background: C.upnd }} />
+        <div style={{ flex: counts.CONTESTED, background: C.contest }} />
+        <div style={{ flex: counts.PF, background: C.pf }} />
+      </div>
+
+      {/* Vote-share row */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 18px', background: '#080F1A', borderBottom: `1px solid ${C.line}`, fontSize: 11 }}>
+        <span style={{ color: C.upnd, fontWeight: 700 }}>HH {ELECTION_DATA.nationalPoll.upnd}%</span>
+        <span style={{ color: C.muted }}>National model · 50%+1 threshold to win first round</span>
+        <span style={{ color: C.pf, fontWeight: 700 }}>BM/MZ {ELECTION_DATA.nationalPoll.mundubile_tonse}%</span>
+      </div>
+
+      {/* Map + detail panel */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 270px' }}>
+
+        {/* SVG map */}
+        <div style={{ position: 'relative', background: C.ocean, borderRight: `1px solid ${C.line}` }}>
+          {loading ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400, color: C.muted, fontSize: 13 }}>
+              Loading Zambia province map…
             </div>
-            <span className="zambia-map-panel__pill" style={{ color: selectedLead?.color ?? C.gold, borderColor: selectedLead?.color ?? C.gold, background: `${selectedLead?.color ?? C.gold}20` }}>
-              {selectedLead ? `${selectedLead.label.toUpperCase()} LEADS - ${selectedLead.pct}%` : 'MODEL LEAD'}
-            </span>
-            <div className="zambia-map-panel__metric">
-              <span>Registered voters</span>
-              <strong>{(selectedProv.voters / 1000).toFixed(0)}K</strong>
-              <em>{((selectedProv.voters / ELECTION_DATA.voterTotal) * 100).toFixed(1)}% of national register</em>
+          ) : error || !projected.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 400, color: C.muted, fontSize: 12, gap: 8, padding: 20, textAlign: 'center' }}>
+              <span style={{ fontSize: 24 }}>🗺️</span>
+              <span>{error ?? 'Map data unavailable'}</span>
+              <span style={{ fontSize: 10, color: `${C.muted}88` }}>Province intelligence is available in the list panel →</span>
             </div>
-            <div className="zambia-map-panel__bars">
-              {selectedShares.map(item => (
-                <div key={item.label}>
-                  <span>{item.label}<b style={{ color: item.color }}>{item.pct}%</b></span>
-                  <i><em style={{ width: `${Math.max(0, item.pct)}%`, background: item.color }} /></i>
+          ) : (
+            <svg viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', width: '100%', height: 'auto' }}
+              role="img" aria-label="Zambia province election model map">
+              <defs>
+                <pattern id="hatch-tossup" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+                  <rect width="10" height="10" fill="#18222E" />
+                  <line x1="0" y1="0" x2="0" y2="10" stroke={C.upnd} strokeWidth="2.2" strokeOpacity="0.5" />
+                  <line x1="5" y1="0" x2="5" y2="10" stroke={C.pf} strokeWidth="2.2" strokeOpacity="0.5" />
+                </pattern>
+                <radialGradient id="ocean-bg" cx="50%" cy="45%" r="65%">
+                  <stop offset="0%" stopColor="#1A2D45" />
+                  <stop offset="100%" stopColor="#04080F" />
+                </radialGradient>
+                <filter id="prov-drop">
+                  <feDropShadow dx="0" dy="3" stdDeviation="5" floodColor="#000" floodOpacity="0.5" />
+                </filter>
+              </defs>
+              <rect width={W} height={H} fill="url(#ocean-bg)" />
+
+              {/* Province fills */}
+              <g filter="url(#prov-drop)">
+                {projected.map(item => {
+                  const style = getProvinceStyle(item.name)
+                  const isSel = selected === item.name
+                  const isContest = style.lean === 'CONTESTED'
+
+                  return (
+                    <g key={item.name}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setSelected(prev => prev === item.name ? null : item.name)}
+                      tabIndex={0} role="button" aria-label={`${item.name} province`}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelected(prev => prev === item.name ? null : item.name) }}>
+                      {/* Base rectangle for hatch pattern bg */}
+                      {isContest && item.paths.map((d, i) => <path key={`bg-${i}`} d={d} fill="#18222E" />)}
+                      {item.paths.map((d, i) => (
+                        <path key={i} d={d}
+                          fill={isContest ? 'url(#hatch-tossup)' : style.fill ?? C.card2}
+                          fillOpacity={isContest ? 1 : (isSel ? 0.97 : 0.82)}
+                          stroke={isSel ? '#FFFFFF' : '#C8D8F0'}
+                          strokeWidth={isSel ? 2.8 : 1.2}
+                          strokeLinejoin="round"
+                        />
+                      ))}
+                    </g>
+                  )
+                })}
+              </g>
+
+              {/* Province labels */}
+              <g pointerEvents="none">
+                {projected.map(item => {
+                  const prov = ELECTION_DATA.provinces.find(p => p.name === item.name)
+                  if (!prov) return null
+                  const lean  = getLean(prov)
+                  const lead  = Math.max(prov.upnd, prov.pf)
+                  const lCol  = prov.upnd >= prov.pf ? C.upnd : C.pf
+                  const label = item.name === 'North-Western' ? 'N-WESTERN' : item.name.toUpperCase()
+                  const pillW = label.length * 5.5 + 22
+                  const isTiny = ['Lusaka', 'Luapula'].includes(item.name)
+
+                  return (
+                    <g key={`lbl-${item.name}`}>
+                      {!isTiny && (
+                        <text x={item.cx} y={item.cy - 2} textAnchor="middle"
+                          fontSize={item.name === 'North-Western' || item.name === 'Copperbelt' ? 8.5 : 9.5}
+                          fontWeight="800" fill="#FFFFFF" letterSpacing="0.06em"
+                          style={{ filter: 'drop-shadow(0 1px 3px #000)' }}>
+                          {label}
+                        </text>
+                      )}
+                      <rect x={item.cx - pillW / 2} y={item.cy + (isTiny ? -8 : 4)}
+                        width={pillW} height={18} rx={9}
+                        fill="rgba(0,0,0,0.78)"
+                        stroke={lean === 'CONTESTED' ? C.gold : (prov.upnd >= prov.pf ? C.upnd : C.pf)}
+                        strokeWidth={1} strokeOpacity={0.75} />
+                      <text x={item.cx} y={item.cy + (isTiny ? 5 : 17)} textAnchor="middle"
+                        fontSize={8.5} fontWeight="700"
+                        fill={lean === 'CONTESTED' ? C.gold : lCol}>
+                        {lean === 'CONTESTED' ? `TOSS-UP ${lead}%` : `${prov.upnd >= prov.pf ? 'HH' : 'BM/MZ'} ${lead}%`}
+                      </text>
+                    </g>
+                  )
+                })}
+              </g>
+            </svg>
+          )}
+
+          {/* Legend */}
+          {!loading && !error && projected.length > 0 && (
+            <div style={{ position: 'absolute', bottom: 10, left: 10, display: 'flex', gap: 11,
+              background: 'rgba(6,12,20,0.92)', border: `1px solid ${C.line}`, borderRadius: 8,
+              padding: '5px 10px', fontSize: 10 }}>
+              {[
+                { label: 'UPND leads',  bg: C.upnd,  hatch: false },
+                { label: 'Opp. leads', bg: C.pf,    hatch: false },
+                { label: 'Toss-up',     bg: '',      hatch: true  },
+              ].map(it => (
+                <span key={it.label} style={{ display: 'flex', alignItems: 'center', gap: 5, color: C.text }}>
+                  <span style={{
+                    display: 'inline-block', width: 14, height: 11, borderRadius: 2,
+                    background: it.hatch
+                      ? `repeating-linear-gradient(45deg,${C.upnd}55,${C.upnd}55 2px,${C.pf}55 2px,${C.pf}55 5px)`
+                      : it.bg,
+                    border: `1px solid ${it.hatch ? C.gold : it.bg}88`,
+                  }} />
+                  {it.label}
+                </span>
+              ))}
+              <span style={{ color: C.muted, paddingLeft: 7, borderLeft: `1px solid ${C.line}` }}>Click to explore</span>
+            </div>
+          )}
+        </div>
+
+        {/* Detail panel */}
+        <div style={{ background: C.card, padding: 18, overflowY: 'auto', maxHeight: 580, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {selectedProv ? (
+            <>
+              <div style={{ background: `${selColor}1A`, border: `1px solid ${selColor}44`, borderRadius: 10, padding: '11px 14px' }}>
+                <div style={{ color: selColor, fontWeight: 800, fontSize: 15 }}>{selectedProv.name}</div>
+                <div style={{ color: C.muted, fontSize: 10, marginTop: 3 }}>
+                  {selectedLean === 'UPND' ? '🟠 UPND LEADING' : selectedLean === 'PF' ? '🔴 OPPOSITION LEADING' : '⚠️ TOSS-UP'}
+                  {' · '}{(selectedProv.voters / 1000).toFixed(0)}K voters
+                  {' · '}{((selectedProv.voters / ELECTION_DATA.voterTotal) * 100).toFixed(1)}% of register
+                </div>
+              </div>
+
+              {[
+                { label: 'HH / UPND',  pct: selectedProv.upnd, color: C.upnd },
+                { label: 'BM/MZ',      pct: selectedProv.pf,   color: C.pf },
+                { label: 'Others / Undecided', pct: Math.max(0, 100 - selectedProv.upnd - selectedProv.pf), color: C.muted },
+              ].map(s => (
+                <div key={s.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 3, color: C.text }}>
+                    <span>{s.label}</span>
+                    <b style={{ color: s.color }}>{s.pct}%</b>
+                  </div>
+                  <div style={{ height: 6, background: C.line, borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${s.pct}%`, background: s.color, borderRadius: 3 }} />
+                  </div>
                 </div>
               ))}
-            </div>
-            <div className="zambia-map-panel__readout">
-              <span>Lead margin <b>{selectedShares.length > 1 ? (selectedShares[0].pct - selectedShares[1].pct).toFixed(1) : '0'} pts</b></span>
-              <span>Estimated lead votes <b>{selectedLead ? Math.round(selectedProv.voters * selectedLead.pct / 100).toLocaleString() : '0'}</b></span>
-              <span>Status <b>{selectedProv.lean === 'CONTESTED' ? 'Battleground' : `${selectedLead?.label} advantage`}</b></span>
-              <span>Confidence <b>{selectedProv.confidence}</b></span>
-            </div>
-            <div className="zambia-map-panel__audit">
-              <strong>{selectedProv.classification}</strong>
-              <p>{selectedProv.rationale}</p>
-              <small><b>Country pressure:</b> {selectedProv.nationalIssueEffect}</small>
-              <small>{selectedProv.baseline2021}</small>
-              <span>Province-specific drivers</span>
-              <div>
-                {selectedProv.issueDrivers.map(driver => <em key={driver}>{driver}</em>)}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
+                {[
+                  { k: 'Margin',       v: `${Math.abs(selectedProv.upnd - selectedProv.pf)}pts` },
+                  { k: 'Status',       v: selectedProv.lean === 'CONTESTED' ? 'Battleground' : `${selectedProv.lean} lean` },
+                  { k: 'Confidence',   v: selectedProv.confidence ?? 'medium' },
+                  { k: 'Lead votes ~', v: Math.round(selectedProv.voters * Math.max(selectedProv.upnd, selectedProv.pf) / 100).toLocaleString() },
+                ].map(s => (
+                  <div key={s.k} style={{ background: C.card2, border: `1px solid ${C.line}`, borderRadius: 7, padding: '7px 9px' }}>
+                    <div style={{ color: C.muted, fontSize: 9 }}>{s.k}</div>
+                    <div style={{ color: C.text, fontWeight: 700, fontSize: 11, marginTop: 2 }}>{s.v}</div>
+                  </div>
+                ))}
               </div>
-            </div>
-            <button type="button" className="zambia-map-panel__reset" onClick={() => setSelected(null)}>
-              Clear selection
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="zambia-map-panel__title">Province Intelligence</div>
-            <p>Click a province on the Zambia map to inspect voter weight, candidate shares, lead margin and why the province is classified that way.</p>
-            <div className="zambia-map-panel__list">
-              {ELECTION_DATA.provinces.map(province => {
-                const lead = leadingCandidate(province)
-                return (
-                  <button key={province.name} type="button" onClick={() => setSelected(province.name)}>
-                    <span>{province.name}</span>
-                    <strong style={{ color: lead.color }}>{lead.label} {lead.pct}%</strong>
-                    <em>{province.lean === 'CONTESTED' ? 'Toss-up' : 'Open'}</em>
-                  </button>
-                )
-              })}
-            </div>
-          </>
-        )}
-      </aside>
+
+              <div style={{ background: C.card2, border: `1px solid ${C.line}`, borderRadius: 7, padding: '9px 11px', fontSize: 10, color: C.muted, lineHeight: 1.55 }}>
+                <div style={{ color: C.gold, fontWeight: 700, fontSize: 9, letterSpacing: '0.1em', marginBottom: 5 }}>MODEL RATIONALE</div>
+                {selectedProv.rationale}
+              </div>
+
+              {selectedProv.issueDrivers?.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                  {selectedProv.issueDrivers.map(d => (
+                    <span key={d} style={{ fontSize: 9, background: `${C.teal}18`, border: `1px solid ${C.teal}44`, color: C.teal, borderRadius: 20, padding: '2px 8px' }}>{d}</span>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ fontSize: 10, color: C.muted, borderTop: `1px solid ${C.line}`, paddingTop: 8 }}>
+                <b style={{ color: C.text }}>2021 baseline: </b>{selectedProv.baseline2021}
+              </div>
+
+              <button type="button" onClick={() => setSelected(null)}
+                style={{ background: C.card2, border: `1px solid ${C.line}`, color: C.muted, borderRadius: 7, padding: '6px 0', cursor: 'pointer', fontSize: 11 }}>
+                ← All provinces
+              </button>
+            </>
+          ) : (
+            <>
+              <div style={{ color: C.gold, fontWeight: 700, fontSize: 12, letterSpacing: '0.06em' }}>PROVINCE INTELLIGENCE</div>
+              <p style={{ color: C.muted, fontSize: 10, lineHeight: 1.5, margin: 0 }}>
+                Click any province to see voter weight, candidate shares, model rationale and key issue drivers.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {ELECTION_DATA.provinces.map(prov => {
+                  const lean = getLean(prov)
+                  const col  = lean === 'UPND' ? C.upnd : lean === 'PF' ? C.pf : C.gold
+                  return (
+                    <button key={prov.name} type="button" onClick={() => setSelected(prov.name)}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.card2, border: `1px solid ${C.line}`, borderRadius: 7, padding: '8px 11px', cursor: 'pointer' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <span style={{ width: 9, height: 9, borderRadius: '50%', flexShrink: 0,
+                          background: lean === 'CONTESTED' ? `linear-gradient(135deg,${C.upnd} 50%,${C.pf} 50%)` : col }} />
+                        <span style={{ color: C.text, fontSize: 11, fontWeight: 600 }}>{prov.name}</span>
+                      </div>
+                      <span style={{ color: '#fff', background: col, fontSize: 9, fontWeight: 700, borderRadius: 5, padding: '2px 7px' }}>
+                        {lean === 'CONTESTED' ? 'TOSS-UP' : lean === 'UPND' ? `HH ${prov.upnd}%` : `BM/MZ ${prov.pf}%`}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
