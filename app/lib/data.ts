@@ -8,7 +8,7 @@ export const ELECTION_DATA = {
   constituencies: 226,
   districts: 116,
   wards: 1858,
-  aiConfidence: 72,
+  aiConfidence: 76,  // Post-nomination: field is set, uncertainty reduced
   presidentialThreshold: 50,
   presidentialRule: 'President-elect must receive more than 50% of valid votes cast; otherwise a second-round/runoff risk is triggered.',
 
@@ -41,8 +41,8 @@ export const ELECTION_DATA = {
       role: 'President of Zambia · UPND presidential candidate · INCUMBENT',
       party: 'UPND',
       age: 62,
-      poll: 47.2,
-      trend: +0.4,
+      poll: 46.8,
+      trend: -0.4,  // Post-nomination: confirmed opposition ticket squeezes undecided pool
       color: '#FF6B00',
       stronghold: 'Southern, Western, North-Western',
       weakness: 'Cost of living, load shedding, rural north',
@@ -51,7 +51,7 @@ export const ELECTION_DATA = {
       socialHandle: '@HHichilema',
       sentimentScore: 58,
       facebookPage: 'HakaindehichilemaHH',
-      narrative: 'Supporters credit HH for kwacha stabilisation, free education and infrastructure, but face intense backlash over electricity load shedding and mealie meal prices. The incumbent advantage is real but under pressure.',
+      narrative: 'Post-nomination: the field is confirmed. HH enters the campaign stretch with incumbent advantage (CDF, free education, kwacha stability) but the confirmed opposition ticket now creates a clearer 50%+1 challenge. Load shedding and mealie meal prices remain the two biggest drags on his urban numbers.',
       quotedPosts: [
         { src: 'Facebook · HH Official Page', text: 'Thank you Mr President for the free education. My three children are in school this year for the first time. God bless you HH. 🙏' },
         { src: 'Facebook · Lusaka Discuss Group', text: 'HH promised us change but electricity goes 18 hours a day. What kind of change is this? Mealie meal is K400 a 25kg bag. Very disappointing.' },
@@ -64,20 +64,20 @@ export const ELECTION_DATA = {
       name: 'Brian Mundubile + Makebi Zulu',
       shortName: 'BM/MZ',
       photo: '/candidates/mundubile.jpg',
-      role: 'Tonse Alliance figure · former PF MP · opposition lane',
+      role: 'ECZ-nominated presidential candidate · former PF MP · Tonse/PF-Pamodzi opposition lane',
       party: 'Tonse / PF-Pamodzi cooperation',
       age: 55,
-      poll: 20.3,
-      trend: +2.3,
+      poll: 22.1,
+      trend: +3.1,
       color: '#CC0000',
       stronghold: 'Northern, Luapula, Muchinga, Copperbelt Urban',
-      weakness: 'Formal ticket filings, alliance cohesion, limited southern presence',
-      aiScore: 42,
-      biography: 'Brian Mundubile is a former PF MP and Tonse Alliance figure. Current public reporting points to shifting opposition ticket arrangements around Tonse/FDD/NRPUP and PF/Pamodzi discussions, so this dashboard treats the lane as an opposition model estimate rather than an ECZ-certified ticket.',
+      weakness: 'Alliance cohesion across all structures, limited southern presence, HH incumbency advantage',
+      aiScore: 45,
+      biography: 'Brian Mundubile is a former PF MP and Tonse Alliance figure, now ECZ-nominated as the Tonse/PF-Pamodzi presidential candidate for 2026. Makebi Zulu runs as running-mate. With nominations complete, the opposition consolidation test shifts from ticket formation to ground-game execution and vote-transfer efficiency across Northern, Luapula, Muchinga, Eastern and Copperbelt.',
       socialHandle: '@BrianMundubile · Tonse Alliance',
-      sentimentScore: 62,
+      sentimentScore: 65,
       facebookPage: 'BrianMundubile',
-      narrative: 'The Mundubile-Makebi lane is the most visible PF-linked northern/eastern opposition challenge in the model. The strategic upside is vote consolidation; the risk is legal vehicle clarity, formal nomination paperwork and whether local PF structures move together.',
+      narrative: 'Post-nomination: Mundubile-Makebi is now the confirmed opposition lane. The field is set. The model upgrades their share as ticket clarity reduces split-vote leakage. The 50%+1 calculation now turns entirely on voter turnout, rally penetration and whether Northern/Luapula/Muchinga structures deliver as expected.',
       quotedPosts: [
         { src: 'Facebook · Opposition supporter sample', text: 'Mundubile has the northern base and the opposition must unite quickly before nominations close.' },
         { src: 'Facebook · Luapula Province Group', text: 'Brian Mundubile visited Samfya last week. The reception was overwhelming. People are tired and ready for change. Even former UPND supporters are switching.' },
@@ -165,35 +165,37 @@ export const ELECTION_DATA = {
   ],
 
   // ── National Model Estimates (not official ECZ polling) ──
+  // ── Post-Nomination National Model (May 2026 · field confirmed by ECZ) ──
   nationalPoll: {
-    upnd: 47.2,
-    mundubile_tonse: 20.3,
-    kalaba_cf: 3.8,
-    membe_sp: 4.1,
-    kateka_nhp: 1.5,
-    others_undecided: 23.1,
+    upnd: 46.8,           // HH — slight drop as confirmed opposition field activates undecideds
+    mundubile_tonse: 22.1, // BM/MZ — bump from ticket clarity and consolidation signal
+    kalaba_cf: 3.6,        // HK — slight compression as undecideds move to clear lanes
+    membe_sp: 4.3,         // FM — small urban youth pickup post-nomination
+    kateka_nhp: 1.4,       // CK — largely unchanged
+    others_undecided: 21.8, // Undecided pool narrows as field is set
     // kept for API compatibility with older route code and Airtable schemas
-    pf_ndc_alliance: 20.3,
-    kalaba_dp: 3.8,
-    pf_mundubile: 14.2,
-    ndc_makebi: 6.1,
+    pf_ndc_alliance: 22.1,
+    kalaba_dp: 3.6,
+    pf_mundubile: 15.6,
+    ndc_makebi: 6.5,
   },
 
   // ── 20-Month Scenario Timeline (modelled, not official polling) ──
+  // Index 17 = May'26 NOMINATION MONTH (field confirmed by ECZ). Indices 18-19 are projected.
   months: [
     "Jan'25","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec'25",
-    "Jan'26","Feb","Mar","Apr","May","Jun'26",
+    "Jan'26","Feb","Mar","Apr","May'26★","Jun'26",
     "Jul'26▸","Aug'26▸"
   ],
-  // Modelled history + 2 projected months (marked with ▸ in months array)
-  upndTrend:     [52,50,49,47,46,48,47,45,44,46,47,48,48,47,47,48,47.2,46,  45.5,44.9],
-  allianceTrend: [6, 6, 8, 8, 9, 9,10,11,13,14,15,16, 17,18,19,20,20.3,21, 22.6,24.2],
-  kalabaTrend:   [5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4,  4, 4, 4, 4, 3.8,3.8, 3.6, 3.4],
-  membeTrend:    [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4,  4, 4, 4, 4, 4.1,4.5, 4.7, 5.0],
+  // ★ = post-nomination read. ▸ = projected.
+  upndTrend:     [52,50,49,47,46,48,47,45,44,46,47,48,48,47,47,48,47.2,46.8, 45.2,44.5],
+  allianceTrend: [6, 6, 8, 8, 9, 9,10,11,13,14,15,16, 17,18,19,20,20.3,22.1, 23.5,25.0],
+  kalabaTrend:   [5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4,  4, 4, 4, 4, 3.8, 3.6,  3.4, 3.2],
+  membeTrend:    [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4,  4, 4, 4, 4, 4.1, 4.3,  4.6, 4.9],
   // Legacy individual arrays retained for API use
-  mundubileTrend:[2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,14.2,15, 16.1,17.2],
-  ndcTrend:      [4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6.1, 6,  6.5, 7.0],
+  mundubileTrend:[2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,14.2,15.6, 16.8,18.1],
+  ndcTrend:      [4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6,  6, 6, 6, 6, 6.1, 6.5,  6.7, 6.9],
   projectedFromIndex: 18,
 
   // ── Platform Sentiment (UPND vs field) ──
@@ -212,8 +214,37 @@ export const ELECTION_DATA = {
     { name: 'Northern', voters: 705000, upnd: 32, pf: 48, lean: 'PF', classification: 'Opposition anchor', baseline2021: 'ECZ 2021: Lungu/PF led Northern.', nationalIssueEffect: 'National opposition-consolidation and cost pressures are amplified by Bemba-belt political identity and Mundubile visibility.', issueDrivers: ['Mundubile home-region effect', 'PF ward structures', 'fish and cassava economy', 'rural road delivery', 'Bemba radio narrative share'], rationale: 'Northern remains an opposition anchor because the PF baseline, Mundubile visibility and regional political machinery outweigh HH incumbency gains. UPND can reduce the gap through delivery proof, but not lead today.', confidence: 'high' },
     { name: 'North-Western', voters: 705000, upnd: 72, pf: 17, lean: 'UPND', classification: 'UPND anchor with mining scrutiny', baseline2021: 'ECZ 2021: HH won North-Western by a very large margin.', nationalIssueEffect: 'National jobs and infrastructure concerns become new-copperbelt questions about whether mining growth benefits local workers and suppliers.', issueDrivers: ['Solwezi/Kalumbila mine jobs', 'local supplier contracts', 'royalty/development expectations', 'roads to mining communities', 'environmental governance'], rationale: 'North-Western remains a strong HH province. Mining benefit expectations and environmental/local supplier concerns reduce the margin from 2021 levels but do not create an opposition lead.', confidence: 'high' },
     { name: 'Western', voters: 660000, upnd: 69, pf: 17, lean: 'UPND', classification: 'UPND anchor', baseline2021: 'ECZ 2021: HH won Western heavily.', nationalIssueEffect: 'National water, roads and decentralisation concerns become Barotse-development and flood-management questions.', issueDrivers: ['flood plain access', 'Barotse development expectations', 'Mongu-Limulunga service delivery', 'rice/cattle/agriculture', 'decentralisation credibility'], rationale: 'Western remains UPND-led. The model discounts for development impatience and service delivery expectations, but the 2021 baseline still gives HH a strong anchor.', confidence: 'high' },
-    { name: 'Luapula', voters: 520000, upnd: 29, pf: 49, lean: 'PF', classification: 'Opposition anchor', baseline2021: 'ECZ 2021: Lungu/PF led Luapula strongly.', nationalIssueEffect: 'National opposition-consolidation, food-price and rural-road concerns are filtered through Kalaba influence and PF legacy support.', issueDrivers: ['Kalaba influence', 'PF legacy vote', 'fishing economy around lakes', 'rural road access', 'cassava and food prices'], rationale: 'Luapula remains opposition-led. Kalaba pockets and PF legacy structures make it difficult for HH to lead, though a fragmented opposition and visible rural delivery could narrow the margin.', confidence: 'high' },
-    { name: 'Muchinga', voters: 476246, upnd: 31, pf: 48, lean: 'PF', classification: 'Opposition leaning', baseline2021: 'ECZ 2021: Lungu/PF led Muchinga strongly.', nationalIssueEffect: 'National agriculture, food-price and opposition-ticket pressures show up through rural delivery and northern/eastern bloc voting behaviour.', issueDrivers: ['PF legacy vote', 'Nakonde trade corridor', 'chiefdom networks', 'rural agriculture inputs', 'feeder roads and food prices'], rationale: 'Muchinga stays opposition-leaning due to the 2021 PF baseline and northern/eastern bloc dynamics. The opposition margin is trimmed because Lungu is no longer the candidate and ticket cohesion still needs proof.', confidence: 'high' },
+    {
+      name: 'Luapula', voters: 520000, upnd: 29, pf: 51, lean: 'PF',
+      classification: 'Deep opposition anchor · post-nomination hardened',
+      baseline2021: 'ECZ 2021: Lungu/PF led Luapula with the largest provincial margin. HH was weakest here of any province.',
+      nationalIssueEffect: 'Post-nomination field clarity strengthens PF/Tonse structures. Luapula voters respond to opposition consolidation as a signal of seriousness, not merely identity. Kalaba\'s CF Orange Alliance drew moderate voters who may now re-evaluate with the confirmed ticket.',
+      issueDrivers: [
+        'Harry Kalaba home-base influence (Mwense/Kawambwa pockets)',
+        'PF/Tonse ward and branch activation post-nomination',
+        'Fishing economy: Mweru Wantipa, Bangweulu, Johnston Falls livelihoods',
+        'Lake Mweru fishing ban grievances vs UPND enforcement stance',
+        'Cassava and maize prices (rural food inflation)',
+        'Rural road access: Great North Road feeders to Nchelenge, Mansa',
+        'Mansa Hospital and rural clinic resourcing',
+        'Youth unemployment: no major mine employment base',
+        'Chiefdom-level loyalty networks (Chief Nkuba, Chief Mulundu areas)',
+        'PF traditional stronghold legacy since Sata era',
+        'Makebi Zulu running-mate signal for eastern Luapula corridors',
+        'UPND CDF delivery visibility: where roads and boreholes are seen, HH edge softens opposition margin'
+      ],
+      rationale: 'Post-nomination: Luapula is now the strongest opposition anchor in the model. The Mundubile-Makebi ticket confirmation activates dormant PF branch networks. Kalaba\'s CF pockets in Mwense and Kawambwa are the only material UPND pickup route. The fishing economy, rural road grievances and absence of mine employment make it structurally the hardest province for HH. The model upgrades PF from 49% to 51% as ticket clarity removes the uncertainty discount. UPND\'s only path to reducing the gap is visible CDF and clinic delivery in Mansa, Nchelenge and Samfya.',
+      keyDistricts: [
+        { district: 'Mansa', leanSignal: 'PF anchor, Mundubile rally reception strong' },
+        { district: 'Nchelenge', leanSignal: 'Fishing economy grievance, PF stronghold' },
+        { district: 'Kawambwa', leanSignal: 'Kalaba home area, CF pockets possible' },
+        { district: 'Samfya', leanSignal: 'Bangweulu fishing base, PF lean' },
+        { district: 'Mwense', leanSignal: 'Kalaba influence, mixed CF/PF' },
+        { district: 'Chembe', leanSignal: 'Deep rural, PF ward structures intact' },
+      ],
+      confidence: 'high'
+    },
+    { name: 'Muchinga', voters: 476246, upnd: 31, pf: 49, lean: 'PF', classification: 'Opposition leaning · post-nomination upgrade', baseline2021: 'ECZ 2021: Lungu/PF led Muchinga strongly.', nationalIssueEffect: 'National agriculture, food-price and opposition-ticket pressures show up through rural delivery and northern/eastern bloc voting behaviour.', issueDrivers: ['PF/Tonse ward structures now activated', 'Nakonde trade corridor', 'chiefdom networks', 'rural agriculture inputs', 'feeder roads and food prices'], rationale: 'Post-nomination: Muchinga opposition share nudges up as the confirmed Mundubile-Makebi ticket activates PF ward structures. Ticket uncertainty is resolved; execution risk now drives the residual gap.', confidence: 'high' },
   ],
 
   // ── Issue Sentiment ──
@@ -231,7 +262,7 @@ export const ELECTION_DATA = {
 
   // ── Simulation Scenarios ──
   scenarios: [
-    { label: 'Status Quo',       value: 47.2, color: '#555',    desc: 'Below 50% threshold: runoff-risk baseline unless undecided voters break strongly for UPND' },
+    { label: 'Post-Nomination',   value: 46.8, color: '#555',    desc: 'Post-ECZ nomination baseline: confirmed opposition field squeezes undecideds; runoff risk is now the primary concern' },
     { label: 'Energy Fix Only',  value: 51.8, color: '#0077E6', desc: '18-month Zesco/solar roadmap delivered; moves model above first-round threshold' },
     { label: 'Cost Relief Only', value: 53.4, color: '#00C9A7', desc: 'Mealie meal/fuel relief in Lusaka, Copperbelt and Northern; clears first-round threshold' },
     { label: 'Both Policies',    value: 56.1, color: '#F5C400', desc: 'Energy fix + cost relief; safer first-round path and lower runoff exposure' },
