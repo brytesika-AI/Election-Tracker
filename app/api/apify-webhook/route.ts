@@ -80,6 +80,16 @@ async function storeToAirtable(byCandidate: Record<string, string[]>, runId: str
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Webhook auth: shared-secret header guard ──────────────────────────────
+    const webhookSecret = process.env.APIFY_WEBHOOK_SECRET
+    if (webhookSecret) {
+      const authHeader = req.headers.get('x-apify-webhook-signature') ?? req.headers.get('authorization') ?? ''
+      const providedToken = authHeader.replace(/^Bearer\s+/i, '')
+      if (providedToken !== webhookSecret) {
+        return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
+      }
+    }
+
     const body: ApifyWebhookBody = await req.json()
 
     if (body.eventType !== 'ACTOR.RUN.SUCCEEDED') {

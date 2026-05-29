@@ -104,7 +104,7 @@ export default function ZambiaMap() {
   // Fetch accurate Zambia province GeoJSON from geoBoundaries open dataset
   useEffect(() => {
     let cancelled = false
-    fetch('/zambia-provinces.geojson', { cache: 'force-cache' })
+    fetch('/zambia-provinces.geojson', { cache: 'force-cache', signal: AbortSignal.timeout(8000) })
       .then(r => r.json())
       .then(data => { if (!cancelled) { setFeatures(data.features ?? []); setLoading(false) } })
       .catch(() => { if (!cancelled) { setLoading(false); setError('Province map unavailable') } })

@@ -8,6 +8,7 @@ import {
 } from 'recharts'
 import { ELECTION_DATA, JudgeVerdict } from '@/app/lib/data'
 import ZambiaMap from '@/app/components/ZambiaMap'
+import ScenarioHub from '@/app/components/ScenarioHub'
 
 // ── Palette ──────────────────────────────────────────────
 const C = {
@@ -328,7 +329,7 @@ export default function Dashboard() {
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
   const [nlpLoading, setNlpLoading]         = useState(false)
   const [activeCandidateId, setActiveCandidateId] = useState('hh')
-  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity'>('overview')
+  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity' | 'warroom'>('overview')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
 
   const fetchNlpSentiment = useCallback(async () => {
@@ -372,16 +373,16 @@ export default function Dashboard() {
     try {
       const res = await fetch('/api/ai-judges', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
       const json = await res.json()
-      setVerdicts(json.verdicts)
+      setVerdicts(json.verdicts ?? [])
       setJudgeMode(json.mode === 'ai' ? 'ai' : 'demo')
     } catch { setJudgeMode('demo') } finally { setJudgeLoading(false) }
   }, [])
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true)
-    await Promise.all([fetchFbSentiment(), fetchTwSentiment(), fetchTtSentiment()])
+    await Promise.all([fetchFbSentiment(), fetchTwSentiment(), fetchTtSentiment(), fetchNlpSentiment()])
     setLastUpdated(new Date()); setRefreshing(false)
-  }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment])
+  }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment, fetchNlpSentiment])
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -495,6 +496,7 @@ export default function Dashboard() {
     { id: 'strategy' as const, label: 'Strategy', note: 'Tickets and scenarios' },
     { id: 'history' as const, label: 'History & Risk', note: 'Elections 1991–2026 · 20 factors' },
     { id: 'integrity' as const, label: 'Integrity', note: 'Runoff engine · Institutions · Agriculture · Mining' },
+    { id: 'warroom' as const, label: '⚡ WAR ROOM', note: '5-agent AI scenario hub' },
     { id: 'model' as const, label: 'Model Notes', note: 'Sources and validation' },
   ]
   const mundubileTicket = ELECTION_DATA.figures.find(f => f.id === 'pf_ndc')
@@ -1516,6 +1518,10 @@ export default function Dashboard() {
         </>
         )}
 
+        {activeDashboardTab === 'warroom' && (
+          <ScenarioHub />
+        )}
+
         {activeDashboardTab === 'model' && (
         <details className="model-details">
           <summary>Advanced model notes, agents and source detail</summary>
@@ -2427,7 +2433,7 @@ export default function Dashboard() {
           {[
             ['INTELLIGENCE SOURCES', ['Facebook (HH, Mundubile-Makebi, Kalaba, M\'membe)', 'Twitter/X · WhatsApp signal tracking', 'Afrobarometer R10 · public media monitoring', 'iVerify Zambia · OONI · CIVICUS', 'ECZ · ZamStats · BoZ · World Bank']],
             ['VOTER REGISTER (ECZ 2026)', ['Total: 8,786,300 · 226 constituencies', 'Lusaka: 1,430,889', 'Copperbelt: 1,296,446', 'Eastern: 1,129,444', 'Southern: 1,103,275', 'Other provinces: 3,826,246']],
-            ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.8%', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: ~K26.8', 'GDP Growth (WB): 4.2%', 'Youth unemployment 19-22: 32.6%', 'Mealie Meal 25kg: monitored']],
+            ['ECONOMIC CONTEXT', ['Inflation (ZamStats): 6.6% ↓ (lowest since Feb 2018)', 'BoZ Policy Rate: 13.25%', 'Kwacha/USD: K19.87 ↑ (6-year high)', 'Copper LME: $13,090/t ↑', 'Mealie Meal 25kg: K289 ↓', 'Youth unemployment 19-22: 32.6%']],
             ['ENGAGEMENT PACKAGE', ['Package: PREMIUM 90-day', 'Real-time + daily AI reports', 'Dedicated Account Manager', 'Alert threshold: ±3 points', 'Election Day: 13 Aug 2026', 'Next report: Sunday']],
           ].map(([h, items]) => (
             <div key={h as string}>

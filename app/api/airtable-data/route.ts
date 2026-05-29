@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { ELECTION_DATA } from '@/app/lib/data'
 
 const AIRTABLE_BASE = 'appEG17iTbwEvLYWU'
-const AIRTABLE_TOKEN = process.env.AIRTABLE_API_TOKEN
+const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN ?? process.env.AIRTABLE_API_TOKEN
 
 async function fetchCandidates() {
   if (!AIRTABLE_TOKEN) return null
