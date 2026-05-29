@@ -1082,6 +1082,141 @@ export default function Dashboard() {
           ))}
         </div>
 
+        {activeDashboardTab === 'overview' && (() => {
+          const EM = ELECTION_DATA.explainableModel
+          const PT = ELECTION_DATA.pollTriangulation
+          const tierColor: Record<string, string> = {
+            'LIVED HARDSHIP': C.warn, 'STRUCTURAL': C.upnd, 'DELIVERY OFFSET': C.teal, 'MACRO CONTEXT': C.muted,
+          }
+          const wb = EM.computation
+          const waterfall = [
+            { label: '2021 baseline', val: wb.baseline, color: C.gold, delta: false },
+            { label: 'Lived hardship', val: wb.livedHardshipDrag, color: C.warn, delta: true },
+            { label: 'Structural', val: wb.structuralDrag, color: C.upnd, delta: true },
+            { label: 'Delivery offset', val: wb.deliveryOffset, color: C.teal, delta: true },
+            { label: 'Macro context', val: wb.macroContextLift, color: C.ndc, delta: true },
+            { label: 'Model output', val: wb.output, color: C.zg, delta: false },
+          ]
+          const weights = [
+            { k: 'Lived hardship', v: EM.weightSummary.livedHardship, c: C.warn },
+            { k: 'Structural', v: EM.weightSummary.structural, c: C.upnd },
+            { k: 'Delivery offset', v: EM.weightSummary.deliveryOffset, c: C.teal },
+            { k: 'Macro context', v: EM.weightSummary.macroContext, c: C.muted },
+          ]
+          return (
+        <>
+          <SectionLabel layer="OWN PREDICTION" title="How We Get to 47.2% — Explainable Model"
+            sub="Bottom-up, hardship-weighted computation from the 2021 baseline. Every weight and delta is shown so the assumptions can be challenged — this is our own estimate, not a copied poll." />
+
+          {/* Headline call + computation waterfall */}
+          <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 16, marginBottom: 16 }}>
+            <div style={{ background: 'linear-gradient(135deg, rgba(14,23,36,.96), rgba(8,31,17,.9))', border: `1px solid ${C.zg}66`, borderRadius: 10, padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 900, color: C.muted, letterSpacing: 1 }}>UPND FIRST-ROUND SHARE</div>
+              <div style={{ fontSize: 52, fontWeight: 950, color: C.zg, lineHeight: 1 }}>{EM.output}%</div>
+              <div style={{ fontSize: 11, color: C.text, marginTop: 6, fontWeight: 700 }}>{EM.call.replace(/_/g, ' ')}</div>
+              <div style={{ fontSize: 11, color: C.warn, marginTop: 8, lineHeight: 1.5 }}>
+                {EM.firstRoundGap} pts short of the {EM.firstRoundThreshold}%+1 win line → <strong>runoff is the base case</strong>
+              </div>
+            </div>
+            <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px' }}>
+              <div style={{ fontSize: 10, fontFamily: 'monospace', fontWeight: 900, color: C.gold, marginBottom: 12 }}>AUDITABLE ARITHMETIC · baseline + Σ(deltas) = output</div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, justifyContent: 'space-between' }}>
+                {waterfall.map(w => (
+                  <div key={w.label} style={{ flex: 1, textAlign: 'center' }}>
+                    <div style={{ fontSize: 16, fontWeight: 950, color: w.color, marginBottom: 6 }}>
+                      {w.delta ? (w.val > 0 ? '+' : '') : ''}{w.val}
+                    </div>
+                    <div style={{ height: 6, borderRadius: 3, background: w.color, opacity: w.delta ? 0.6 : 1, marginBottom: 6 }} />
+                    <div style={{ fontSize: 9, color: C.muted, lineHeight: 1.3 }}>{w.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, fontFamily: 'monospace', marginTop: 14, borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+                {wb.check}
+              </div>
+            </div>
+          </div>
+
+          {/* Weight summary */}
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
+            <div style={{ fontSize: 11, color: C.text, fontWeight: 800, marginBottom: 4 }}>What the model weights — by what Zambians actually feel</div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55, marginBottom: 12 }}>{EM.weightSummary.headline}</div>
+            {weights.map(w => (
+              <div key={w.k} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                <div style={{ width: 120, fontSize: 11, color: C.text, fontWeight: 700 }}>{w.k}</div>
+                <div style={{ flex: 1, height: 16, background: C.line, borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ width: `${w.v}%`, height: '100%', background: w.c, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 6 }}>
+                    <span style={{ fontSize: 10, fontWeight: 900, color: '#000' }}>{w.v}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Drivers */}
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
+            <div style={{ fontSize: 11, color: C.text, fontWeight: 800, marginBottom: 12 }}>Every driver, ranked by salience — with evidence</div>
+            <div style={{ display: 'grid', gap: 8 }}>
+              {EM.drivers.map(d => (
+                <div key={d.id} style={{ display: 'grid', gridTemplateColumns: '150px 70px 1fr', gap: 12, alignItems: 'start', borderLeft: `3px solid ${tierColor[d.tier] ?? C.muted}`, paddingLeft: 12, paddingTop: 6, paddingBottom: 6 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: C.text, fontWeight: 700, lineHeight: 1.3 }}>{d.label}</div>
+                    <div style={{ fontSize: 8, color: tierColor[d.tier] ?? C.muted, fontFamily: 'monospace', fontWeight: 900, marginTop: 3 }}>{d.tier} · w{d.salienceWeight}</div>
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 950, color: d.pointDelta > 0 ? C.teal : C.warn }}>{d.pointDelta > 0 ? '+' : ''}{d.pointDelta}</div>
+                  <div>
+                    <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>{d.why}</div>
+                    <div style={{ fontSize: 9, color: '#556', fontFamily: 'monospace', marginTop: 4 }}>📊 {d.indicator} · src: {d.evidence}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Poll triangulation cross-check */}
+          <SectionLabel layer="CROSS-CHECK" title="Poll Triangulation — Why Not Just Trust the 55% Online Poll"
+            sub="We do not copy one poll. We gather every side — party, social, academic, independent — flag each for bias, bias-adjust, then compare to our own model." />
+          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 90px 90px 1fr', gap: 10, fontSize: 9, fontFamily: 'monospace', fontWeight: 900, color: C.muted, borderBottom: `1px solid ${C.line}`, paddingBottom: 8, marginBottom: 8 }}>
+              <div>SOURCE</div><div style={{ textAlign: 'center' }}>RAW</div><div style={{ textAlign: 'center' }}>ADJUSTED</div><div>WHY ADJUSTED</div>
+            </div>
+            {PT.sources.map(s => (
+              <div key={s.source} style={{ display: 'grid', gridTemplateColumns: '1.6fr 90px 90px 1fr', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: `1px solid ${C.line}` }}>
+                <div>
+                  <div style={{ fontSize: 11, color: C.text, fontWeight: 700 }}>{s.source}</div>
+                  <div style={{ fontSize: 8, color: C.muted, fontFamily: 'monospace', marginTop: 2 }}>{s.lean} · reliability {s.reliability}</div>
+                </div>
+                <div style={{ textAlign: 'center', fontSize: 14, fontWeight: 900, color: C.muted, textDecoration: 'line-through' }}>{s.rawUpnd}</div>
+                <div style={{ textAlign: 'center', fontSize: 14, fontWeight: 950, color: C.gold }}>{s.adjustedUpnd}</div>
+                <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.45 }}>{s.adjustment}</div>
+              </div>
+            ))}
+            <div style={{ display: 'flex', gap: 12, marginTop: 14, flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, minWidth: 160, background: C.card2, border: `1px solid ${C.line}`, borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 900 }}>BIAS-ADJUSTED CONSENSUS</div>
+                <div style={{ fontSize: 28, fontWeight: 950, color: C.gold }}>{PT.biasAdjustedConsensus}%</div>
+              </div>
+              <div style={{ flex: 1, minWidth: 160, background: C.card2, border: `1px solid ${C.line}`, borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 900 }}>OUR OWN MODEL</div>
+                <div style={{ fontSize: 28, fontWeight: 950, color: C.zg }}>{PT.ownModelOutput}%</div>
+              </div>
+              <div style={{ flex: 1, minWidth: 160, background: `${C.teal}1A`, border: `1px solid ${C.teal}66`, borderRadius: 8, padding: 12 }}>
+                <div style={{ fontSize: 9, color: C.teal, fontFamily: 'monospace', fontWeight: 900 }}>AGREEMENT</div>
+                <div style={{ fontSize: 28, fontWeight: 950, color: C.teal }}>{PT.agreement}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6, marginTop: 12, borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+              {PT.interpretation}
+            </div>
+          </div>
+
+          <div style={{ fontSize: 10, color: '#556', fontStyle: 'italic', lineHeight: 1.6, marginBottom: 8 }}>
+            {EM.disclaimer} · Model last computed {EM.lastComputed}.
+          </div>
+        </>
+          )
+        })()}
+
         {activeDashboardTab === 'provinces' && (
         <>
         <div className="simple-grid">
@@ -1355,7 +1490,7 @@ export default function Dashboard() {
             <div style={{ background: C.card, border: `2px solid ${C.teal}`, borderRadius: 10, padding: 18 }}>
               <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>FIRST-ROUND WIN PROBABILITY</div>
               <div style={{ fontSize: 48, fontWeight: 900, color: C.teal, fontFamily: 'monospace', lineHeight: 1 }}>{ELECTION_DATA.runoffProbability.firstRoundWinProbability}%</div>
-              <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>UPND clears 50%+1 in single round at baseline</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>Probability UPND clears 50%+1 in a single round (model output 47.2% → minority of simulations)</div>
               <div style={{ background: C.line, height: 8, borderRadius: 4, marginTop: 12, overflow: 'hidden' }}>
                 <div style={{ width: `${ELECTION_DATA.runoffProbability.firstRoundWinProbability}%`, height: '100%', background: C.teal }} />
               </div>

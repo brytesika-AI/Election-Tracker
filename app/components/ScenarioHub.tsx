@@ -834,7 +834,7 @@ export default function ScenarioHub() {
             )}
             {partyLens === 'NEUTRAL' && (
               <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.6 }}>
-                HH is the clear front-runner at 55%+. Runoff is the opposition's only realistic path. Copperbelt is the swing province.
+                HH leads the field at ~47% but is short of 50%+1 — runoff is the base case, not a single-round win. The opposition&apos;s path is consolidation to force and win that second ballot. Copperbelt is the swing province.
               </div>
             )}
           </div>
