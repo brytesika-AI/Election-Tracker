@@ -550,11 +550,15 @@ export const ELECTION_DATA = {
         { name: 'Rerun exposure', probability: 'high at baseline', projectedShare: 47.2, trigger: 'Undecided voters split against the incumbent and opposition ticket consolidates.' },
         { name: 'Strong mandate', probability: 'low-medium', projectedShare: 56.1, trigger: 'Economic confidence improves and opposition remains fragmented outside PF-linked provinces.' }
       ],
+      winPaths: {
+        bestCase: { label: 'Clean first-round win', share: 56.1, winChance: '~78% in this scenario', path: 'Load shedding ends and stays ended into August, mealie meal holds near K289, the strong copper price ($13,090/t) converts into visible Copperbelt jobs and supplier payments, youth turnout repeats 2021, and the opposition stays fragmented across the PF/Tonse lane, Kalaba and M’membe. UPND clears 50%+1 in one round and likely keeps a parliamentary working majority.' },
+        worstCase: { label: 'Forced into a rerun he can lose', share: 43.5, winChance: '~12% first-round, exposed in runoff', path: 'Power cuts and cost-of-living pain dominate the final weeks, Copperbelt feels no benefit from high copper, youth enthusiasm sags to 2016 levels, and the opposition consolidates behind one anti-incumbent ticket. HH leads the first round but is dragged to a second ballot where transferred opposition votes can beat him — a UPND presidential win with no parliamentary majority becomes the live risk.' }
+      },
       strategy: [
-        'Publish province-level delivery proof on power, maize, health workers and CDF execution.',
-        'Use Copperbelt job, supplier-payment and mining-community numbers rather than generic national promises.',
-        'Target undecided urban voters with short evidence-led radio, Facebook, WhatsApp and TikTok explainers.',
-        'Prepare runoff transfer outreach to smaller candidates before first-round bargaining hardens.'
+        'Publish province-level delivery proof on power, maize (mealie meal eased to ~K289), health workers and CDF execution — receipts, not slogans.',
+        'Turn the strong copper price ($13,090/t multi-year high) into concrete Copperbelt job, supplier-payment and community numbers rather than generic national promises.',
+        'Target undecided urban voters with short evidence-led radio, Facebook, WhatsApp and TikTok explainers; do not rely on state-media visibility, which the model discounts.',
+        'Prepare lawful runoff transfer outreach to Kalaba, M’membe and smaller candidates before first-round bargaining hardens — persuasion only, no suppression.'
       ],
       validation: {
         status: 'validated',
@@ -576,11 +580,15 @@ export const ELECTION_DATA = {
         { name: 'Fragmented opposition', probability: 'medium', projectedShare: 18.0, trigger: 'Multiple opposition personalities split anti-incumbent votes.' },
         { name: 'Rerun challenger', probability: 'conditional', projectedShare: 30.0, trigger: 'HH stays below 50%+1 and smaller opposition voters transfer tactically.' }
       ],
+      winPaths: {
+        bestCase: { label: 'Forces a rerun and wins it', share: 49.0, winChance: '~30% to win the presidency via runoff', path: 'The ticket files cleanly with ECZ, the entire anti-incumbent field rallies behind it, Northern/Luapula/Muchinga/Eastern turn out heavily, and the 33 new opposition-leaning rural seats from delimitation break its way. HH is held below 50%+1 in round one, and Kalaba + M’membe + undecided voters transfer in the runoff — the only arithmetic that makes Mundubile-Makebi president.' },
+        worstCase: { label: 'Fragmented also-ran', share: 18.0, winChance: '<3%', path: 'Filing or alliance discipline breaks down, PF legacy baggage repels swing voters, and three or four opposition personalities split the anti-HH vote. The ticket cannot consolidate the bloc, HH wins outright, and the lane loses even its rerun leverage.' }
+      },
       strategy: [
-        'Lock the public ticket narrative early: candidate, running mate, province role and field command.',
-        'Prioritize Bemba/Nyanja radio, market visits and church/community networks with a disciplined cost-of-living message.',
-        'Offer a costed Copperbelt jobs and mining supplier plan that can be compared against UPND delivery claims.',
-        'Build a runoff-transfer map by province before election day, especially Kalaba, Socialist Party and undecided issue voters.'
+        'Lock the public ticket narrative early: candidate, running mate, province role and field command — settle the ECZ filing question first.',
+        'Prioritize Bemba/Nyanja radio, market visits and church/community networks with a disciplined cost-of-living message (mealie meal, fuel, jobs).',
+        'Offer a costed Copperbelt jobs and mining-supplier plan that can be compared head-to-head against UPND delivery claims.',
+        'Build a lawful runoff-transfer map by province before election day — Kalaba, Socialist Party and undecided issue voters — and contest the 70 new constituencies hard.'
       ],
       validation: {
         status: 'caution',
@@ -602,10 +610,14 @@ export const ELECTION_DATA = {
         { name: 'Squeezed vote', probability: 'medium-high', projectedShare: 2.4, trigger: 'Opposition voters consolidate behind the main ticket late.' },
         { name: 'Regional breakout', probability: 'low', projectedShare: 7.0, trigger: 'Luapula/Northern field network outperforms national visibility.' }
       ],
+      winPaths: {
+        bestCase: { label: 'Rerun kingmaker', share: 7.0, winChance: 'No path to presidency; high leverage if a runoff happens', path: 'His clean-government brand holds in Luapula/Northern, he wins 5–7% nationally, and HH misses 50%+1. In that runoff his endorsement and transferable anti-corruption voters become genuinely decisive — his realistic "win" is leverage and a reform agenda, not the presidency.' },
+        worstCase: { label: 'Squeezed to irrelevance', share: 2.4, winChance: 'Negligible', path: 'The Mundubile-Makebi lane absorbs the anti-incumbent vote, media oxygen stays with the top two, and his share falls below 3% — too small to be courted in any rerun.' }
+      },
       strategy: [
         'Focus on clean-government credibility and local delivery failures, not broad presidential messaging.',
-        'Defend a clear transfer-negotiation position for any rerun.',
-        'Use constituency-level field captains in Luapula and Northern where small vote gains matter most.'
+        'Defend a clear, public rerun transfer-negotiation position so supporters know the terms in advance.',
+        'Use constituency-level field captains in Luapula and Northern — including the new delimitation seats — where small vote gains matter most.'
       ],
       validation: {
         status: 'validated',
@@ -627,10 +639,14 @@ export const ELECTION_DATA = {
         { name: 'Tactical squeeze', probability: 'medium', projectedShare: 2.8, trigger: 'Voters move to the strongest anti-HH challenger to force a rerun.' },
         { name: 'Runoff broker', probability: 'conditional', projectedShare: 5.5, trigger: 'First round misses 50%+1 and ideological voters become transferable.' }
       ],
+      winPaths: {
+        bestCase: { label: 'Protest broker in a rerun', share: 6.4, winChance: 'No first-round path; broker role if runoff', path: 'Load shedding, mining inequality and youth unemployment dominate the closing weeks, his worker/youth platform peaks near 6–7%, and HH misses 50%+1. His ideological bloc becomes a transferable asset he can bargain with in a second ballot — that, not the presidency, is his realistic win.' },
+        worstCase: { label: 'Tactical-vote casualty', share: 2.8, winChance: 'Negligible', path: 'Anti-incumbent voters defect early to the strongest challenger to force a rerun, elite distrust caps his ceiling, and urban turnout underperforms — his share drops below 3% and he is left out of runoff bargaining.' }
+      },
       strategy: [
-        'Convert anger into a visible province-by-province worker, youth and mining-community platform.',
-        'Explain what Socialist Party voters should demand in a rerun before other campaigns define it.',
-        'Use issue receipts and local testimonies rather than abstract ideology.'
+        'Convert anger into a visible province-by-province worker, youth and mining-community platform with concrete asks.',
+        'Define publicly what Socialist Party voters should demand in a rerun before other campaigns define it for him.',
+        'Use issue receipts and local testimonies rather than abstract ideology; keep messaging lawful and non-inflammatory.'
       ],
       validation: {
         status: 'validated',
@@ -652,10 +668,14 @@ export const ELECTION_DATA = {
         { name: 'Visibility ceiling', probability: 'high', projectedShare: 1.2, trigger: 'Media attention remains concentrated on HH and the Mundubile-Makebi lane.' },
         { name: 'Runoff values bloc', probability: 'conditional', projectedShare: 2.0, trigger: 'Her supporters become a small but explainable reform-transfer bloc.' }
       ],
+      winPaths: {
+        bestCase: { label: 'Reform-bloc signal', share: 2.6, winChance: 'No path to presidency; agenda-setting role', path: 'Debate visibility and a clean integrity/women-leadership message cut through with high-information undecided voters in Lusaka and the Copperbelt, lifting her to ~2.6%. Her win is influence: a credible reform-transfer bloc that larger campaigns must answer to, especially if a runoff forces coalition terms.' },
+        worstCase: { label: 'Below the noise floor', share: 1.2, winChance: 'Negligible', path: 'Coverage stays locked on the top two lanes, provincial machinery never materialises, and her vote is squeezed by larger anti-incumbent choices — she finishes near 1% with little negotiating weight.' }
+      },
       strategy: [
-        'Own the governance, anti-corruption and women-leadership lane with measurable reform pledges.',
-        'Target high-information undecided voters in Lusaka, Copperbelt and university communities.',
-        'Publish a transparent rerun negotiation test so supporters know what any endorsement would require.'
+        'Own the governance, anti-corruption and women-leadership lane with measurable, costed reform pledges.',
+        'Target high-information undecided voters in Lusaka, Copperbelt and university communities where her message converts best.',
+        'Publish a transparent rerun negotiation test so supporters know exactly what any endorsement would require.'
       ],
       validation: {
         status: 'validated',

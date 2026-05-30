@@ -146,8 +146,11 @@ function CandidatePhoto({ photo, shortName, color, size = 80 }: { photo?: string
   )
 }
 
-function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0]; rank: number; showQuotes: boolean }) {
+function FigureCard({ f, rank, showQuotes, mode }: { f: typeof ELECTION_DATA.figures[0]; rank: number; showQuotes: boolean; mode: 'monthly' | 'weekly' }) {
   const aiColor = f.aiScore >= 60 ? C.teal : f.aiScore >= 30 ? C.gold : C.warn
+  const perWeek = mode === 'weekly'
+  const trendVal = perWeek ? f.trend / 4.345 : f.trend
+  const trendUnit = perWeek ? 'pts/week' : 'pts/month'
   return (
     <div className="card-hover rounded-xl" style={{ background: C.card, border: `2px solid ${f.color}`, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {/* Coloured top bar */}
@@ -186,7 +189,7 @@ function FigureCard({ f, rank, showQuotes }: { f: typeof ELECTION_DATA.figures[0
         </div>
 
         <div style={{ fontSize: 11, fontWeight: 700, color: f.trend >= 0 ? C.teal : C.warn, textAlign: 'center', marginBottom: 12 }}>
-          {f.trend >= 0 ? '▲' : '▼'} {f.trend >= 0 ? '+' : ''}{f.trend.toFixed(1)} pts/month trend
+          {f.trend >= 0 ? '▲' : '▼'} {trendVal >= 0 ? '+' : ''}{trendVal.toFixed(perWeek ? 2 : 1)} {trendUnit} trend
         </div>
 
         <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.7, marginBottom: 10 }}>
@@ -320,7 +323,7 @@ export default function Dashboard() {
   const [ttLoading, setTtLoading]           = useState(false)
   const [refreshing, setRefreshing]         = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(() => new Date())
-  const [mode, setMode]               = useState<'daily' | 'weekly'>('weekly')
+  const [mode, setMode]               = useState<'monthly' | 'weekly'>('monthly')
   const [showQuotes, setShowQuotes]   = useState(false)
   const [activeLens, setActiveLens] = useState<'energy' | 'cost' | 'youth' | 'copperbelt' | 'opposition'>('energy')
   const [projectionMode, setProjectionMode] = useState<'intel' | 'electiondesk' | 'fusion'>('electiondesk')
@@ -853,9 +856,10 @@ export default function Dashboard() {
           style={{ padding: '5px 14px', background: C.zg, color: 'white', border: 'none', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
           {refreshing ? '...' : '⟳ REFRESH'}
         </button>
-        <button onClick={() => setMode(m => m === 'daily' ? 'weekly' : 'daily')}
+        <button onClick={() => setMode(m => m === 'monthly' ? 'weekly' : 'monthly')}
+          title="Toggle how candidate momentum is shown: per month or per week"
           style={{ padding: '5px 14px', background: C.gold, color: '#000', border: 'none', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
-          {mode === 'daily' ? 'DAILY MODE' : 'WEEKLY MODE'}
+          📈 MOMENTUM: {mode === 'monthly' ? 'MONTHLY' : 'WEEKLY'}
         </button>
         <button onClick={() => setShowQuotes(q => !q)}
           style={{ padding: '5px 14px', background: showQuotes ? '#1877F2' : C.card, color: showQuotes ? 'white' : C.muted, border: `1px solid #1877F2`, borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
@@ -977,6 +981,30 @@ export default function Dashboard() {
                   <p>{activeCandidatePacket.analysis.mainPath}</p>
                   <div className="narrative-tags">
                     {activeCandidatePacket.analysis.keyRisks.map(risk => <span key={risk}>{risk}</span>)}
+                  </div>
+                </div>
+
+                <div className="candidate-analysis-panel__section">
+                  <h4>Best vs worst case to win</h4>
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ border: `1px solid ${C.teal}55`, background: `${C.teal}11`, borderRadius: 8, padding: '10px 12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                        <span style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 800, color: C.teal, background: `${C.teal}22`, padding: '2px 7px', borderRadius: 8, border: `1px solid ${C.teal}55` }}>▲ BEST CASE</span>
+                        <strong style={{ color: C.text, fontSize: 12 }}>{activeCandidatePacket.winPaths.bestCase.label}</strong>
+                        <span style={{ marginLeft: 'auto', fontFamily: 'monospace', fontWeight: 900, color: C.teal, fontSize: 13 }}>{activeCandidatePacket.winPaths.bestCase.share.toFixed(1)}%</span>
+                      </div>
+                      <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.teal, marginBottom: 5 }}>{activeCandidatePacket.winPaths.bestCase.winChance}</div>
+                      <p style={{ fontSize: 10.5, color: C.muted, lineHeight: 1.6, margin: 0 }}>{activeCandidatePacket.winPaths.bestCase.path}</p>
+                    </div>
+                    <div style={{ border: `1px solid ${C.warn}55`, background: `${C.warn}11`, borderRadius: 8, padding: '10px 12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                        <span style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 800, color: C.warn, background: `${C.warn}22`, padding: '2px 7px', borderRadius: 8, border: `1px solid ${C.warn}55` }}>▼ WORST CASE</span>
+                        <strong style={{ color: C.text, fontSize: 12 }}>{activeCandidatePacket.winPaths.worstCase.label}</strong>
+                        <span style={{ marginLeft: 'auto', fontFamily: 'monospace', fontWeight: 900, color: C.warn, fontSize: 13 }}>{activeCandidatePacket.winPaths.worstCase.share.toFixed(1)}%</span>
+                      </div>
+                      <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.warn, marginBottom: 5 }}>{activeCandidatePacket.winPaths.worstCase.winChance}</div>
+                      <p style={{ fontSize: 10.5, color: C.muted, lineHeight: 1.6, margin: 0 }}>{activeCandidatePacket.winPaths.worstCase.path}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -1353,7 +1381,10 @@ export default function Dashboard() {
                 </span>
               </div>
               <p>{packet.analysis.mainPath}</p>
-              <strong>Best path: {packet.scenarios[0]?.name}</strong>
+              <div style={{ display: 'flex', gap: 6, margin: '2px 0 6px' }}>
+                <span style={{ flex: 1, fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: C.teal, background: `${C.teal}14`, border: `1px solid ${C.teal}44`, borderRadius: 6, padding: '4px 6px' }}>▲ BEST {packet.winPaths.bestCase.share.toFixed(1)}% · {packet.winPaths.bestCase.label}</span>
+                <span style={{ flex: 1, fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: C.warn, background: `${C.warn}14`, border: `1px solid ${C.warn}44`, borderRadius: 6, padding: '4px 6px' }}>▼ WORST {packet.winPaths.worstCase.share.toFixed(1)}% · {packet.winPaths.worstCase.label}</span>
+              </div>
               <small>{packet.strategy[0]}</small>
               <em>Click to open in the analysis panel</em>
             </button>
@@ -1909,7 +1940,7 @@ export default function Dashboard() {
         <SectionLabel layer="CANDIDATES" title="Candidate Profiles — HH vs Opposition"
           sub="AI-scored profiles for all 5 candidates · Polling, trend, strongholds, and public narrative analysis" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12, marginBottom: 16 }}>
-          {ELECTION_DATA.figures.map((f, i) => <FigureCard key={f.id} f={f} rank={i + 1} showQuotes={showQuotes} />)}
+          {ELECTION_DATA.figures.map((f, i) => <FigureCard key={f.id} f={f} rank={i + 1} showQuotes={showQuotes} mode={mode} />)}
         </div>
 
         {/* ── PAST PRESIDENTS ──────────────────────────────── */}
