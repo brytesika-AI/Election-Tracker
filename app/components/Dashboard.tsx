@@ -47,6 +47,19 @@ type NlpResult = {
   engine: string; lexiconSize: number; processedAt: string
 }
 
+type NewsArticle = {
+  title: string; link: string; source: string; sourceSlug: string
+  publishedAt: string; snippet: string
+  sentiment: number; sentimentClass: 'positive' | 'negative' | 'neutral'; scoreDisplay: number
+  electionRelevant: boolean
+}
+type NewsFeed = {
+  articles: NewsArticle[]
+  summary: { total: number; electionRelevant: number; positive: number; negative: number; neutral: number; avgCompound: number; avgDisplayScore: number; overallSentiment: string }
+  sources: { name: string; slug: string; status: string; count: number }[]
+  liveData: boolean; dataSource: string; feedsLive: number; feedsTotal: number; engine: string; fetchedAt: string
+}
+
 // ── Zambia Fish Eagle SVG ─────────────────────────────────
 function ZambiaEagle({ size = 44 }: { size?: number }) {
   return (
@@ -331,6 +344,8 @@ export default function Dashboard() {
   const [vercelStatus, setVercelStatus]     = useState('LIVE')
   const [nlpData, setNlpData]               = useState<NlpResult | null>(null)
   const [nlpLoading, setNlpLoading]         = useState(false)
+  const [news, setNews]                     = useState<NewsFeed | null>(null)
+  const [newsLoading, setNewsLoading]       = useState(false)
   const [activeCandidateId, setActiveCandidateId] = useState('hh')
   const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity' | 'warroom'>('overview')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
@@ -371,6 +386,15 @@ export default function Dashboard() {
     } catch { /* keep existing */ } finally { setTtLoading(false) }
   }, [])
 
+  const fetchNews = useCallback(async () => {
+    setNewsLoading(true)
+    try {
+      const res = await fetch('/api/news-feed?perFeed=8&limit=40')
+      const json = await res.json()
+      setNews(json)
+    } catch { /* keep existing */ } finally { setNewsLoading(false) }
+  }, [])
+
   const callJudges = useCallback(async () => {
     setJudgeLoading(true); setVerdicts([])
     try {
@@ -383,9 +407,9 @@ export default function Dashboard() {
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true)
-    await Promise.all([fetchFbSentiment(), fetchTwSentiment(), fetchTtSentiment(), fetchNlpSentiment()])
+    await Promise.all([fetchFbSentiment(), fetchTwSentiment(), fetchTtSentiment(), fetchNlpSentiment(), fetchNews()])
     setLastUpdated(new Date()); setRefreshing(false)
-  }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment, fetchNlpSentiment])
+  }, [fetchFbSentiment, fetchTwSentiment, fetchTtSentiment, fetchNlpSentiment, fetchNews])
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -393,13 +417,14 @@ export default function Dashboard() {
       fetchTwSentiment()
       fetchTtSentiment()
       fetchNlpSentiment()
+      fetchNews()
       // Check Vercel health
       fetch('/api/vercel-health').then(r => r.json()).then(d => setVercelStatus(d.status)).catch(() => {})
       // Check Airtable
       fetch('/api/airtable-data').then(r => r.json()).then(d => setAirtableStatus(d.source === 'airtable' ? 'SYNCED' : 'STATIC')).catch(() => {})
     }, 0)
     return () => window.clearTimeout(id)
-  }, [fetchFbSentiment, fetchNlpSentiment, fetchTtSentiment, fetchTwSentiment])
+  }, [fetchFbSentiment, fetchNlpSentiment, fetchTtSentiment, fetchTwSentiment, fetchNews])
 
   // ── Chart data ──────────────────────────────────────────
   const projFrom = ELECTION_DATA.projectedFromIndex ?? 18
@@ -1935,6 +1960,98 @@ export default function Dashboard() {
           <KpiCard label="OPPOSITION LANE" value="+2.3 pts/mo" sub="Mundubile-Makebi model trend" trend="Verify ECZ ticket filing" borderColor={C.warn} />
           <KpiCard label="MODEL CONFIDENCE" value={`${ELECTION_DATA.aiConfidence}%`} sub="Audit-adjusted" trend="Official facts separated" borderColor={C.zg} />
         </div>
+
+        {/* ── LIVE SENTIMENT INDEX (KPIs) ──────────────────── */}
+        <SectionLabel layer="LIVE SENTIMENT" title="Live Sentiment Index"
+          sub="Public-mood scores on a 0–100 scale (50 = neutral) · each card explains its source. Higher = more positive coverage/chatter for the field." />
+        {(() => {
+          const sc = (n: number) => (n >= 55 ? C.teal : n <= 45 ? C.zr : C.gold)
+          const lab = (n: number) => (n >= 55 ? 'POSITIVE leaning' : n <= 45 ? 'NEGATIVE leaning' : 'MIXED / neutral')
+          const avg = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null)
+          const fbAvg = avg(fbSentiment.map(x => x.analysis.score))
+          const twAvg = avg(twSentiment.map(x => x.analysis.score))
+          const ttAvg = avg(ttSentiment.map(x => x.analysis.score))
+          const socialAvg = avg([...fbSentiment, ...twSentiment, ...ttSentiment].map(x => x.analysis.score))
+          const newsScore = news?.summary.avgDisplayScore ?? null
+          const nlpScore = nlpData?.summary.avgDisplayScore ?? null
+          const fbLive = fbSentiment.some(x => x.liveData)
+          const twLive = twSentiment.some(x => x.liveData)
+          const ttLive = ttSentiment.some(x => x.liveData)
+          const fmt = (n: number | null) => (n != null ? `${n}/100` : newsLoading || fbLoading ? '…' : '—')
+          return (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 12, marginBottom: 16 }}>
+              <KpiCard label="LIVE NEWS MOOD" value={fmt(newsScore)}
+                sub={news ? `${news.feedsLive}/${news.feedsTotal} RSS feeds live · ${news.summary.total} articles scored` : 'Fetching live Zambian RSS…'}
+                trend={newsScore != null ? lab(newsScore) : 'key-free · real data'} borderColor={newsScore != null ? sc(newsScore) : C.line} />
+              <KpiCard label="SOCIAL MOOD · ALL" value={fmt(socialAvg)}
+                sub="Facebook + X + TikTok agents, blended into one index"
+                trend={socialAvg != null ? lab(socialAvg) : 'awaiting agents'} borderColor={socialAvg != null ? sc(socialAvg) : C.line} />
+              <KpiCard label="FACEBOOK · META" value={fmt(fbAvg)}
+                sub={fbLive ? 'LIVE Apify scrape of leader pages' : 'Demo mode — set APIFY token for live'}
+                trend={fbAvg != null ? lab(fbAvg) : 'leader pages'} borderColor={fbAvg != null ? sc(fbAvg) : C.line} />
+              <KpiCard label="TWITTER · X" value={fmt(twAvg)}
+                sub={twLive ? 'LIVE X scrape via Apify' : 'Demo mode — set APIFY token for live'}
+                trend={twAvg != null ? lab(twAvg) : 'candidate handles'} borderColor={twAvg != null ? sc(twAvg) : C.line} />
+              <KpiCard label="TIKTOK" value={fmt(ttAvg)}
+                sub={ttLive ? 'LIVE TikTok scrape via Apify' : 'Demo mode — set APIFY token for live'}
+                trend={ttAvg != null ? lab(ttAvg) : 'youth discourse'} borderColor={ttAvg != null ? sc(ttAvg) : C.line} />
+              <KpiCard label="NLP HEADLINE INDEX" value={fmt(nlpScore)}
+                sub={nlpData ? `VADER-Zambia · ${nlpData.summary.total} headlines scored` : 'NLP engine warming up…'}
+                trend={nlpScore != null ? lab(nlpScore) : 'rule-based'} borderColor={nlpScore != null ? sc(nlpScore) : C.line} />
+            </div>
+          )
+        })()}
+
+        {/* ── LIVE NEWS FEED (real RSS) ─────────────────────── */}
+        <SectionLabel layer="LIVE NEWS" title="Live Zambian News Feed"
+          sub="Real articles pulled in real time from public Zambian news RSS (no API key) · sorted newest-first · sentiment-scored by the NLP engine" />
+        {(() => {
+          const sc = (cls: string) => (cls === 'positive' ? C.teal : cls === 'negative' ? C.zr : C.gold)
+          const rel = (iso: string) => {
+            const d = (Date.now() - +new Date(iso)) / 60000
+            if (!isFinite(d) || d < 0) return ''
+            if (d < 60) return `${Math.round(d)}m ago`
+            if (d < 1440) return `${Math.round(d / 60)}h ago`
+            return `${Math.round(d / 1440)}d ago`
+          }
+          const arts = (news?.articles ?? []).slice(0, 12)
+          return (
+            <div style={{ background: C.card2, border: `1px solid ${C.line}`, borderRadius: 10, padding: 16, marginBottom: 16 }}>
+              {/* source status strip */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+                {(news?.sources ?? []).map(s => {
+                  const ok = s.status === 'ok'
+                  return (
+                    <span key={s.slug} title={`${s.status} · ${s.count} articles`}
+                      style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 800, padding: '3px 7px', borderRadius: 5, border: `1px solid ${ok ? C.teal : C.line}`, color: ok ? C.teal : C.muted, background: ok ? `${C.teal}14` : 'transparent' }}>
+                      {ok ? '●' : '○'} {s.name} {ok ? `(${s.count})` : ''}
+                    </span>
+                  )
+                })}
+                {!news && <span style={{ fontSize: 11, color: C.muted }}>{newsLoading ? 'Loading live feeds…' : 'Feed unavailable'}</span>}
+              </div>
+              <div style={{ display: 'grid', gap: 8 }}>
+                {arts.map((a, i) => (
+                  <a key={i} href={a.link} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'grid', gridTemplateColumns: '8px 1fr auto', gap: 10, alignItems: 'center', padding: '9px 11px', borderRadius: 7, border: `1px solid ${C.line}`, background: 'rgba(8,16,26,.5)', textDecoration: 'none' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: sc(a.sentimentClass) }} />
+                    <span>
+                      <span style={{ fontSize: 13, color: C.text, fontWeight: 600, lineHeight: 1.4 }}>{a.title}</span>
+                      <span style={{ display: 'block', fontSize: 10, color: C.muted, fontFamily: 'monospace', marginTop: 3 }}>
+                        {a.source} · {rel(a.publishedAt)}{a.electionRelevant ? ' · ⚑ election' : ''}
+                      </span>
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 900, color: sc(a.sentimentClass), fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{a.scoreDisplay}/100</span>
+                  </a>
+                ))}
+                {news && arts.length === 0 && <div style={{ fontSize: 12, color: C.muted, padding: 8 }}>No live articles right now — feeds may be temporarily unreachable.</div>}
+              </div>
+              <div style={{ fontSize: 10, color: C.muted, marginTop: 12, lineHeight: 1.5 }}>
+                Sources: Lusaka Times · News Diggers · Mwebantu · Zambian Eye · Kalemba · Makanday · Zambian Business Times · Times of Zambia. Live tweets &amp; Meta/Facebook comments require an APIFY + Cloudflare API token in the deployment environment.
+              </div>
+            </div>
+          )
+        })()}
 
         {/* ── FIGURE CARDS ─── HH vs Opposition ────────────── */}
         <SectionLabel layer="CANDIDATES" title="Candidate Profiles — HH vs Opposition"

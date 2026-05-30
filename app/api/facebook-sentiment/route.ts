@@ -15,6 +15,9 @@ const LEADER_PAGES = [
   { id: 'pf_ndc', name: 'Brian Mundubile + Makebi Zulu', fbPage: 'BrianMundubile', fbUrl: 'https://www.facebook.com/BrianMundubile' },
   { id: 'kalaba', name: 'Harry Kalaba',        fbPage: 'HarryKalaba',           fbUrl: 'https://www.facebook.com/HarryKalaba' },
   { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
+  // Official party pages (in addition to leader pages above)
+  { id: 'upnd_party', name: 'UPND (Official Party)', fbPage: 'UPNDZambia',        fbUrl: 'https://www.facebook.com/UPNDZambia' },
+  { id: 'pf_party',   name: 'Patriotic Front (Official Party)', fbPage: 'PatrioticFront.Zambia', fbUrl: 'https://www.facebook.com/PatrioticFront.Zambia' },
 ]
 
 // ── In-memory cache (hot path — survives within same Vercel instance) ─────────
@@ -278,6 +281,8 @@ const DEMO_ANALYSIS: Record<string, { sentiment: 'positive' | 'negative' | 'neut
   pf_ndc: { sentiment: 'positive', score: 64, summary: 'Mundubile-Makebi lane energising northern rural base and Copperbelt youth, but ticket and alliance clarity remain the main risk', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
   kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but Citizens First/CF Orange is seen as too small to win alone — coalition calls dominate the conversation', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
   membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's mining analysis, business community fears socialist policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
+  upnd_party: { sentiment: 'positive', score: 56, summary: 'Official UPND page pushes delivery messaging (free education, CDF, debt deal) but comment sections are dominated by cost-of-living and load-shedding anger', topThemes: ['CDF delivery', 'Free education', 'Cost of living', 'Load shedding'] },
+  pf_party:   { sentiment: 'neutral',  score: 51, summary: 'Official PF page rallies the comeback base around Mundubile-Makebi, but unresolved leadership/ticket questions and 2021 record keep sentiment split', topThemes: ['2026 comeback', 'Leadership clarity', 'Northern base', 'Anti-UPND'] },
 }
 
 // ── GET handler ───────────────────────────────────────────────────────────────
