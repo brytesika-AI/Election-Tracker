@@ -1,0 +1,754 @@
+{
+  "rows": 1209,
+  "unique_cards": 1209,
+  "matched_reboot_cards": 0,
+  "multi_reboot_cards": 0,
+  "Window_Category": [
+    {
+      "Window_Category": "before",
+      "cards": 596,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Window_Category": "after",
+      "cards": 539,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Window_Category": "within",
+      "cards": 74,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "Nationality": [
+    {
+      "Nationality": "NGA",
+      "cards": 537,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "KEN",
+      "cards": 448,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "AGO",
+      "cards": 61,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "GHA",
+      "cards": 56,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "TZA",
+      "cards": 31,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "MOZ",
+      "cards": 25,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "UGA",
+      "cards": 23,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "MUS",
+      "cards": 19,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "RWA",
+      "cards": 7,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Nationality": "CIV",
+      "cards": 2,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "UTC_Offset": [
+    {
+      "UTC_Offset": 1,
+      "cards": 598,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "UTC_Offset": 3,
+      "cards": 502,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "UTC_Offset": 0,
+      "cards": 58,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "UTC_Offset": 2,
+      "cards": 32,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "UTC_Offset": 4,
+      "cards": 19,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "Ca_status": [
+    {
+      "Ca_status": "D029-0",
+      "cards": 958,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": NaN,
+      "cards": 165,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "D100-0",
+      "cards": 48,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "E016-0",
+      "cards": 24,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "E143-0",
+      "cards": 6,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "E166-0",
+      "cards": 6,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "E018-0",
+      "cards": 1,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Ca_status": "E103-0",
+      "cards": 1,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "SecureCore_V": [
+    {
+      "SecureCore_V": 6.0,
+      "cards": 134,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 7.0,
+      "cards": 132,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 2.0,
+      "cards": 128,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 5.0,
+      "cards": 125,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 9.0,
+      "cards": 121,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 8.0,
+      "cards": 117,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 3.0,
+      "cards": 116,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": NaN,
+      "cards": 115,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 4.0,
+      "cards": 114,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "SecureCore_V": 1.0,
+      "cards": 107,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "FlexiCore_V": [
+    {
+      "FlexiCore_V": 10,
+      "cards": 1209,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "SecureCore_has_second_I02": [
+    {
+      "SecureCore_has_second_I02": true,
+      "cards": 1209,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "Firmware": [
+    {
+      "Firmware": "26.03_R1_B089-E3B",
+      "cards": 1208,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    },
+    {
+      "Firmware": "26.05_R1_B092-E3B",
+      "cards": 1,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "HwId": [
+    {
+      "HwId": 37,
+      "cards": 1209,
+      "reboot_cards": 0,
+      "multi_cards": 0,
+      "avg_logs": 0.0,
+      "max_logs": 0,
+      "total_logs": 0,
+      "reboot_pct": 0.0,
+      "multi_pct": 0.0
+    }
+  ],
+  "top_reboot_cards_in_postboot": [],
+  "reboot_cards_missing_from_postboot_count": 82,
+  "top_reboot_cards_missing_from_postboot": [
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4676188069",
+      "Log_Count": 3,
+      "Filenames": "combined_debug_00461.log.gz | combined_debug_00462.log.gz | combined_debug_00463.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664265059",
+      "Log_Count": 3,
+      "Filenames": "combined_debug_00881.log.gz | combined_debug_00882.log.gz | combined_debug_00883.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4667096405",
+      "Log_Count": 3,
+      "Filenames": "combined_debug_00747.log.gz | combined_debug_00748.log.gz | combined_debug_00749.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4671197255",
+      "Log_Count": 3,
+      "Filenames": "combined_debug_00300.log.gz | combined_debug_00301.log.gz | combined_debug_00302.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263122",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00663.log.gz | combined_debug_00664.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263139",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00182.log.gz | combined_debug_00183.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664262994",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00645.log.gz | combined_debug_00646.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263102",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00033.log.gz | combined_debug_00034.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263631",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00589.log.gz | combined_debug_00590.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263759",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00123.log.gz | combined_debug_00124.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263783",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00598.log.gz | combined_debug_00599.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263835",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00736.log.gz | combined_debug_00737.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263851",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00062.log.gz | combined_debug_00063.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263915",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00752.log.gz | combined_debug_00753.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263554",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00481.log.gz | combined_debug_00482.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263580",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00625.log.gz | combined_debug_00626.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664262970",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00801.log.gz | combined_debug_00802.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664262981",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_01542.log.gz | combined_debug_01543.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4684682504",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00060.log.gz | combined_debug_00061.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263940",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00090.log.gz | combined_debug_00091.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263937",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00113.log.gz | combined_debug_00114.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263927",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00825.log.gz | combined_debug_00826.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664264081",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00766.log.gz | combined_debug_00767.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263949",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00492.log.gz | combined_debug_00493.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263996",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00246.log.gz | combined_debug_00247.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664263982",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00421.log.gz | combined_debug_00422.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664264183",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00766.log.gz | combined_debug_00767.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664264149",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00700.log.gz | combined_debug_00701.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664264133",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00733.log.gz | combined_debug_00734.log.gz",
+      "multi_reboot": true
+    },
+    {
+      "Date": "2026-05-28",
+      "Model": "Explora 3B",
+      "Smartcard": "4664264797",
+      "Log_Count": 2,
+      "Filenames": "combined_debug_00747.log.gz | combined_debug_00748.log.gz",
+      "multi_reboot": true
+    }
+  ],
+  "raw_counts": {
+    "window_counts": {
+      "before": 596,
+      "after": 539,
+      "within": 74
+    },
+    "ca_counts": {
+      "D029-0": 958,
+      "NaN": 165,
+      "D100-0": 48,
+      "E016-0": 24,
+      "E143-0": 6,
+      "E166-0": 6,
+      "E018-0": 1,
+      "E103-0": 1
+    },
+    "secure_v_counts": {
+      "1.0": 107,
+      "2.0": 128,
+      "3.0": 116,
+      "4.0": 114,
+      "5.0": 125,
+      "6.0": 134,
+      "7.0": 132,
+      "8.0": 117,
+      "9.0": 121,
+      "NaN": 115
+    },
+    "flex_v_counts": {
+      "10": 1209
+    },
+    "reboot_28_csv_cards": 82,
+    "reboot_28_csv_multi": 66,
+    "reboot_28_csv_total_logs": 152
+  }
+}

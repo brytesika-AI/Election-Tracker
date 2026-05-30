@@ -1,0 +1,1474 @@
+{
+  "all_rows": 1209,
+  "active_ca_rows": 1044,
+  "blank_ca_rows": 165,
+  "all": {
+    "Window_Category": [
+      {
+        "Window_Category": "before",
+        "cards": 596,
+        "pct": 49.3
+      },
+      {
+        "Window_Category": "after",
+        "cards": 539,
+        "pct": 44.58
+      },
+      {
+        "Window_Category": "within",
+        "cards": 74,
+        "pct": 6.12
+      }
+    ],
+    "Nationality": [
+      {
+        "Nationality": "NGA",
+        "cards": 537,
+        "pct": 44.42
+      },
+      {
+        "Nationality": "KEN",
+        "cards": 448,
+        "pct": 37.06
+      },
+      {
+        "Nationality": "AGO",
+        "cards": 61,
+        "pct": 5.05
+      },
+      {
+        "Nationality": "GHA",
+        "cards": 56,
+        "pct": 4.63
+      },
+      {
+        "Nationality": "TZA",
+        "cards": 31,
+        "pct": 2.56
+      },
+      {
+        "Nationality": "MOZ",
+        "cards": 25,
+        "pct": 2.07
+      },
+      {
+        "Nationality": "UGA",
+        "cards": 23,
+        "pct": 1.9
+      },
+      {
+        "Nationality": "MUS",
+        "cards": 19,
+        "pct": 1.57
+      },
+      {
+        "Nationality": "RWA",
+        "cards": 7,
+        "pct": 0.58
+      },
+      {
+        "Nationality": "CIV",
+        "cards": 2,
+        "pct": 0.17
+      }
+    ],
+    "UTC_Offset": [
+      {
+        "UTC_Offset": 1,
+        "cards": 598,
+        "pct": 49.46
+      },
+      {
+        "UTC_Offset": 3,
+        "cards": 502,
+        "pct": 41.52
+      },
+      {
+        "UTC_Offset": 0,
+        "cards": 58,
+        "pct": 4.8
+      },
+      {
+        "UTC_Offset": 2,
+        "cards": 32,
+        "pct": 2.65
+      },
+      {
+        "UTC_Offset": 4,
+        "cards": 19,
+        "pct": 1.57
+      }
+    ],
+    "Local_TZ": [
+      {
+        "Local_TZ": "Africa/Lagos",
+        "cards": 537,
+        "pct": 44.42
+      },
+      {
+        "Local_TZ": "Africa/Nairobi",
+        "cards": 448,
+        "pct": 37.06
+      },
+      {
+        "Local_TZ": "Africa/Luanda",
+        "cards": 61,
+        "pct": 5.05
+      },
+      {
+        "Local_TZ": "Africa/Accra",
+        "cards": 56,
+        "pct": 4.63
+      },
+      {
+        "Local_TZ": "Africa/Dar_es_Salaam",
+        "cards": 31,
+        "pct": 2.56
+      },
+      {
+        "Local_TZ": "Africa/Maputo",
+        "cards": 25,
+        "pct": 2.07
+      },
+      {
+        "Local_TZ": "Africa/Kampala",
+        "cards": 23,
+        "pct": 1.9
+      },
+      {
+        "Local_TZ": "Indian/Mauritius",
+        "cards": 19,
+        "pct": 1.57
+      },
+      {
+        "Local_TZ": "Africa/Kigali",
+        "cards": 7,
+        "pct": 0.58
+      },
+      {
+        "Local_TZ": "Africa/Abidjan",
+        "cards": 2,
+        "pct": 0.17
+      }
+    ],
+    "Ca_status": [
+      {
+        "Ca_status": "D029-0",
+        "cards": 958,
+        "pct": 79.24
+      },
+      {
+        "Ca_status": NaN,
+        "cards": 165,
+        "pct": 13.65
+      },
+      {
+        "Ca_status": "D100-0",
+        "cards": 48,
+        "pct": 3.97
+      },
+      {
+        "Ca_status": "E016-0",
+        "cards": 24,
+        "pct": 1.99
+      },
+      {
+        "Ca_status": "E166-0",
+        "cards": 6,
+        "pct": 0.5
+      },
+      {
+        "Ca_status": "E143-0",
+        "cards": 6,
+        "pct": 0.5
+      },
+      {
+        "Ca_status": "E018-0",
+        "cards": 1,
+        "pct": 0.08
+      },
+      {
+        "Ca_status": "E103-0",
+        "cards": 1,
+        "pct": 0.08
+      }
+    ],
+    "SecureCore_V": [
+      {
+        "SecureCore_V": 6.0,
+        "cards": 134,
+        "pct": 11.08
+      },
+      {
+        "SecureCore_V": 7.0,
+        "cards": 132,
+        "pct": 10.92
+      },
+      {
+        "SecureCore_V": 2.0,
+        "cards": 128,
+        "pct": 10.59
+      },
+      {
+        "SecureCore_V": 5.0,
+        "cards": 125,
+        "pct": 10.34
+      },
+      {
+        "SecureCore_V": 9.0,
+        "cards": 121,
+        "pct": 10.01
+      },
+      {
+        "SecureCore_V": 8.0,
+        "cards": 117,
+        "pct": 9.68
+      },
+      {
+        "SecureCore_V": 3.0,
+        "cards": 116,
+        "pct": 9.59
+      },
+      {
+        "SecureCore_V": NaN,
+        "cards": 115,
+        "pct": 9.51
+      },
+      {
+        "SecureCore_V": 4.0,
+        "cards": 114,
+        "pct": 9.43
+      },
+      {
+        "SecureCore_V": 1.0,
+        "cards": 107,
+        "pct": 8.85
+      }
+    ],
+    "FlexiCore_V": [
+      {
+        "FlexiCore_V": 10,
+        "cards": 1209,
+        "pct": 100.0
+      }
+    ],
+    "Has_I02_C02": [
+      {
+        "Has_I02_C02": true,
+        "cards": 1209,
+        "pct": 100.0
+      }
+    ],
+    "SecureCore_tokens": [
+      {
+        "SecureCore_tokens": 3,
+        "cards": 1206,
+        "pct": 99.75
+      },
+      {
+        "SecureCore_tokens": 2,
+        "cards": 3,
+        "pct": 0.25
+      }
+    ],
+    "Firmware": [
+      {
+        "Firmware": "26.03_R1_B089-E3B",
+        "cards": 1208,
+        "pct": 99.92
+      },
+      {
+        "Firmware": "26.05_R1_B092-E3B",
+        "cards": 1,
+        "pct": 0.08
+      }
+    ],
+    "HwId": [
+      {
+        "HwId": 37,
+        "cards": 1209,
+        "pct": 100.0
+      }
+    ],
+    "Local_Hour": [
+      {
+        "Local_Hour": 2,
+        "cards": 511,
+        "pct": 42.27
+      },
+      {
+        "Local_Hour": 4,
+        "cards": 406,
+        "pct": 33.58
+      },
+      {
+        "Local_Hour": 5,
+        "cards": 127,
+        "pct": 10.5
+      },
+      {
+        "Local_Hour": 3,
+        "cards": 114,
+        "pct": 9.43
+      },
+      {
+        "Local_Hour": 1,
+        "cards": 45,
+        "pct": 3.72
+      },
+      {
+        "Local_Hour": 6,
+        "cards": 4,
+        "pct": 0.33
+      },
+      {
+        "Local_Hour": 7,
+        "cards": 2,
+        "pct": 0.17
+      }
+    ]
+  },
+  "active": {
+    "Window_Category": [
+      {
+        "Window_Category": "before",
+        "cards": 547,
+        "pct": 52.39
+      },
+      {
+        "Window_Category": "after",
+        "cards": 432,
+        "pct": 41.38
+      },
+      {
+        "Window_Category": "within",
+        "cards": 65,
+        "pct": 6.23
+      }
+    ],
+    "Nationality": [
+      {
+        "Nationality": "NGA",
+        "cards": 495,
+        "pct": 47.41
+      },
+      {
+        "Nationality": "KEN",
+        "cards": 352,
+        "pct": 33.72
+      },
+      {
+        "Nationality": "AGO",
+        "cards": 56,
+        "pct": 5.36
+      },
+      {
+        "Nationality": "GHA",
+        "cards": 48,
+        "pct": 4.6
+      },
+      {
+        "Nationality": "TZA",
+        "cards": 26,
+        "pct": 2.49
+      },
+      {
+        "Nationality": "MOZ",
+        "cards": 20,
+        "pct": 1.92
+      },
+      {
+        "Nationality": "UGA",
+        "cards": 19,
+        "pct": 1.82
+      },
+      {
+        "Nationality": "MUS",
+        "cards": 19,
+        "pct": 1.82
+      },
+      {
+        "Nationality": "RWA",
+        "cards": 7,
+        "pct": 0.67
+      },
+      {
+        "Nationality": "CIV",
+        "cards": 2,
+        "pct": 0.19
+      }
+    ],
+    "UTC_Offset": [
+      {
+        "UTC_Offset": 1,
+        "cards": 551,
+        "pct": 52.78
+      },
+      {
+        "UTC_Offset": 3,
+        "cards": 397,
+        "pct": 38.03
+      },
+      {
+        "UTC_Offset": 0,
+        "cards": 50,
+        "pct": 4.79
+      },
+      {
+        "UTC_Offset": 2,
+        "cards": 27,
+        "pct": 2.59
+      },
+      {
+        "UTC_Offset": 4,
+        "cards": 19,
+        "pct": 1.82
+      }
+    ],
+    "Local_TZ": [
+      {
+        "Local_TZ": "Africa/Lagos",
+        "cards": 495,
+        "pct": 47.41
+      },
+      {
+        "Local_TZ": "Africa/Nairobi",
+        "cards": 352,
+        "pct": 33.72
+      },
+      {
+        "Local_TZ": "Africa/Luanda",
+        "cards": 56,
+        "pct": 5.36
+      },
+      {
+        "Local_TZ": "Africa/Accra",
+        "cards": 48,
+        "pct": 4.6
+      },
+      {
+        "Local_TZ": "Africa/Dar_es_Salaam",
+        "cards": 26,
+        "pct": 2.49
+      },
+      {
+        "Local_TZ": "Africa/Maputo",
+        "cards": 20,
+        "pct": 1.92
+      },
+      {
+        "Local_TZ": "Indian/Mauritius",
+        "cards": 19,
+        "pct": 1.82
+      },
+      {
+        "Local_TZ": "Africa/Kampala",
+        "cards": 19,
+        "pct": 1.82
+      },
+      {
+        "Local_TZ": "Africa/Kigali",
+        "cards": 7,
+        "pct": 0.67
+      },
+      {
+        "Local_TZ": "Africa/Abidjan",
+        "cards": 2,
+        "pct": 0.19
+      }
+    ],
+    "Ca_status": [
+      {
+        "Ca_status": "D029-0",
+        "cards": 958,
+        "pct": 91.76
+      },
+      {
+        "Ca_status": "D100-0",
+        "cards": 48,
+        "pct": 4.6
+      },
+      {
+        "Ca_status": "E016-0",
+        "cards": 24,
+        "pct": 2.3
+      },
+      {
+        "Ca_status": "E166-0",
+        "cards": 6,
+        "pct": 0.57
+      },
+      {
+        "Ca_status": "E143-0",
+        "cards": 6,
+        "pct": 0.57
+      },
+      {
+        "Ca_status": "E103-0",
+        "cards": 1,
+        "pct": 0.1
+      },
+      {
+        "Ca_status": "E018-0",
+        "cards": 1,
+        "pct": 0.1
+      }
+    ],
+    "SecureCore_V": [
+      {
+        "SecureCore_V": 6.0,
+        "cards": 117,
+        "pct": 11.21
+      },
+      {
+        "SecureCore_V": 5.0,
+        "cards": 116,
+        "pct": 11.11
+      },
+      {
+        "SecureCore_V": 7.0,
+        "cards": 116,
+        "pct": 11.11
+      },
+      {
+        "SecureCore_V": 2.0,
+        "cards": 109,
+        "pct": 10.44
+      },
+      {
+        "SecureCore_V": 3.0,
+        "cards": 102,
+        "pct": 9.77
+      },
+      {
+        "SecureCore_V": NaN,
+        "cards": 101,
+        "pct": 9.67
+      },
+      {
+        "SecureCore_V": 9.0,
+        "cards": 99,
+        "pct": 9.48
+      },
+      {
+        "SecureCore_V": 4.0,
+        "cards": 99,
+        "pct": 9.48
+      },
+      {
+        "SecureCore_V": 8.0,
+        "cards": 94,
+        "pct": 9.0
+      },
+      {
+        "SecureCore_V": 1.0,
+        "cards": 91,
+        "pct": 8.72
+      }
+    ],
+    "FlexiCore_V": [
+      {
+        "FlexiCore_V": 10,
+        "cards": 1044,
+        "pct": 100.0
+      }
+    ],
+    "Has_I02_C02": [
+      {
+        "Has_I02_C02": true,
+        "cards": 1044,
+        "pct": 100.0
+      }
+    ],
+    "SecureCore_tokens": [
+      {
+        "SecureCore_tokens": 3,
+        "cards": 1042,
+        "pct": 99.81
+      },
+      {
+        "SecureCore_tokens": 2,
+        "cards": 2,
+        "pct": 0.19
+      }
+    ],
+    "Firmware": [
+      {
+        "Firmware": "26.03_R1_B089-E3B",
+        "cards": 1044,
+        "pct": 100.0
+      }
+    ],
+    "HwId": [
+      {
+        "HwId": 37,
+        "cards": 1044,
+        "pct": 100.0
+      }
+    ],
+    "Local_Hour": [
+      {
+        "Local_Hour": 2,
+        "cards": 471,
+        "pct": 45.11
+      },
+      {
+        "Local_Hour": 4,
+        "cards": 323,
+        "pct": 30.94
+      },
+      {
+        "Local_Hour": 5,
+        "cards": 104,
+        "pct": 9.96
+      },
+      {
+        "Local_Hour": 3,
+        "cards": 100,
+        "pct": 9.58
+      },
+      {
+        "Local_Hour": 1,
+        "cards": 41,
+        "pct": 3.93
+      },
+      {
+        "Local_Hour": 6,
+        "cards": 3,
+        "pct": 0.29
+      },
+      {
+        "Local_Hour": 7,
+        "cards": 2,
+        "pct": 0.19
+      }
+    ],
+    "window_by_offset": {
+      "after": {
+        "0": 0,
+        "1": 11,
+        "2": 5,
+        "3": 397,
+        "4": 19
+      },
+      "before": {
+        "0": 50,
+        "1": 497,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
+      "within": {
+        "0": 0,
+        "1": 43,
+        "2": 22,
+        "3": 0,
+        "4": 0
+      }
+    },
+    "window_by_nationality": {
+      "after": {
+        "AGO": 0,
+        "CIV": 0,
+        "GHA": 0,
+        "KEN": 352,
+        "MOZ": 2,
+        "MUS": 19,
+        "NGA": 11,
+        "RWA": 3,
+        "TZA": 26,
+        "UGA": 19
+      },
+      "before": {
+        "AGO": 54,
+        "CIV": 2,
+        "GHA": 48,
+        "KEN": 0,
+        "MOZ": 0,
+        "MUS": 0,
+        "NGA": 443,
+        "RWA": 0,
+        "TZA": 0,
+        "UGA": 0
+      },
+      "within": {
+        "AGO": 2,
+        "CIV": 0,
+        "GHA": 0,
+        "KEN": 0,
+        "MOZ": 18,
+        "MUS": 0,
+        "NGA": 41,
+        "RWA": 4,
+        "TZA": 0,
+        "UGA": 0
+      }
+    },
+    "window_by_secure_v": {
+      "after": {
+        "1.0": 32,
+        "2.0": 50,
+        "3.0": 42,
+        "4.0": 44,
+        "5.0": 45,
+        "6.0": 44,
+        "7.0": 53,
+        "8.0": 39,
+        "9.0": 38
+      },
+      "before": {
+        "1.0": 54,
+        "2.0": 52,
+        "3.0": 56,
+        "4.0": 49,
+        "5.0": 64,
+        "6.0": 64,
+        "7.0": 57,
+        "8.0": 48,
+        "9.0": 53
+      },
+      "within": {
+        "1.0": 5,
+        "2.0": 7,
+        "3.0": 4,
+        "4.0": 6,
+        "5.0": 7,
+        "6.0": 9,
+        "7.0": 6,
+        "8.0": 7,
+        "9.0": 8
+      }
+    },
+    "ca_by_window": {
+      "after": {
+        "D029-0": 409,
+        "D100-0": 14,
+        "E016-0": 6,
+        "E018-0": 0,
+        "E103-0": 0,
+        "E143-0": 1,
+        "E166-0": 2
+      },
+      "before": {
+        "D029-0": 491,
+        "D100-0": 30,
+        "E016-0": 18,
+        "E018-0": 0,
+        "E103-0": 1,
+        "E143-0": 3,
+        "E166-0": 4
+      },
+      "within": {
+        "D029-0": 58,
+        "D100-0": 4,
+        "E016-0": 0,
+        "E018-0": 1,
+        "E103-0": 0,
+        "E143-0": 2,
+        "E166-0": 0
+      }
+    }
+  },
+  "non_d029_examples": [
+    {
+      "Smartcardnumber": "4667061313",
+      "Timestamp": "2026-05-28T01:26:01.664Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:26:01",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 101.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667062720",
+      "Timestamp": "2026-05-28T01:09:41.066Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:09:41",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 420.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667063920",
+      "Timestamp": "2026-05-28T01:10:09.178Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:10:09",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 270.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667065328",
+      "Timestamp": "2026-05-28T01:11:56.137Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:11:56",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 3.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 273.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667067713",
+      "Timestamp": "2026-05-28T02:08:07.824Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 03:08:07",
+      "Window_Category": "within",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667070449",
+      "Timestamp": "2026-05-28T02:01:42.432Z",
+      "Nationality": "RWA",
+      "Local_TZ": "Africa/Kigali",
+      "Local_Time": "2026-05-28 04:01:42",
+      "Window_Category": "after",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667072711",
+      "Timestamp": "2026-05-28T02:22:14.943Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 05:22:14",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 6.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V06 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667075739",
+      "Timestamp": "2026-05-28T02:09:19.778Z",
+      "Nationality": "GHA",
+      "Local_TZ": "Africa/Accra",
+      "Local_Time": "2026-05-28 02:09:19",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667080031",
+      "Timestamp": "2026-05-28T01:11:51.923Z",
+      "Nationality": "RWA",
+      "Local_TZ": "Africa/Kigali",
+      "Local_Time": "2026-05-28 03:11:51",
+      "Window_Category": "within",
+      "Ca_status": "E018-0",
+      "SecureCore_V": 6.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 319.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V06 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667083992",
+      "Timestamp": "2026-05-28T01:20:08.047Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:20:08",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 7.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 101.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V07 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667091048",
+      "Timestamp": "2026-05-28T01:13:07.873Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:13:07",
+      "Window_Category": "after",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 3.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667128678",
+      "Timestamp": "2026-05-28T01:21:01.231Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:21:01",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 3.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 105.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667135385",
+      "Timestamp": "2026-05-28T01:11:03.631Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:11:03",
+      "Window_Category": "before",
+      "Ca_status": "E143-0",
+      "SecureCore_V": NaN,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V0a T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667138812",
+      "Timestamp": "2026-05-28T01:21:07.294Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:21:07",
+      "Window_Category": "after",
+      "Ca_status": "E166-0",
+      "SecureCore_V": 7.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V07 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667139217",
+      "Timestamp": "2026-05-28T02:01:12.854Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 03:01:12",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 2.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V02 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667139957",
+      "Timestamp": "2026-05-28T01:22:43.269Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:22:43",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 2.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 452.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V02 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667140669",
+      "Timestamp": "2026-05-28T02:15:38.887Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 05:15:38",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667142723",
+      "Timestamp": "2026-05-28T02:22:27.096Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 05:22:27",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667143244",
+      "Timestamp": "2026-05-28T01:14:47.022Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:14:47",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 9.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 308.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667144680",
+      "Timestamp": "2026-05-28T01:30:54.438Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:30:54",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 112.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4667145573",
+      "Timestamp": "2026-05-28T02:12:56.146Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 05:12:56",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668392324",
+      "Timestamp": "2026-05-28T01:37:30.006Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:37:30",
+      "Window_Category": "after",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 9.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668392575",
+      "Timestamp": "2026-05-28T01:58:08.429Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:58:08",
+      "Window_Category": "before",
+      "Ca_status": "E166-0",
+      "SecureCore_V": NaN,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V0a T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668393250",
+      "Timestamp": "2026-05-28T01:43:52.051Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:43:52",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 171.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668395743",
+      "Timestamp": "2026-05-28T02:05:17.161Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 03:05:17",
+      "Window_Category": "within",
+      "Ca_status": "E143-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 251.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668399741",
+      "Timestamp": "2026-05-28T01:58:49.056Z",
+      "Nationality": "KEN",
+      "Local_TZ": "Africa/Nairobi",
+      "Local_Time": "2026-05-28 04:58:49",
+      "Window_Category": "after",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 6.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V06 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668401539",
+      "Timestamp": "2026-05-28T01:32:00.25Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:32:00",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668442786",
+      "Timestamp": "2026-05-28T01:14:00.666Z",
+      "Nationality": "UGA",
+      "Local_TZ": "Africa/Kampala",
+      "Local_Time": "2026-05-28 04:14:00",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 1.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668443925",
+      "Timestamp": "2026-05-28T01:14:24.979Z",
+      "Nationality": "UGA",
+      "Local_TZ": "Africa/Kampala",
+      "Local_Time": "2026-05-28 04:14:24",
+      "Window_Category": "after",
+      "Ca_status": "D100-0",
+      "SecureCore_V": NaN,
+      "FlexiCore_V": 10,
+      "Current_channel": 122.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V0a T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668447847",
+      "Timestamp": "2026-05-28T01:50:25.894Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:50:25",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 2.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V02 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668468392",
+      "Timestamp": "2026-05-28T01:37:54.072Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:37:54",
+      "Window_Category": "before",
+      "Ca_status": "E166-0",
+      "SecureCore_V": 7.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V07 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668468434",
+      "Timestamp": "2026-05-28T01:52:29.194Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:52:29",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 9.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 420.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668488347",
+      "Timestamp": "2026-05-28T01:45:31.884Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:45:31",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 2.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 304.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V02 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668502911",
+      "Timestamp": "2026-05-28T01:27:16.868Z",
+      "Nationality": "AGO",
+      "Local_TZ": "Africa/Luanda",
+      "Local_Time": "2026-05-28 02:27:16",
+      "Window_Category": "before",
+      "Ca_status": "E103-0",
+      "SecureCore_V": 6.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V06 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V06 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668509812",
+      "Timestamp": "2026-05-28T02:32:15.02Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 03:32:15",
+      "Window_Category": "within",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 7.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 301.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V07 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V07 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668510216",
+      "Timestamp": "2026-05-28T01:45:05.91Z",
+      "Nationality": "AGO",
+      "Local_TZ": "Africa/Luanda",
+      "Local_Time": "2026-05-28 02:45:05",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 1.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 931.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668510227",
+      "Timestamp": "2026-05-28T01:43:47.021Z",
+      "Nationality": "MOZ",
+      "Local_TZ": "Africa/Maputo",
+      "Local_Time": "2026-05-28 03:43:47",
+      "Window_Category": "within",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 2.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V02 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V02 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668522943",
+      "Timestamp": "2026-05-28T02:01:04.08Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 03:01:04",
+      "Window_Category": "before",
+      "Ca_status": "E143-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668524028",
+      "Timestamp": "2026-05-28T01:42:08.732Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:42:08",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 3.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 124.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668535064",
+      "Timestamp": "2026-05-28T01:12:22.9Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:12:22",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 9.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 151.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668560554",
+      "Timestamp": "2026-05-28T01:24:56.404Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:24:56",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 9.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 152.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668580150",
+      "Timestamp": "2026-05-28T01:24:25.779Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:24:25",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 171.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668595049",
+      "Timestamp": "2026-05-28T02:08:41.906Z",
+      "Nationality": "AGO",
+      "Local_TZ": "Africa/Luanda",
+      "Local_Time": "2026-05-28 03:08:41",
+      "Window_Category": "within",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": NaN,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668598380",
+      "Timestamp": "2026-05-28T01:55:51.804Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:55:51",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 5.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668608285",
+      "Timestamp": "2026-05-28T01:26:20.005Z",
+      "Nationality": "AGO",
+      "Local_TZ": "Africa/Luanda",
+      "Local_Time": "2026-05-28 02:26:20",
+      "Window_Category": "before",
+      "Ca_status": "E166-0",
+      "SecureCore_V": NaN,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V0a T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V0a T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668608296",
+      "Timestamp": "2026-05-28T01:37:34.948Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:37:34",
+      "Window_Category": "before",
+      "Ca_status": "E166-0",
+      "SecureCore_V": 1.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4668631983",
+      "Timestamp": "2026-05-28T01:55:18.187Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:55:18",
+      "Window_Category": "before",
+      "Ca_status": "E016-0",
+      "SecureCore_V": 8.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4670947399",
+      "Timestamp": "2026-05-28T01:39:48.136Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:39:48",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 4.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4670947456",
+      "Timestamp": "2026-05-28T01:39:07.579Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:39:07",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 1.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 100.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    },
+    {
+      "Smartcardnumber": "4670947606",
+      "Timestamp": "2026-05-28T01:34:05.426Z",
+      "Nationality": "NGA",
+      "Local_TZ": "Africa/Lagos",
+      "Local_Time": "2026-05-28 02:34:05",
+      "Window_Category": "before",
+      "Ca_status": "D100-0",
+      "SecureCore_V": 1.0,
+      "FlexiCore_V": 10,
+      "Current_channel": 305.0,
+      "CCADetails_SecureCore": "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ",
+      "CCADetails_FlexiCore": "(I01) D550-0   V  10 "
+    }
+  ]
+}

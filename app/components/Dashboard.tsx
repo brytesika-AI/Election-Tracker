@@ -1469,6 +1469,54 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
+
+          {/* ── BACKTESTING / CALIBRATION ─────────────────── */}
+          <SectionLabel layer="BACKTESTING & CALIBRATION" title="Model Replay Against Known ECZ Results"
+            sub="The current model logic is replayed retrospectively on past elections and scored by mean absolute error (MAE) on the winner's share. This is how we earn the right to forecast." />
+
+          {(() => {
+            const BT = ELECTION_DATA.backtesting
+            const passColor = (v: string) => v === 'PASS' ? C.teal : v === 'PARTIAL' ? C.gold : C.warn
+            return (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginBottom: 16 }}>
+                  <div style={{ background: C.card, border: `2px solid ${C.teal}`, borderRadius: 10, padding: 18 }}>
+                    <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>MEAN ABSOLUTE ERROR</div>
+                    <div style={{ fontSize: 44, fontWeight: 900, color: C.teal, fontFamily: 'monospace', lineHeight: 1 }}>{BT.meanAbsoluteErrorPts}<span style={{ fontSize: 18 }}>pt</span></div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 6 }}>Target ≤ {BT.calibrationTargetNational}pt national · across 4 elections</div>
+                  </div>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 18 }}>
+                    <div style={{ fontSize: 10, color: C.gold, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>CALIBRATION STATUS</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: C.text, lineHeight: 1.4 }}>{BT.calibrationStatus}</div>
+                  </div>
+                </div>
+
+                <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 14 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>RETROSPECTIVE REPLAY — PREDICTED vs ACTUAL</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>{BT.method}</div>
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    {BT.results.map(r => (
+                      <div key={r.year} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 6 }}>
+                          <div style={{ fontWeight: 900, fontSize: 15, color: C.gold, fontFamily: 'monospace', minWidth: 42 }}>{r.year}</div>
+                          <div style={{ fontSize: 11, color: C.text }}>Actual: <strong>{r.actualWinner} {r.actualWinnerPct}%</strong> / RU {r.actualRunnerUpPct}%</div>
+                          <div style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 800, color: passColor(r.verdict), background: `${passColor(r.verdict)}22`, padding: '2px 8px', borderRadius: 8, border: `1px solid ${passColor(r.verdict)}44`, marginLeft: 'auto' }}>{r.verdict} · {r.errorPts}pt</div>
+                        </div>
+                        <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5, marginBottom: 4 }}>Model would have said: {r.modelWouldHavePredicted}</div>
+                        <div style={{ fontSize: 10, color: `${C.warn}CC`, fontStyle: 'italic' }}>📘 {r.lesson}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ background: `${C.teal}11`, border: `1px solid ${C.teal}44`, borderRadius: 8, padding: '12px 16px', marginBottom: 8 }}>
+                  <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>KEY FINDING</div>
+                  <div style={{ fontSize: 11, color: C.text, lineHeight: 1.6 }}>{BT.keyFinding}</div>
+                </div>
+                <div style={{ fontSize: 10, color: C.muted, fontStyle: 'italic' }}>{BT.disclaimer} · Updated {BT.lastUpdated}</div>
+              </div>
+            )
+          })()}
         </>
         )}
 
@@ -1650,6 +1698,166 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
+          {/* ── PARLIAMENTARY PROJECTION ───────────────────── */}
+          <SectionLabel layer="PARLIAMENTARY PROJECTION" title="National Assembly Seat Model — 226 Elected Seats"
+            sub="2026 is a presidential race AND a parliamentary realignment. Directional seat ranges via uniform swing from 2021 + a delimitation uncertainty band. Not a seat-by-seat forecast." />
+
+          {(() => {
+            const PP = ELECTION_DATA.parliamentaryProjection
+            const maxHigh = Math.max(...PP.projection2026.map(p => p.high))
+            return (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 16 }}>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>WORKING MAJORITY</div>
+                    <div style={{ fontSize: 34, fontWeight: 900, color: C.gold, fontFamily: 'monospace', lineHeight: 1 }}>{PP.workingMajoritySeats}</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>seats (50%+1 of {PP.totalElectedSeats} elected)</div>
+                  </div>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>TWO-THIRDS BAR</div>
+                    <div style={{ fontSize: 34, fontWeight: 900, color: C.warn, fontFamily: 'monospace', lineHeight: 1 }}>{PP.twoThirdsThreshold}</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>seats for constitutional change</div>
+                  </div>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>MODEL CONFIDENCE</div>
+                    <div style={{ fontSize: 34, fontWeight: 900, color: C.teal, fontFamily: 'monospace', lineHeight: 1 }}>{PP.confidence}%</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>directional only</div>
+                  </div>
+                </div>
+
+                <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 14 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>SEAT PROJECTION — LOW / MID / HIGH</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Bar = mid estimate; whiskers show the low–high range. Working-majority line at {PP.workingMajoritySeats}.</div>
+                  <div style={{ display: 'grid', gap: 14 }}>
+                    {PP.projection2026.map(p => (
+                      <div key={p.party}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 5 }}>
+                          <div style={{ fontWeight: 800, color: p.color, fontSize: 12, minWidth: 200 }}>{p.party}</div>
+                          <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 900, color: p.color }}>{p.mid}</div>
+                          <div style={{ color: C.muted, fontSize: 10 }}>({p.low}–{p.high})</div>
+                        </div>
+                        <div style={{ position: 'relative', height: 14, background: C.line, borderRadius: 7 }}>
+                          <div style={{ position: 'absolute', left: `${(p.low / maxHigh) * 100}%`, width: `${((p.high - p.low) / maxHigh) * 100}%`, height: '100%', background: `${p.color}44`, borderRadius: 7 }} />
+                          <div style={{ position: 'absolute', left: `${(p.mid / maxHigh) * 100}%`, transform: 'translateX(-50%)', width: 4, height: '100%', background: p.color, borderRadius: 2 }} />
+                          <div style={{ position: 'absolute', left: `${(PP.workingMajoritySeats / maxHigh) * 100}%`, width: 2, height: '100%', background: C.warn }} />
+                        </div>
+                        <div style={{ fontSize: 10, color: C.muted, marginTop: 4, lineHeight: 1.5 }}>{p.note}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 9, color: C.warn, marginTop: 12, fontFamily: 'monospace' }}>▲ Orange line = {PP.workingMajoritySeats}-seat working majority</div>
+                </div>
+
+                <div style={{ background: `${C.warn}11`, border: `1px solid ${C.warn}44`, borderRadius: 8, padding: '12px 16px', marginBottom: 8 }}>
+                  <div style={{ fontSize: 10, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>SPLIT-OUTCOME RISK</div>
+                  <div style={{ fontSize: 11, color: C.text, lineHeight: 1.6, marginBottom: 8 }}>{PP.splitOutcomeRisk}</div>
+                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.6 }}>{PP.twoThirdsNote}</div>
+                </div>
+                <div style={{ fontSize: 10, color: C.muted, fontStyle: 'italic' }}>{PP.methodology} · {PP.disclaimer}</div>
+              </div>
+            )
+          })()}
+
+          {/* ── DELIMITATION ──────────────────────────────── */}
+          <SectionLabel layer="DELIMITATION" title="70 New Constituencies — Zero Voting History"
+            sub="Constituencies rose from 156 (2021) to 226. The 70 new seats carry no past results and must inflate forecast uncertainty. Province-level model estimate only." />
+
+          {(() => {
+            const DL = ELECTION_DATA.delimitation
+            const leanColor = (l: string) => l === 'UPND' ? C.upnd : l === 'OPPOSITION' ? C.pf : C.gold
+            return (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 16 }}>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 9, color: C.muted, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>SEAT GROWTH</div>
+                    <div style={{ fontSize: 30, fontWeight: 900, color: C.text, fontFamily: 'monospace', lineHeight: 1 }}>{DL.seats2021}→{DL.seats2026}</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>{DL.newConstituencies} new constituencies</div>
+                  </div>
+                  <div style={{ background: C.card, border: `1px solid ${C.warn}`, borderRadius: 10, padding: 16 }}>
+                    <div style={{ fontSize: 9, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>UNCERTAINTY PREMIUM</div>
+                    <div style={{ fontSize: 30, fontWeight: 900, color: C.warn, fontFamily: 'monospace', lineHeight: 1 }}>+{DL.uncertaintyPremiumPts}pt</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 6 }}>added to new-seat forecasts</div>
+                  </div>
+                </div>
+
+                <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 14 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 4 }}>NEW SEATS BY PROVINCE (MODEL ESTIMATE)</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginBottom: 16 }}>Sums to {DL.newConstituencies}. Province-level only — exact constituency names require the National Assembly delimitation gazette.</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 10 }}>
+                    {DL.newSeatsByProvinceEstimate.map(s => (
+                      <div key={s.province} style={{ background: C.card2, border: `1px solid ${leanColor(s.lean)}44`, borderRadius: 8, padding: '10px 12px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                          <div style={{ fontWeight: 800, fontSize: 12, color: C.text }}>{s.province}</div>
+                          <div style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 15, color: leanColor(s.lean) }}>+{s.newSeats}</div>
+                        </div>
+                        <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: leanColor(s.lean), marginBottom: 4 }}>{s.lean}</div>
+                        <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{s.note}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ background: `${C.warn}11`, border: `1px solid ${C.warn}44`, borderRadius: 8, padding: '12px 16px', marginBottom: 8 }}>
+                  <div style={{ fontSize: 10, color: C.warn, fontFamily: 'monospace', fontWeight: 700, marginBottom: 4 }}>NET EFFECT</div>
+                  <div style={{ fontSize: 11, color: C.text, lineHeight: 1.6 }}>{DL.netEffect}</div>
+                </div>
+                <div style={{ fontSize: 10, color: C.muted, fontStyle: 'italic' }}>{DL.disclaimer} · Updated {DL.lastUpdated}</div>
+              </div>
+            )
+          })()}
+
+          {/* ── ETHICS & BIAS GOVERNANCE ──────────────────── */}
+          <SectionLabel layer="ETHICS · BIAS · SAFETY" title="Bias Policy & Strategy Use-Policy Guard"
+            sub="Documented bias-management policy and a use-policy guard on strategy outputs. Regional patterns are political history, never ethnic determinism." />
+
+          {(() => {
+            const EG = ELECTION_DATA.ethicsGovernance
+            const sevColor = (s: string) => s === 'HIGH' ? C.warn : s === 'MEDIUM' ? C.gold : C.teal
+            return (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px' }}>
+                    <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>BIAS POLICY</div>
+                    <div style={{ fontSize: 11, color: C.text, lineHeight: 1.6 }}>{EG.biasPolicy}</div>
+                  </div>
+                  <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '14px 16px' }}>
+                    <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700, marginBottom: 6 }}>STRATEGY USE POLICY</div>
+                    <div style={{ fontSize: 11, color: C.text, lineHeight: 1.6 }}>{EG.strategyUsePolicy}</div>
+                  </div>
+                </div>
+
+                <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 10, padding: '18px 20px', marginBottom: 14 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: C.text, marginBottom: 14 }}>KNOWN BIASES & MITIGATIONS</div>
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    {EG.knownBiasesManaged.map(b => (
+                      <div key={b.bias} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                          <div style={{ fontWeight: 800, fontSize: 12, color: C.text }}>{b.bias}</div>
+                          <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: sevColor(b.severity), background: `${sevColor(b.severity)}22`, padding: '2px 7px', borderRadius: 8, border: `1px solid ${sevColor(b.severity)}44` }}>{b.severity}</div>
+                        </div>
+                        <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.6 }}>{b.mitigation}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ background: `${C.teal}11`, border: `1px solid ${C.teal}44`, borderRadius: 8, padding: '12px 16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <div style={{ fontSize: 10, color: C.teal, fontFamily: 'monospace', fontWeight: 700 }}>STRATEGY-PACKET GUARD</div>
+                    <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: C.teal, background: `${C.teal}22`, padding: '2px 7px', borderRadius: 8, border: `1px solid ${C.teal}44` }}>{EG.strategyPacketGuard.enabled ? 'ENABLED' : 'OFF'}</div>
+                  </div>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 8 }}>Prohibited intents (blocked & replaced with policy-communication alternative):</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                    {EG.strategyPacketGuard.prohibitedIntents.map(i => (
+                      <span key={i} style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: C.warn, background: `${C.warn}1A`, padding: '3px 8px', borderRadius: 8, border: `1px solid ${C.warn}44` }}>{i}</span>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 10, color: C.text, lineHeight: 1.6 }}>{EG.strategyPacketGuard.action}</div>
+                </div>
+              </div>
+            )
+          })()}
         </>
         )}
 

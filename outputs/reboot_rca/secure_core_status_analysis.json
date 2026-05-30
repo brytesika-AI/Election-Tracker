@@ -1,0 +1,660 @@
+{
+  "fields": {
+    "secureCoreStatus": {
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ": 27,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ": 437,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ": 26,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ": 58,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ": 82,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ": 37,
+      "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ": 20
+    },
+    "imageStatus": {
+      "(I01) D550-0   V  10 ": 124
+    },
+    "packageProgress": {
+      "<empty>": 124
+    },
+    "LoaderCoreAPI_GetUKInfo": {
+      "0": 125
+    },
+    "nexus_security_abiverify_error": {
+      "0x6 nexus_security_abiverify_client.h:317": 1,
+      "0x6 nexus_security_abiverify_client.h:438": 1
+    }
+  },
+  "examples": {
+    "secureCoreStatus": [
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 "
+      ]
+    ],
+    "imageStatus": [
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00761.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00762.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00763.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00764.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00765.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00766.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00767.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00768.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00769.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00770.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00771.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263958_combined_debug_00772.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ],
+      [
+        "4664263996_combined_debug_00227.log.gz",
+        "(I01) D550-0   V  10 ",
+        ""
+      ]
+    ],
+    "line_examples": [
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "00000:03.472 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "00000:04.469 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x2af51488, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "00000:04.473 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x8e0345fc, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00594.log.gz",
+        "00000:04.611 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "00000:03.404 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "00000:04.428 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x190fafc9, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "00000:04.433 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x40fab25d, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "00000:04.704 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263783_combined_debug_00595.log.gz",
+        "00002:27.212 [IMW-CA] WARN - imw.ca.core.notifier - took 740ms to notify CASmartCardDataEvent[slot=CASmartCardSlot[0], data=IrdetoCloakedCACardData[cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null]] toclass com.irdeto.appdb.ApplicationDBCacheSubSystem@155775906 => PLEASE DON'T BLOCK THE CALLBACK"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "00000:03.571 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "00000:04.514 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x190fafc9, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "00000:04.518 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x40fab25d, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00596.log.gz",
+        "00000:04.581 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "00000:03.516 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "00000:04.560 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x2af51488, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "00000:04.566 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x8e0345fc, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00597.log.gz",
+        "00000:04.654 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "00000:03.587 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "00000:04.557 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x2af51488, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "00000:04.562 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x8e0345fc, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00598.log.gz",
+        "00000:04.817 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "00000:03.531 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296487 (0x16030467), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=2e1114f0446aea7d410d593b8bfc8f39]"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "00000:04.518 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263783, ver=5.0.2-8, vendorIds=[0x6e6], identity=0x190fafc9, cssn=0x16030467, clientid=\"4664263783(2)\", nat=\"KEN\", active=true, lockid=0, sn=2201420903, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "00000:04.524 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-8, vendorIds=[0x6e5], identity=0x40fab25d, cssn=0x16030467, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263783_combined_debug_00599.log.gz",
+        "00000:04.541 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "[LoaderCoreAPI_GetUKInfo] result = 0"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "\tsignatureVersion  = 0x0"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00000:03.523 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.loader - IrdetoLoaderStatus[manufacturerId=0x2, hardwareVersion=0x25, systemId=0xffff, keyVersion=0x0, keyStatus=0x0, signatureVersion=0x0, variant=0x2, subVariant=0x0, downloadId=199, CSSN=369296662 (0x16030516), loaderVersion=5.1, loaderType=0x0, bin2irdVersion=\u0000\u0000\u00ff\u00ff, bin2irdSN=\u0000\u0000\u00ff\u00ff, signTime=1858/11/19 03:00:00 (UTC+3), downloadTime=1858/11/19 03:00:00 (UTC+3), dlDurationSecs=65535, isignSerialNumber=0001, isignVersion=6.2.0, ccaPrivateData=f6ba14e20c8793a97854f0558675171f]"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00000:04.438 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf, cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00000:04.511 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Cloaked CA card: sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b, cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"\", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00000:04.557 [IMW-CAS#IfcpSubSystem] INFO - imw.ca.ifcp.engine - Received IFCP CA Message : image-status=[(I01) D550-0   V  10 ] packages-download-progress-info=[]"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.481 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   0% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.484 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   0% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.532 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   0% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.533 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   0% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.538 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   1% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.543 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   1% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.553 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   1% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.562 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   1% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.570 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   2% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.572 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   2% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.582 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   2% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.621 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   2% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.649 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   3% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.656 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   3% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.657 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   3% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.675 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   3% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.684 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   4% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.690 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   4% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.702 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   4% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.709 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   4% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.722 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.728 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.738 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.751 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.758 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.762 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   5% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.772 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   6% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.775 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   6% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.782 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   6% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.793 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   6% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.801 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   7% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.806 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   7% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.817 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   7% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.821 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   7% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.831 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   8% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.839 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e6, card=CASmartCard[sn=4664263958, ver=5.0.2-3, vendorIds=[0x6e6], identity=0x3939fbbf], active=true]][vendorId=0x6e6]: cssn=0x16030516, clientid=\"4664263958(0)\", nat=\"UGA\", active=true, lockid=0, sn=2201421078, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   8% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ],
+      [
+        "4664263958_combined_debug_00760.log.gz",
+        "00019:46.848 [IMW-CAS#CAIrdeto] INFO - imw.ca.irdeto.engine.cca - Updated Cloaked CA data [caInstance=CAInstance[id=0x6e5, card=CASmartCard[sn=0000000000, ver=5.0.2-3, vendorIds=[0x6e5], identity=0x3520a33b], active=false]][vendorId=0x6e5]: cssn=0x16030516, clientid=\"0000000000(0)\", nat=\"\", active=false, lockid=0, sn=0, secureCoreStatus=\"(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 \", secureCoreDownloadProgressInfo=\"(I02)   8% M05 m05 mode01 N00 C02 S00 \", hometp=null"
+      ]
+    ],
+    "nexus_security_abiverify_error": [
+      [
+        "4664264050_combined_debug_01211.log.gz",
+        "0x6",
+        "nexus_security_abiverify_client.h:317"
+      ],
+      [
+        "4664264050_combined_debug_01211.log.gz",
+        "0x6",
+        "nexus_security_abiverify_client.h:438"
+      ]
+    ]
+  },
+  "bycard": {
+    "4664263783": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ": 13
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 6
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 6
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664263958": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ": 437,
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V03 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V03 T00 ": 26
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 13
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 13
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664263996": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ": 42
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 21
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 21
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664264050": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V05 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V05 T00 ": 82
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 41
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 42
+      },
+      "nexus_security_abiverify_error": {
+        "0x6 nexus_security_abiverify_client.h:317": 1,
+        "0x6 nexus_security_abiverify_client.h:438": 1
+      }
+    },
+    "4664264086": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V01 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V01 T00 ": 16
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 8
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 8
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664264683": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V08 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V08 T00 ": 14
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 7
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 7
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664265104": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ": 20
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 10
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 10
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4664265184": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 (I02) D500-0   M05 m05 mode01 N00 C02 S00 V09 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V09 T00 ": 17
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 8
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 8
+      },
+      "nexus_security_abiverify_error": {}
+    },
+    "4671199079": {
+      "secureCoreStatus": {
+        "(I02) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 (I01) D500-0   M05 m04 mode01 N00 C01 S00 V04 T00 ": 20
+      },
+      "imageStatus": {
+        "(I01) D550-0   V  10 ": 10
+      },
+      "LoaderCoreAPI_GetUKInfo": {
+        "0": 10
+      },
+      "nexus_security_abiverify_error": {}
+    }
+  }
+}

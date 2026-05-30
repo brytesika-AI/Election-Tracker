@@ -1,0 +1,2461 @@
+{
+  "logs": [
+    {
+      "name": "4664263783_combined_debug_00594.log.gz",
+      "card": "4664263783",
+      "uptime": 15326.283,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263783_combined_debug_00595.log.gz",
+      "card": "4664263783",
+      "uptime": 86599.269,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          9
+        ]
+      ]
+    },
+    {
+      "name": "4664263783_combined_debug_00596.log.gz",
+      "card": "4664263783",
+      "uptime": 86206.607,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263783_combined_debug_00597.log.gz",
+      "card": "4664263783",
+      "uptime": 47024.3,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263783_combined_debug_00598.log.gz",
+      "card": "4664263783",
+      "uptime": 86291.679,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263783_combined_debug_00599.log.gz",
+      "card": "4664263783",
+      "uptime": 44915.361,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00760.log.gz",
+      "card": "4664263958",
+      "uptime": 17724.415,
+      "progress_events": 437,
+      "nonempty_progress": 437,
+      "max_pct": 100,
+      "min_pct": 0,
+      "last_pct": 100,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          880
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00761.log.gz",
+      "card": "4664263958",
+      "uptime": 1277.468,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00762.log.gz",
+      "card": "4664263958",
+      "uptime": 5520.669,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00763.log.gz",
+      "card": "4664263958",
+      "uptime": 930.572,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00764.log.gz",
+      "card": "4664263958",
+      "uptime": 6538.429,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00765.log.gz",
+      "card": "4664263958",
+      "uptime": 19821.633,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00766.log.gz",
+      "card": "4664263958",
+      "uptime": 1423.318,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00767.log.gz",
+      "card": "4664263958",
+      "uptime": 4522.609,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00768.log.gz",
+      "card": "4664263958",
+      "uptime": 24270.696,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00769.log.gz",
+      "card": "4664263958",
+      "uptime": 17823.669,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00770.log.gz",
+      "card": "4664263958",
+      "uptime": 521.231,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00771.log.gz",
+      "card": "4664263958",
+      "uptime": 122.501,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263958_combined_debug_00772.log.gz",
+      "card": "4664263958",
+      "uptime": 19175.904,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "03",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00227.log.gz",
+      "card": "4664263996",
+      "uptime": 35273.317,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00228.log.gz",
+      "card": "4664263996",
+      "uptime": 26257.539,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00229.log.gz",
+      "card": "4664263996",
+      "uptime": 3624.426,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00230.log.gz",
+      "card": "4664263996",
+      "uptime": 32276.167,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00231.log.gz",
+      "card": "4664263996",
+      "uptime": 31682.268,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00232.log.gz",
+      "card": "4664263996",
+      "uptime": 128.945,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00233.log.gz",
+      "card": "4664263996",
+      "uptime": 11773.834,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00234.log.gz",
+      "card": "4664263996",
+      "uptime": 7575.986,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00235.log.gz",
+      "card": "4664263996",
+      "uptime": 20826.578,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00236.log.gz",
+      "card": "4664263996",
+      "uptime": 29577.902,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00237.log.gz",
+      "card": "4664263996",
+      "uptime": 43048.816,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00238.log.gz",
+      "card": "4664263996",
+      "uptime": 39324.936,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00239.log.gz",
+      "card": "4664263996",
+      "uptime": 4716.293,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00240.log.gz",
+      "card": "4664263996",
+      "uptime": 1526.248,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00241.log.gz",
+      "card": "4664263996",
+      "uptime": 5718.902,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00242.log.gz",
+      "card": "4664263996",
+      "uptime": 5025.76,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00243.log.gz",
+      "card": "4664263996",
+      "uptime": 13474.659,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00244.log.gz",
+      "card": "4664263996",
+      "uptime": 28249.119,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00245.log.gz",
+      "card": "4664263996",
+      "uptime": 2125.778,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00246.log.gz",
+      "card": "4664263996",
+      "uptime": 42319.227,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664263996_combined_debug_00247.log.gz",
+      "card": "4664263996",
+      "uptime": 21477.658,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01187.log.gz",
+      "card": "4664264050",
+      "uptime": 14929.608,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01188.log.gz",
+      "card": "4664264050",
+      "uptime": 90.752,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01189.log.gz",
+      "card": "4664264050",
+      "uptime": 1780.582,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01190.log.gz",
+      "card": "4664264050",
+      "uptime": 7928.969,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01191.log.gz",
+      "card": "4664264050",
+      "uptime": 718.721,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01192.log.gz",
+      "card": "4664264050",
+      "uptime": 12.01,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": []
+    },
+    {
+      "name": "4664264050_combined_debug_01193.log.gz",
+      "card": "4664264050",
+      "uptime": 501.429,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01194.log.gz",
+      "card": "4664264050",
+      "uptime": 4743.669,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01195.log.gz",
+      "card": "4664264050",
+      "uptime": 927.547,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01196.log.gz",
+      "card": "4664264050",
+      "uptime": 1836.799,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01197.log.gz",
+      "card": "4664264050",
+      "uptime": 3730.575,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01198.log.gz",
+      "card": "4664264050",
+      "uptime": 14277.611,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01199.log.gz",
+      "card": "4664264050",
+      "uptime": 4179.697,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01200.log.gz",
+      "card": "4664264050",
+      "uptime": 128.532,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01201.log.gz",
+      "card": "4664264050",
+      "uptime": 1078.703,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01202.log.gz",
+      "card": "4664264050",
+      "uptime": 2360.767,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01203.log.gz",
+      "card": "4664264050",
+      "uptime": 32727.877,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01204.log.gz",
+      "card": "4664264050",
+      "uptime": 229.169,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01205.log.gz",
+      "card": "4664264050",
+      "uptime": 4381.603,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01207.log.gz",
+      "card": "4664264050",
+      "uptime": 8057.878,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01208.log.gz",
+      "card": "4664264050",
+      "uptime": 7329.484,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01209.log.gz",
+      "card": "4664264050",
+      "uptime": 6680.392,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01210.log.gz",
+      "card": "4664264050",
+      "uptime": 2233.748,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01211.log.gz",
+      "card": "4664264050",
+      "uptime": 15430.341,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01212.log.gz",
+      "card": "4664264050",
+      "uptime": 128.503,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01213.log.gz",
+      "card": "4664264050",
+      "uptime": 1980.84,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01214.log.gz",
+      "card": "4664264050",
+      "uptime": 629.248,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01215.log.gz",
+      "card": "4664264050",
+      "uptime": 3979.478,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01216.log.gz",
+      "card": "4664264050",
+      "uptime": 278.197,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01217.log.gz",
+      "card": "4664264050",
+      "uptime": 12347.571,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01218.log.gz",
+      "card": "4664264050",
+      "uptime": 4679.322,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01219.log.gz",
+      "card": "4664264050",
+      "uptime": 3730.481,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01220.log.gz",
+      "card": "4664264050",
+      "uptime": 631.483,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01221.log.gz",
+      "card": "4664264050",
+      "uptime": 579.37,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": true,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01222.log.gz",
+      "card": "4664264050",
+      "uptime": 1327.939,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01223.log.gz",
+      "card": "4664264050",
+      "uptime": 21857.169,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01224.log.gz",
+      "card": "4664264050",
+      "uptime": 10477.925,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01225.log.gz",
+      "card": "4664264050",
+      "uptime": 10130.944,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01226.log.gz",
+      "card": "4664264050",
+      "uptime": 11878.968,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01227.log.gz",
+      "card": "4664264050",
+      "uptime": 3599.871,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01228.log.gz",
+      "card": "4664264050",
+      "uptime": 11729.761,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264050_combined_debug_01229.log.gz",
+      "card": "4664264050",
+      "uptime": 1980.554,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "05",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00217.log.gz",
+      "card": "4664264086",
+      "uptime": 86479.907,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00218.log.gz",
+      "card": "4664264086",
+      "uptime": 51130.6,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00219.log.gz",
+      "card": "4664264086",
+      "uptime": 34775.893,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00220.log.gz",
+      "card": "4664264086",
+      "uptime": 86580.233,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00221.log.gz",
+      "card": "4664264086",
+      "uptime": 35179.168,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00222.log.gz",
+      "card": "4664264086",
+      "uptime": 8334.872,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00223.log.gz",
+      "card": "4664264086",
+      "uptime": 199224.749,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264086_combined_debug_00224.log.gz",
+      "card": "4664264086",
+      "uptime": 55483.557,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "01",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_00995.log.gz",
+      "card": "4664264683",
+      "uptime": 10779.519,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_00996.log.gz",
+      "card": "4664264683",
+      "uptime": 23329.834,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_00997.log.gz",
+      "card": "4664264683",
+      "uptime": 38476.926,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_00998.log.gz",
+      "card": "4664264683",
+      "uptime": 14722.132,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_00999.log.gz",
+      "card": "4664264683",
+      "uptime": 31697.59,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_01000.log.gz",
+      "card": "4664264683",
+      "uptime": 18538.234,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664264683_combined_debug_01003.log.gz",
+      "card": "4664264683",
+      "uptime": 24979.277,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "08",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00400.log.gz",
+      "card": "4664265104",
+      "uptime": 86672.227,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00401.log.gz",
+      "card": "4664265104",
+      "uptime": 36494.507,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00402.log.gz",
+      "card": "4664265104",
+      "uptime": 49623.555,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00403.log.gz",
+      "card": "4664265104",
+      "uptime": 85916.987,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00404.log.gz",
+      "card": "4664265104",
+      "uptime": 26145.843,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00405.log.gz",
+      "card": "4664265104",
+      "uptime": 60157.762,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00406.log.gz",
+      "card": "4664265104",
+      "uptime": 86472.344,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00407.log.gz",
+      "card": "4664265104",
+      "uptime": 14528.2,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00408.log.gz",
+      "card": "4664265104",
+      "uptime": 69286.765,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265104_combined_debug_00409.log.gz",
+      "card": "4664265104",
+      "uptime": 76354.616,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00716.log.gz",
+      "card": "4664265184",
+      "uptime": 86861.172,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00717.log.gz",
+      "card": "4664265184",
+      "uptime": 86363.796,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00718.log.gz",
+      "card": "4664265184",
+      "uptime": 86288.987,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00719.log.gz",
+      "card": "4664265184",
+      "uptime": 86148.906,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00720.log.gz",
+      "card": "4664265184",
+      "uptime": 86179.702,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00721.log.gz",
+      "card": "4664265184",
+      "uptime": 86518.672,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00722.log.gz",
+      "card": "4664265184",
+      "uptime": 53882.442,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          9
+        ]
+      ]
+    },
+    {
+      "name": "4664265184_combined_debug_00723.log.gz",
+      "card": "4664265184",
+      "uptime": 60517.717,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "09",
+          6
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00396.log.gz",
+      "card": "4671199079",
+      "uptime": 86555.997,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00397.log.gz",
+      "card": "4671199079",
+      "uptime": 86438.215,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00398.log.gz",
+      "card": "4671199079",
+      "uptime": 86327.172,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00399.log.gz",
+      "card": "4671199079",
+      "uptime": 86127.477,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00400.log.gz",
+      "card": "4671199079",
+      "uptime": 86383.572,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00401.log.gz",
+      "card": "4671199079",
+      "uptime": 12625.675,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00402.log.gz",
+      "card": "4671199079",
+      "uptime": 73379.459,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00403.log.gz",
+      "card": "4671199079",
+      "uptime": 84110.554,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00404.log.gz",
+      "card": "4671199079",
+      "uptime": 86203.794,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": true,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    },
+    {
+      "name": "4671199079_combined_debug_00405.log.gz",
+      "card": "4671199079",
+      "uptime": 44976.695,
+      "progress_events": 0,
+      "nonempty_progress": 0,
+      "max_pct": null,
+      "min_pct": null,
+      "last_pct": null,
+      "explicit_reboot": false,
+      "short": false,
+      "versions": [
+        [
+          "04",
+          4
+        ]
+      ]
+    }
+  ],
+  "bycard": {
+    "4664263783": {
+      "logs": 6,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "08": 39
+      },
+      "examples": []
+    },
+    "4664263958": {
+      "logs": 13,
+      "progress_logs": 1,
+      "pcts": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 6,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4,
+        "10": 4,
+        "11": 6,
+        "12": 4,
+        "13": 4,
+        "14": 4,
+        "15": 4,
+        "16": 4,
+        "17": 6,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4,
+        "22": 4,
+        "23": 6,
+        "24": 4,
+        "25": 4,
+        "26": 4,
+        "27": 4,
+        "28": 4,
+        "29": 6,
+        "30": 4,
+        "31": 4,
+        "32": 4,
+        "33": 4,
+        "34": 4,
+        "35": 6,
+        "36": 4,
+        "37": 4,
+        "38": 4,
+        "39": 4,
+        "40": 4,
+        "41": 6,
+        "42": 4,
+        "43": 4,
+        "44": 4,
+        "45": 4,
+        "46": 4,
+        "47": 6,
+        "48": 4,
+        "49": 4,
+        "50": 4,
+        "51": 4,
+        "52": 6,
+        "53": 4,
+        "54": 4,
+        "55": 4,
+        "56": 4,
+        "57": 4,
+        "58": 6,
+        "59": 4,
+        "60": 4,
+        "61": 4,
+        "62": 4,
+        "63": 4,
+        "64": 6,
+        "65": 4,
+        "66": 4,
+        "67": 4,
+        "68": 4,
+        "69": 4,
+        "70": 6,
+        "71": 4,
+        "72": 4,
+        "73": 5,
+        "74": 4,
+        "75": 4,
+        "76": 6,
+        "77": 4,
+        "78": 4,
+        "79": 4,
+        "80": 4,
+        "81": 4,
+        "82": 6,
+        "83": 4,
+        "84": 4,
+        "85": 4,
+        "86": 4,
+        "87": 4,
+        "88": 6,
+        "89": 4,
+        "90": 4,
+        "91": 4,
+        "92": 4,
+        "93": 4,
+        "94": 6,
+        "95": 4,
+        "96": 4,
+        "97": 4,
+        "98": 4,
+        "99": 4,
+        "100": 4
+      },
+      "maxpcts": [
+        100
+      ],
+      "versions": {
+        "03": 952
+      },
+      "examples": [
+        [
+          "4664263958_combined_debug_00760.log.gz",
+          1186.481,
+          "(I02)   0% M05 m05 mode01 N00 C02 S00 "
+        ],
+        [
+          "4664263958_combined_debug_00760.log.gz",
+          1186.484,
+          "(I02)   0% M05 m05 mode01 N00 C02 S00 "
+        ],
+        [
+          "4664263958_combined_debug_00760.log.gz",
+          1186.532,
+          "(I02)   0% M05 m05 mode01 N00 C02 S00 "
+        ]
+      ]
+    },
+    "4664263996": {
+      "logs": 21,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "01": 126
+      },
+      "examples": []
+    },
+    "4664264050": {
+      "logs": 42,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "05": 246
+      },
+      "examples": []
+    },
+    "4664264086": {
+      "logs": 8,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "01": 48
+      },
+      "examples": []
+    },
+    "4664264683": {
+      "logs": 7,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "08": 42
+      },
+      "examples": []
+    },
+    "4664265104": {
+      "logs": 10,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "09": 60
+      },
+      "examples": []
+    },
+    "4664265184": {
+      "logs": 8,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "09": 51
+      },
+      "examples": []
+    },
+    "4671199079": {
+      "logs": 10,
+      "progress_logs": 0,
+      "pcts": {},
+      "maxpcts": [],
+      "versions": {
+        "04": 40
+      },
+      "examples": []
+    }
+  }
+}
