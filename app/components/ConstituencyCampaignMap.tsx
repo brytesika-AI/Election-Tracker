@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 // ── Design tokens matching SentimentCommand Platform ──
 const C = {
@@ -23,12 +23,79 @@ const C = {
   delayed:   '#CC0000',
 }
 
+// ── Custom Dark Theme Map Styling for Vercel Google Maps Integration ──
+const DARK_MAP_STYLE = [
+  { "elementType": "geometry", "stylers": [{ "color": "#0e1724" }] },
+  { "elementType": "labels.text.stroke", "stylers": [{ "color": "#0e1724" }] },
+  { "elementType": "labels.text.fill", "stylers": [{ "color": "#7a8fa6" }] },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.stroke",
+    "stylers": [{ "color": "#1c2a3a" }]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [{ "color": "#7a8fa6" }]
+  },
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#0b1220" }]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#121c2c" }]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [{ "color": "#00c9a7" }]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#1c2a3a" }]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#1c2a3a" }]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#2a3d54" }]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#2c3e50" }]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#121c2c" }]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [{ "color": "#07111e" }]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [{ "color": "#7a8fa6" }]
+  }
+]
+
 interface ParliamentaryCandidate {
   name: string
   party: string
   color: string
   status: 'Leading' | 'Competitive' | 'Trailing'
-  chatterScore: number // 0-100 public sentiment
+  chatterScore: number
   platformFocus: string
   latestUpdate: string
 }
@@ -42,6 +109,8 @@ interface CdfProject {
   voterVisibility: 'High' | 'Medium' | 'Low'
   tacticalStrategy: string
   details: string
+  lat: number // Precise latitude of the project building
+  lng: number // Precise longitude of the project building
 }
 
 interface ConstituencyData {
@@ -50,14 +119,15 @@ interface ConstituencyData {
   registeredVoters: number
   targetSwingWeight: 'Critical Swing' | 'Incumbent Stronghold' | 'Opposition Lock' | 'Lean Swing'
   incumbentParty: string
-  x: number // Map layout coordinates
-  y: number
+  lat: number // Center latitude of constituency
+  lng: number // Center longitude of constituency
   candidates: ParliamentaryCandidate[]
   projects: CdfProject[]
   generalNews: string
   campaignStrategyTask: string
 }
 
+// ── Realistic Real-World Coordinates for Zambia Constituencies ──
 const CONSTITUENCIES: ConstituencyData[] = [
   {
     name: 'Munali',
@@ -65,16 +135,16 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 154200,
     targetSwingWeight: 'Critical Swing',
     incumbentParty: 'UPND',
-    x: 430,
-    y: 380,
+    lat: -15.3888,
+    lng: 28.3551,
     candidates: [
       { name: 'Mike Mposha', party: 'UPND', color: C.upnd, status: 'Leading', chatterScore: 56, platformFocus: 'Facebook / Radio', latestUpdate: 'UPND home-to-home mobilizers deployed in Chelstone. Actively campaigning on CDF success.' },
       { name: 'Josephine Mphanza', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Competitive', chatterScore: 48, platformFocus: 'Community Rallies', latestUpdate: 'Targeting market women at Chelstone Market on mealie meal pricing.' },
       { name: 'Chanda Mwale', party: 'Socialist Party', color: C.sp, status: 'Trailing', chatterScore: 32, platformFocus: 'TikTok / Youth hubs', latestUpdate: 'Gaining momentum in Chainda youth groups with IMF-critique handbills.' }
     ],
     projects: [
-      { id: 'proj-mun-1', name: 'Munali Clinic Maternity Wing Extension', type: 'Healthcare', funding: 'K4,200,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Launch a heavy visual hyper-local campaign focusing on the free maternity services to offset generic cost-of-living anger in Chelstone.', details: 'Brand-new modern facility serving 25,000+ residents. 100% operational with free government staffing.' },
-      { id: 'proj-mun-2', name: 'Chainda Secondary School Science Lab', type: 'Education', funding: 'K2,100,000', status: 'In Progress', voterVisibility: 'Medium', tacticalStrategy: 'Arrange a delegation of youth student creators to tour the lab structure to counter Socialist Party student narratives.', details: 'Structural work 80% complete. Supply contracts for gas taps and solar power backup are currently being verified.' }
+      { id: 'proj-mun-1', name: 'Munali Clinic Maternity Wing', type: 'Healthcare', funding: 'K4,200,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Launch a heavy visual hyper-local campaign focusing on the free maternity services to offset generic cost-of-living anger in Chelstone.', details: 'Brand-new modern facility serving 25,000+ residents. 100% operational with free government staffing.', lat: -15.3872, lng: 28.3561 },
+      { id: 'proj-mun-2', name: 'Chainda Secondary School Science Lab', type: 'Education', funding: 'K2,100,000', status: 'In Progress', voterVisibility: 'Medium', tacticalStrategy: 'Arrange a delegation of youth student creators to tour the lab structure to counter Socialist Party student narratives.', details: 'Structural work 80% complete. Supply contracts for gas taps and solar power backup are currently being verified.', lat: -15.4055, lng: 28.3912 }
     ],
     generalNews: 'Munali is highly reactive to cost-of-living news. CDF launches serve as the key counter-weights. Turnout is projected high.',
     campaignStrategyTask: 'Deploy student mobilizers to showcase completed Munali Clinic Maternity wing before August 2026 nomination rallies.'
@@ -85,15 +155,15 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 138500,
     targetSwingWeight: 'Critical Swing',
     incumbentParty: 'UPND',
-    x: 450,
-    y: 410,
+    lat: -15.4419,
+    lng: 28.3182,
     candidates: [
       { name: 'Andrew Tayengwa', party: 'UPND', color: C.upnd, status: 'Competitive', chatterScore: 51, platformFocus: 'Constituency Radio', latestUpdate: 'Tayengwa highlights 12 newly completed inner community roads in Libala.' },
       { name: 'Clement Tembo', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Competitive', chatterScore: 52, platformFocus: 'Market Scrapes / Facebook', latestUpdate: 'Tembo gains strong traction in Chilenje markets, focusing on Mealie Meal price pain.' },
       { name: 'Martha Mwansa', party: 'Socialist Party', color: C.sp, status: 'Trailing', chatterScore: 28, platformFocus: 'WhatsApp Broadcasts', latestUpdate: 'Focusing on university students in Libala corridor with scholarship reform talks.' }
     ],
     projects: [
-      { id: 'proj-kab-1', name: 'Chilenje Market Tarred Roads & Drainage Network', type: 'Infrastructure', funding: 'K5,800,000', status: 'In Progress', voterVisibility: 'High', tacticalStrategy: 'Accelerate construction phase before August. Highlight flood mitigation works directly to market traders who suffered in the last wet season.', details: '8 of 12 roads tarred. Heavy civil engineering in progress on main outfall drain.' }
+      { id: 'proj-kab-1', name: 'Chilenje Market Tarred Roads & Drainage Network', type: 'Infrastructure', funding: 'K5,800,000', status: 'In Progress', voterVisibility: 'High', tacticalStrategy: 'Accelerate construction phase before August. Highlight flood mitigation works directly to market traders who suffered in the last wet season.', details: '8 of 12 roads tarred. Heavy civil engineering in progress on main outfall drain.', lat: -15.4491, lng: 28.3242 }
     ],
     generalNews: 'Tight battleground. PF-Pamodzi activists are targeting Chilenje and Kabwata markets heavily. Minor candidate splits could benefit UPND.',
     campaignStrategyTask: 'Establish mobile clinics on completed Libala inner roads to highlight CDF delivery to peri-urban swing voters.'
@@ -104,14 +174,14 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 142000,
     targetSwingWeight: 'Critical Swing',
     incumbentParty: 'UPND',
-    x: 390,
-    y: 220,
+    lat: -12.9692,
+    lng: 28.6433,
     candidates: [
       { name: 'Frank Tayali', party: 'UPND', color: C.upnd, status: 'Competitive', chatterScore: 54, platformFocus: 'Mining unions / Facebook', latestUpdate: 'Tayali pledges local contractor payments are sorted and KCM/Mopani mines are hiring.' },
       { name: 'Emmanuel Mulenga', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Competitive', chatterScore: 49, platformFocus: 'Church gatherings', latestUpdate: 'Mulenga highlights job losses in sub-contractors and business closures in industrial area.' }
     ],
     projects: [
-      { id: 'proj-ndo-1', name: 'Ndola Main Market Solar Power Hub', type: 'Water Security', funding: 'K3,500,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Brilliant energy relief proof. Deploy mini solar chargers to market stallholders. Directly combats load-shedding grievances.', details: '450kW micro-grid with batteries. Powers Ndola Main Market cold storage and lighting during outages.' }
+      { id: 'proj-ndo-1', name: 'Ndola Main Market Solar Power Hub', type: 'Water Security', funding: 'K3,500,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Brilliant energy relief proof. Deploy mini solar chargers to market stallholders. Directly combats load-shedding grievances.', details: '450kW micro-grid with batteries. Powers Ndola Main Market cold storage and lighting during outages.', lat: -12.9620, lng: 28.6360 }
     ],
     generalNews: 'Mining sub-contractor payments are the single most active discussion point. Load-shedding hits small shopkeepers.',
     campaignStrategyTask: 'Highlight Ndola Main Market Solar Hub on local Copperbelt Radio and WhatsApp networks to show actual energy relief.'
@@ -122,14 +192,14 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 161000,
     targetSwingWeight: 'Lean Swing',
     incumbentParty: 'Tonse Alliance (PF)',
-    x: 360,
-    y: 240,
+    lat: -12.8025,
+    lng: 28.2128,
     candidates: [
       { name: "Kang'ombe Christopher", party: 'Tonse Alliance (PF)', color: C.pf, status: 'Leading', chatterScore: 62, platformFocus: 'Direct Community / Radio', latestUpdate: 'Christopher leads community sensitization drives, cementing solid local grassroots.' },
       { name: 'Leonard Phiri', party: 'UPND', color: C.upnd, status: 'Competitive', chatterScore: 44, platformFocus: 'CDF Launches', latestUpdate: 'Phiri tours completed education projects but faces strong anti-incumbency mine sentiment.' }
     ],
     projects: [
-      { id: 'proj-kit-1', name: 'Nkana Youth Skills Development Centre', type: 'Education', funding: 'K2,900,000', status: 'Completed', voterVisibility: 'Medium', tacticalStrategy: 'Deploy mineral-processing and mining engineering scholarships directly to Nkana graduates. Shift debate from nostalgia to future jobs.', details: 'Fully rehabilitated block with new computer lab and welding workshops. 450 students enrolled.' }
+      { id: 'proj-kit-1', name: 'Nkana Youth Skills Development Centre', type: 'Education', funding: 'K2,900,000', status: 'Completed', voterVisibility: 'Medium', tacticalStrategy: 'Deploy mineral-processing and mining engineering scholarships directly to Nkana graduates. Shift debate from nostalgia to future jobs.', details: 'Fully rehabilitated block with new computer lab and welding workshops. 450 students enrolled.', lat: -12.8050, lng: 28.2040 }
     ],
     generalNews: 'Kitwe remains an opposition stronghold. Christopher Kang\'ombe has a very strong personal brand. Mine transition plans must be communicated.',
     campaignStrategyTask: 'Organize mine contractor townhall meetings in Kitwe to announce verified payment numbers and counter opposition mining attack.'
@@ -140,15 +210,15 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 122000,
     targetSwingWeight: 'Opposition Lock',
     incumbentParty: 'Tonse Alliance (PF)',
-    x: 430,
-    y: 150,
+    lat: -11.1985,
+    lng: 28.8912,
     candidates: [
       { name: 'Chabu Chilangwa', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Leading', chatterScore: 65, platformFocus: 'Traditional Networks', latestUpdate: 'Chilangwa leverages regional Bemba networks. Activates dormant PF branch cells.' },
       { name: 'Davies Mwila', party: 'CF Orange Alliance', color: C.cf, status: 'Trailing', chatterScore: 35, platformFocus: 'Luapula Radio', latestUpdate: 'Mwila draws moderate crowds but is squeezed by Chilangwa\'s strong machine.' },
       { name: 'Gertrude Bwalya', party: 'UPND', color: C.upnd, status: 'Trailing', chatterScore: 30, platformFocus: 'CDF Launches', latestUpdate: 'Bwalya faces severe fishing-ban and rural road grievances.' }
     ],
     projects: [
-      { id: 'proj-man-1', name: 'Mansa General Hospital Maternity Block', type: 'Healthcare', funding: 'K6,200,000', status: 'Delayed', voterVisibility: 'High', tacticalStrategy: 'Delayed status is highly toxic. Immediate taskforce required to address contractor bottlenecks. Weaponized daily on Mansa radio.', details: 'Structure standing but abandoned at 60% complete due to funding bottleneck and supplier dispute.' }
+      { id: 'proj-man-1', name: 'Mansa General Hospital Maternity Block', type: 'Healthcare', funding: 'K6,200,000', status: 'Delayed', voterVisibility: 'High', tacticalStrategy: 'Delayed status is highly toxic. Immediate taskforce required to address contractor bottlenecks. Weaponized daily on Mansa radio.', details: 'Structure standing but abandoned at 60% complete due to funding bottleneck and supplier dispute.', lat: -11.1895, lng: 28.8833 }
     ],
     generalNews: 'Deep opposition territory. Fishing economy grievances around Mweru Wantipa bans are highly capitalized on by PF.',
     campaignStrategyTask: 'Fast-track Mansa Maternity Block funding. Announce date of completion to diffuse Chilangwa\'s key radio weapon.'
@@ -159,14 +229,14 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 115000,
     targetSwingWeight: 'Incumbent Stronghold',
     incumbentParty: 'UPND',
-    x: 260,
-    y: 200,
+    lat: -12.1798,
+    lng: 26.3972,
     candidates: [
       { name: 'Stafford Mulusa', party: 'UPND', color: C.upnd, status: 'Leading', chatterScore: 68, platformFocus: 'Facebook / Direct Meetings', latestUpdate: 'Mulusa leverages Solwezi dual-carriageway road progress and mining supplier benefits.' },
       { name: 'Jackson Mwila', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Trailing', chatterScore: 24, platformFocus: 'Local Radios', latestUpdate: 'Mwila tries to tap into mining contractor payment grievances with limited success.' }
     ],
     projects: [
-      { id: 'proj-sol-1', name: 'Solwezi-Kansanshi Dual Carriageway Rehabilitation', type: 'Infrastructure', funding: 'K12,500,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Outstanding incumbent asset. Run drone videos on Facebook and local TV highlighting quick travel times. Combats general rural neglect charges.', details: '14km high-quality asphalt dual-carriageway finished with lighting, radically reducing mine transport bottlenecks.' }
+      { id: 'proj-sol-1', name: 'Solwezi-Kansanshi Dual Carriageway Rehabilitation', type: 'Infrastructure', funding: 'K12,500,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Outstanding incumbent asset. Run drone videos on Facebook and local TV highlighting quick travel times. Combats general rural neglect charges.', details: '14km high-quality asphalt dual-carriageway finished with lighting, radically reducing mine transport bottlenecks.', lat: -12.1350, lng: 26.4020 }
     ],
     generalNews: 'Very safe UPND territory. High expectations on mining jobs and community royalties must be carefully managed.',
     campaignStrategyTask: 'Publish Solwezi Dual Carriageway drone clips on Facebook and distribute via local WhatsApp groups for max visibility.'
@@ -177,14 +247,14 @@ const CONSTITUENCIES: ConstituencyData[] = [
     registeredVoters: 129000,
     targetSwingWeight: 'Incumbent Stronghold',
     incumbentParty: 'UPND',
-    x: 350,
-    y: 460,
+    lat: -16.8062,
+    lng: 26.9739,
     candidates: [
       { name: 'Cornelius Mweetwa', party: 'UPND', color: C.upnd, status: 'Leading', chatterScore: 78, platformFocus: 'Southern Radio / Rallies', latestUpdate: 'Mweetwa dominates local political space, focusing on universal free education and CDF drought borehole success.' },
       { name: 'Gift Mudenda', party: 'Tonse Alliance (PF)', color: C.pf, status: 'Trailing', chatterScore: 18, platformFocus: 'Community Meetings', latestUpdate: 'Mudenda struggles to find campaign ground. Struggles to set up active ward structures.' }
     ],
     projects: [
-      { id: 'proj-cho-1', name: 'Choma Drought Solar-Borehole Network', type: 'Water Security', funding: 'K4,800,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Mobilize agricultural clubs and women cooperatives around the 45 solar water points to offset national drought recovery panic.', details: '45 solar-powered deep boreholes built across rural wards, delivering clean irrigation water to 18,000 farmers during extreme dry season.' }
+      { id: 'proj-cho-1', name: 'Choma Drought Solar-Borehole Network', type: 'Water Security', funding: 'K4,800,000', status: 'Completed', voterVisibility: 'High', tacticalStrategy: 'Mobilize agricultural clubs and women cooperatives around the 45 solar water points to offset national drought recovery panic.', details: '45 solar-powered deep boreholes built across rural wards, delivering clean irrigation water to 18,000 farmers during extreme dry season.', lat: -16.8120, lng: 26.9610 }
     ],
     generalNews: 'Absolute UPND anchor province. Regional loyalty combined with massive free education enrollment makes it impenetrable to opposition.',
     campaignStrategyTask: 'Coordinate local farmer clips showcasing Choma solar boreholes to broadcast on Southern radio and nationwide news.'
@@ -196,6 +266,16 @@ export default function ConstituencyCampaignMap() {
   const [selectedConstName, setSelectedConstName] = useState('Munali')
   const [mapZoom, setMapZoom] = useState<'national' | 'constituency'>('national')
   const [activeViewMode, setActiveViewMode] = useState<'projects' | 'candidates' | 'strategy'>('projects')
+  const [mapStyle, setMapStyle] = useState<'dark' | 'hybrid' | 'roadmap'>('dark')
+  
+  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false)
+  const [loadError, setLoadError] = useState(false)
+  
+  const mapContainerRef = useRef<HTMLDivElement>(null)
+  const mapInstanceRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+  const projectMarkersRef = useRef<any[]>([])
+
   const [strategyStatus, setStrategyStatus] = useState<Record<string, boolean>>({
     'Munali': false,
     'Kabwata': false,
@@ -224,6 +304,201 @@ export default function ConstituencyCampaignMap() {
     'Opposition Lock': { bg: `${C.delayed}20`, border: C.delayed, color: C.delayed },
   }
 
+  // ── Dynamic Google Maps script loader to prevent duplication or hydration leaks ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if ((window as any).google && (window as any).google.maps) {
+      setGoogleMapsLoaded(true)
+      return
+    }
+
+    const callbackName = 'initGoogleMapsCallback'
+    ;(window as any)[callbackName] = () => {
+      setGoogleMapsLoaded(true)
+    }
+
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+    const script = document.createElement('script')
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=${callbackName}`
+    script.async = true
+    script.defer = true
+    script.onerror = () => {
+      setLoadError(true)
+    }
+    document.head.appendChild(script)
+
+    return () => {
+      delete (window as any)[callbackName]
+    }
+  }, [])
+
+  // ── Map Constructor ──
+  useEffect(() => {
+    if (!googleMapsLoaded || !mapContainerRef.current) return
+
+    const google = (window as any).google
+    if (!google || !google.maps) return
+
+    // Standard baseline coordinates centering on Zambia's geographic core
+    const zambiaCenter = { lat: -13.1339, lng: 27.8493 }
+    const initialZoom = 6.2
+
+    const mapInstance = new google.maps.Map(mapContainerRef.current, {
+      center: zambiaCenter,
+      zoom: initialZoom,
+      mapTypeId: mapStyle === 'dark' ? google.maps.MapTypeId.ROADMAP : mapStyle,
+      styles: mapStyle === 'dark' ? DARK_MAP_STYLE : [],
+      disableDefaultUI: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.LEFT_BOTTOM
+      }
+    })
+
+    mapInstanceRef.current = mapInstance
+
+    // Listen to manual map drags/clicks to keep state unified if user taps map background
+    mapInstance.addListener('click', () => {
+      // Close open InfoWindows gracefully
+    })
+
+    return () => {
+      if (google.maps.event) {
+        google.maps.event.clearInstanceListeners(mapInstance)
+      }
+    }
+  }, [googleMapsLoaded, mapStyle])
+
+  // ── Re-render Markers whenever selection or map changes ──
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    const google = (window as any).google
+    if (!google || !google.maps) return
+
+    // Clear old constituency markers
+    markersRef.current.forEach(m => m.setMap(null))
+    markersRef.current = []
+
+    CONSTITUENCIES.forEach(c => {
+      const selected = c.name === selectedConstName
+      const isIncumbUPND = c.incumbentParty === 'UPND'
+      const pinColor = isIncumbUPND ? C.upnd : C.pf
+
+      const marker = new google.maps.Marker({
+        position: { lat: c.lat, lng: c.lng },
+        map: map,
+        title: `${c.name} Constituency`,
+        label: {
+          text: c.name,
+          color: '#ffffff',
+          fontSize: selected ? '12px' : '10px',
+          fontWeight: '900'
+        },
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: selected ? 16 : 10,
+          fillColor: selected ? C.gold : pinColor,
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: selected ? 2.5 : 1.5,
+        }
+      })
+
+      marker.addListener('click', () => {
+        setSelectedConstName(c.name)
+        setMapZoom('constituency')
+      })
+
+      markersRef.current.push(marker)
+    })
+  }, [googleMapsLoaded, selectedConstName])
+
+  // ── Render project hotspots when zoomed in on a specific constituency ──
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    const google = (window as any).google
+    if (!google || !google.maps) return
+
+    // Clear previous project markers
+    projectMarkersRef.current.forEach(m => m.setMap(null))
+    projectMarkersRef.current = []
+
+    if (mapZoom !== 'constituency') return
+
+    const currentConst = CONSTITUENCIES.find(c => c.name === selectedConstName)
+    if (!currentConst) return
+
+    currentConst.projects.forEach(proj => {
+      const projColor = proj.status === 'Completed' ? C.completed : proj.status === 'In Progress' ? C.progress : C.delayed
+      const symbol = proj.type === 'Healthcare' ? '🏥' : proj.type === 'Education' ? '🏫' : proj.type === 'Water Security' ? '💧' : '🚧'
+
+      const marker = new google.maps.Marker({
+        position: { lat: proj.lat, lng: proj.lng },
+        map: map,
+        title: proj.name,
+        label: {
+          text: symbol,
+          fontSize: '14px',
+        },
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 18,
+          fillColor: projColor,
+          fillOpacity: 0.25,
+          strokeColor: projColor,
+          strokeWeight: 2,
+        }
+      })
+
+      // Highly detailed strategic infowindow
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="color: #0c1220; font-family: system-ui, -apple-system, sans-serif; padding: 6px; max-width: 250px; line-height: 1.4;">
+            <div style="font-weight: 800; font-size: 13px; color: ${projColor}; margin-bottom: 2px;">${proj.name}</div>
+            <div style="font-size: 9px; font-weight: 700; color: #666; margin-bottom: 6px;">
+              ${proj.type} · Funding: <strong>${proj.funding}</strong> · Status: <strong>${proj.status}</strong>
+            </div>
+            <p style="font-size: 11px; color: #444; margin: 0 0 8px;">${proj.details}</p>
+            <div style="background: #fdf6e2; border-radius: 4px; padding: 6px; font-size: 10px; border-left: 3px solid #f5c400; color: #856404;">
+              <strong>Strategic Narrative:</strong><br/>
+              ${proj.tacticalStrategy}
+            </div>
+          </div>
+        `
+      })
+
+      marker.addListener('click', () => {
+        infoWindow.open(map, marker)
+      })
+
+      projectMarkersRef.current.push(marker)
+    })
+  }, [googleMapsLoaded, selectedConstName, mapZoom])
+
+  // ── Camera Controller: Center and Pan smoothly based on selections ──
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    const c = CONSTITUENCIES.find(item => item.name === selectedConstName)
+    if (!c) return
+
+    if (mapZoom === 'constituency') {
+      map.panTo({ lat: c.lat, lng: c.lng })
+      map.setZoom(13)
+    } else {
+      map.panTo({ lat: -13.1339, lng: 27.8493 })
+      map.setZoom(6.2)
+    }
+  }, [selectedConstName, mapZoom])
+
   function handleMapPointClick(cName: string) {
     setSelectedConstName(cName)
     setMapZoom('constituency')
@@ -236,32 +511,43 @@ export default function ConstituencyCampaignMap() {
   return (
     <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 16, overflow: 'hidden', fontFamily: 'system-ui, sans-serif' }}>
       
-      {/* Google Maps Styled Header Banner */}
-      <div style={{ background: '#080F1A', borderBottom: `1px solid ${C.border}`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+      {/* Dynamic Command Header */}
+      <div style={{ background: '#080F1A', borderBottom: `1px solid ${C.border}`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
         <div>
           <div style={{ color: C.gold, fontWeight: 800, fontSize: 13, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span>🗺️</span> CONSTITUENCY COMMAND & PROJECT MAP (SIMULATED GOOGLE MAPS)
+            <span>🦅</span> CONSTITUENCY STRATEGY CENTER · REAL GOOGLE MAPS LIVE
           </div>
           <div style={{ color: C.muted, fontSize: 11, marginTop: 4 }}>
-            Zoom in to verify localized CDF-funded projects, candidate updates, and real-time campaign strategy.
+            Explore satellite grids and zoom directly into actual CDF project locations to weaponize achievements or secure swing votes.
           </div>
         </div>
         
-        {/* Quick Map Controls */}
-        <div style={{ display: 'flex', gap: 8 }}>
+        {/* Style & Zoom controls */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {/* Style Toggles */}
+          <div style={{ display: 'flex', background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, padding: 2 }}>
+            {[
+              { id: 'dark', label: 'Dark Style' },
+              { id: 'hybrid', label: 'Satellite' },
+              { id: 'roadmap', label: 'Terrain' }
+            ].map(style => (
+              <button
+                key={style.id}
+                type="button"
+                onClick={() => setMapStyle(style.id as 'dark' | 'hybrid' | 'roadmap')}
+                style={{ background: mapStyle === style.id ? C.gold : 'transparent', color: mapStyle === style.id ? '#000' : C.muted, border: 'none', borderRadius: 4, padding: '4px 10px', fontSize: 9.5, fontWeight: 700, cursor: 'pointer' }}
+              >
+                {style.label}
+              </button>
+            ))}
+          </div>
+
           <button 
             type="button" 
             onClick={() => setMapZoom('national')}
-            style={{ background: mapZoom === 'national' ? C.gold : C.card, color: mapZoom === 'national' ? '#000' : C.muted, border: `1px solid ${C.border}`, borderRadius: 6, padding: '6px 12px', fontSize: 10, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+            style={{ background: mapZoom === 'national' ? C.gold : C.card, color: mapZoom === 'national' ? '#000' : C.muted, border: `1px solid ${C.border}`, borderRadius: 6, padding: '6px 12px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
           >
             🔎 National View
-          </button>
-          <button 
-            type="button" 
-            onClick={() => setMapZoom('constituency')}
-            style={{ background: mapZoom === 'constituency' ? C.gold : C.card, color: mapZoom === 'constituency' ? '#000' : C.muted, border: `1px solid ${C.border}`, borderRadius: 6, padding: '6px 12px', fontSize: 10, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-          >
-            🔎 Zoom In
           </button>
         </div>
       </div>
@@ -323,256 +609,43 @@ export default function ConstituencyCampaignMap() {
           </div>
         </div>
 
-        {/* Center: Simulated Google Maps Interactive Canvas */}
+        {/* Center: Live Real Google Map Container */}
         <div style={{ background: C.ocean, position: 'relative', borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column' }}>
           
           {/* Zoom Overlay Indicators */}
           <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 5, background: 'rgba(6,12,20,0.85)', border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', fontSize: 10, pointerEvents: 'none' }}>
-            <span style={{ color: C.muted }}>Google Maps Viewport:</span>{' '}
+            <span style={{ color: C.muted }}>Google Maps Layer:</span>{' '}
             <strong style={{ color: mapZoom === 'national' ? C.teal : C.gold }}>
               {mapZoom === 'national' ? 'NATIONAL HUB' : `${selectedConst.name.toUpperCase()} constituency`}
             </strong>
             <div style={{ color: C.muted, fontSize: 8.5, marginTop: 2 }}>
-              {mapZoom === 'national' ? 'Tap markers to zoom in and examine local projects' : 'Constituency level active · click "National View" to reset'}
+              {mapZoom === 'national' 
+                ? 'Tap markers or list items to zoom directly to real streets and projects.' 
+                : 'Panned to coordinates. Click project markers for strategic popups.'}
             </div>
           </div>
 
-          {/* Interactive Map Visualisation */}
-          <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            
-            {/* Simulated Satellite/Terrain Vector Overlay */}
-            <svg 
-              viewBox="0 0 800 600" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                maxWidth: 820,
-                maxHeight: 600,
-                transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                transform: mapZoom === 'national' 
-                  ? 'scale(1) translate(0px, 0px)' 
-                  : `scale(2.4) translate(${400 - selectedConst.x}px, ${300 - selectedConst.y}px)`
-              }}
-            >
-              {/* Ocean Grid Background */}
-              <defs>
-                <radialGradient id="map-bg" cx="50%" cy="50%" r="70%">
-                  <stop offset="0%" stopColor="#111B2C" />
-                  <stop offset="100%" stopColor="#040810" />
-                </radialGradient>
-                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(28,42,58,0.15)" strokeWidth="0.8" />
-                </pattern>
-                <filter id="marker-glow">
-                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <rect width="800" height="600" fill="url(#map-bg)" />
-              <rect width="800" height="600" fill="url(#grid)" />
-
-              {/* Map Outline of Zambia (Simplified Stylized Base Topology) */}
-              <path 
-                d="M180,240 L280,180 L360,120 L480,140 L530,220 L600,260 L680,220 L740,320 L710,420 L640,480 L520,530 L380,480 L320,440 L240,480 L180,420 L150,320 Z" 
-                fill="#0A1220" 
-                stroke="#1B2B44" 
-                strokeWidth="2.5" 
-                strokeLinejoin="round" 
-              />
-              
-              {/* Province Borders (Rough stylized guides) */}
-              <line x1="380" y1="240" x2="430" y2="150" stroke="rgba(28,42,58,0.3)" strokeDasharray="3 3" />
-              <line x1="390" y1="220" x2="430" y2="380" stroke="rgba(28,42,58,0.3)" strokeDasharray="3 3" />
-              <line x1="260" y1="200" x2="360" y2="240" stroke="rgba(28,42,58,0.3)" strokeDasharray="3 3" />
-              <line x1="430" y1="380" x2="350" y2="460" stroke="rgba(28,42,58,0.3)" strokeDasharray="3 3" />
-
-              {/* Map Terrain labels when zoomed out */}
-              {mapZoom === 'national' && (
-                <>
-                  <text x="350" y="320" fill="rgba(122,143,166,0.3)" fontSize="18" fontWeight="800" letterSpacing="0.2em">ZAMBIA</text>
-                  <text x="440" y="290" fill="rgba(122,143,166,0.2)" fontSize="10" fontWeight="700" letterSpacing="0.1em">KAFUE NATIONAL PARK</text>
-                  <text x="260" y="350" fill="rgba(122,143,166,0.2)" fontSize="10" fontWeight="700" letterSpacing="0.1em">BAROTSE FLOODPLAINS</text>
-                  <text x="560" y="380" fill="rgba(122,143,166,0.2)" fontSize="10" fontWeight="700" letterSpacing="0.1em">LOWER ZAMBEZI</text>
-                </>
-              )}
-
-              {/* Zoomed-in Topology Details (Simulated streets / local rivers near selected constituency) */}
-              {mapZoom === 'constituency' && (
-                <g opacity="0.6">
-                  {/* Rivers / Lakes */}
-                  <path d={`M ${selectedConst.x - 200} ${selectedConst.y + 120} Q ${selectedConst.x - 40} ${selectedConst.y + 40} ${selectedConst.x + 200} ${selectedConst.y + 90}`} fill="none" stroke="#003E6B" strokeWidth="6" opacity="0.4" />
-                  
-                  {/* Roads / Highways */}
-                  <line x1={selectedConst.x - 250} y1={selectedConst.y} x2={selectedConst.x + 250} y2={selectedConst.y} stroke="rgba(245,196,0,0.15)" strokeWidth="4" />
-                  <line x1={selectedConst.x} y1={selectedConst.y - 200} x2={selectedConst.x} y2={selectedConst.y + 200} stroke="rgba(245,196,0,0.15)" strokeWidth="4" />
-                  <line x1={selectedConst.x - 200} y1={selectedConst.y - 120} x2={selectedConst.x + 200} y2={selectedConst.y + 120} stroke="rgba(255,255,255,0.06)" strokeWidth="2.5" />
-                  
-                  {/* Local Settlement Area Circles */}
-                  <circle cx={selectedConst.x - 60} cy={selectedConst.y - 50} r="25" fill="rgba(28,42,58,0.2)" stroke="rgba(28,42,58,0.4)" strokeWidth="1.2" />
-                  <circle cx={selectedConst.x + 80} cy={selectedConst.y + 40} r="35" fill="rgba(28,42,58,0.2)" stroke="rgba(28,42,58,0.4)" strokeWidth="1.2" />
-                  <text x={selectedConst.x - 60} y={selectedConst.y - 48} fill="rgba(122,143,166,0.5)" fontSize="6" fontWeight="700" textAnchor="middle">SOCIETY AREA</text>
-                  <text x={selectedConst.x + 80} y={selectedConst.y + 42} fill="rgba(122,143,166,0.5)" fontSize="6" fontWeight="700" textAnchor="middle">TRADE WARD</text>
-                </g>
-              )}
-
-              {/* Interactive Constituency Location Pins (Simulating Google Map Pins) */}
-              {CONSTITUENCIES.map(c => {
-                const selected = c.name === selectedConstName
-                const isIncumbUPND = c.incumbentParty === 'UPND'
-                const primaryColor = isIncumbUPND ? C.upnd : C.pf
-                
-                // Project markers on top
-                return (
-                  <g 
-                    key={c.name}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleMapPointClick(c.name)}
-                  >
-                    {/* Ring Outer Highlight */}
-                    <circle 
-                      cx={c.x} 
-                      cy={c.y} 
-                      r={selected ? 22 : 12} 
-                      fill="none" 
-                      stroke={selected ? C.gold : primaryColor} 
-                      strokeWidth={selected ? 2.5 : 1}
-                      strokeOpacity={selected ? 1 : 0.4}
-                      opacity={mapZoom === 'national' || selected ? 1 : 0.3}
-                    />
-
-                    {/* Glowing pulse ring if selected */}
-                    {selected && (
-                      <circle 
-                        cx={c.x} 
-                        cy={c.y} 
-                        r="35" 
-                        fill="none" 
-                        stroke={C.gold} 
-                        strokeWidth="1.5" 
-                        opacity="0.5"
-                        style={{ transformOrigin: `${c.x}px ${c.y}px`, animation: 'pulse 1.8s infinite' }}
-                      />
-                    )}
-
-                    {/* Google Pin Shape */}
-                    <path 
-                      d={`M ${c.x} ${c.y} C ${c.x - 8} ${c.y - 12} ${c.x - 12} ${c.y - 20} ${c.x} ${c.y - 28} C ${c.x + 12} ${c.y - 20} ${c.x + 8} ${c.y - 12} ${c.x} ${c.y} Z`}
-                      fill={selected ? C.gold : primaryColor}
-                      filter="url(#marker-glow)"
-                      opacity={mapZoom === 'national' || selected ? 1 : 0.25}
-                    />
-
-                    {/* Inner Pin Dot */}
-                    <circle 
-                      cx={c.x} 
-                      cy={c.y - 20} 
-                      r="4.5" 
-                      fill="#FFFFFF" 
-                      opacity={mapZoom === 'national' || selected ? 1 : 0.3}
-                    />
-
-                    {/* Label Overlay */}
-                    <g opacity={mapZoom === 'national' || selected ? 1 : 0.15}>
-                      {/* Label Background */}
-                      <rect 
-                        x={c.x - 38} 
-                        y={c.y + 4} 
-                        width="76" 
-                        height="16" 
-                        rx="8" 
-                        fill="rgba(6,12,20,0.85)" 
-                        stroke={selected ? C.gold : 'rgba(28,42,58,0.7)'}
-                        strokeWidth={selected ? 1.2 : 0.8}
-                      />
-                      {/* Text */}
-                      <text 
-                        x={c.x} 
-                        y={c.y + 15} 
-                        textAnchor="middle" 
-                        fill={selected ? C.gold : C.text} 
-                        fontSize="7.5" 
-                        fontWeight="800"
-                        letterSpacing="0.04em"
-                      >
-                        {c.name.toUpperCase()}
-                      </text>
-                    </g>
-
-                    {/* Zoomed-in Project markers inside this constituency */}
-                    {selected && mapZoom === 'constituency' && c.projects.map((proj, idx) => {
-                      const projOffset = idx === 0 ? -42 : 42
-                      const projColor = proj.status === 'Completed' ? C.completed : proj.status === 'In Progress' ? C.progress : C.delayed
-                      
-                      return (
-                        <g key={proj.id} style={{ cursor: 'pointer' }}>
-                          {/* Dotted Line linking constituency pin to project node */}
-                          <line 
-                            x1={c.x} 
-                            y1={c.y - 20} 
-                            x2={c.x + projOffset} 
-                            y2={c.y - 60} 
-                            stroke={projColor} 
-                            strokeWidth="1.2" 
-                            strokeDasharray="2 2" 
-                          />
-                          
-                          {/* Project Circle Marker */}
-                          <circle 
-                            cx={c.x + projOffset} 
-                            cy={c.y - 60} 
-                            r="11" 
-                            fill={projColor} 
-                            stroke="#FFFFFF" 
-                            strokeWidth="1.5" 
-                          />
-                          
-                          {/* Inner Icon Symbol */}
-                          <text 
-                            x={c.x + projOffset} 
-                            y={c.y - 56} 
-                            textAnchor="middle" 
-                            fill="#FFFFFF" 
-                            fontSize="10" 
-                            fontWeight="800"
-                          >
-                            {proj.type === 'Healthcare' ? '🏥' : proj.type === 'Education' ? '🏫' : proj.type === 'Water Security' ? '💧' : '🚧'}
-                          </text>
-
-                          {/* Tiny Project Tag */}
-                          <rect 
-                            x={c.x + projOffset - 30} 
-                            y={c.y - 82} 
-                            width="60" 
-                            height="14" 
-                            rx="4" 
-                            fill="rgba(6,12,20,0.9)" 
-                            stroke={projColor}
-                            strokeWidth="0.8"
-                          />
-                          <text 
-                            x={c.x + projOffset} 
-                            y={c.y - 72} 
-                            textAnchor="middle" 
-                            fill="#FFFFFF" 
-                            fontSize="6" 
-                            fontWeight="700"
-                          >
-                            {proj.funding}
-                          </text>
-                        </g>
-                      )
-                    })}
-                  </g>
-                )
-              })}
-            </svg>
+          {/* Actual Google Map viewport mount point */}
+          <div 
+            ref={mapContainerRef} 
+            style={{ flex: 1, width: '100%', height: '100%', minHeight: 480 }}
+          >
+            {loadError && (
+              <div style={{ color: C.delayed, padding: 40, textAlign: 'center', fontSize: 13, background: C.bg, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+                <span>❌ Failed to load Google Maps Platform API.</span>
+                <span style={{ color: C.muted, fontSize: 11 }}>Please verify that your NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable is valid.</span>
+              </div>
+            )}
+            {!googleMapsLoaded && !loadError && (
+              <div style={{ color: C.muted, padding: 40, textAlign: 'center', fontSize: 12, background: C.bg, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 12 }}>
+                <div style={{ border: `3px solid ${C.border}`, borderTop: `3px solid ${C.gold}`, borderRadius: '50%', width: 24, height: 24, animation: 'spin 1s linear infinite' }} />
+                <span>Mounting live Google Maps Canvas...</span>
+              </div>
+            )}
           </div>
 
           {/* Quick Info Bar Overlay */}
-          <div style={{ background: '#080F1A', borderTop: `1px solid ${C.border}`, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: '#080F1A', borderTop: `1px solid ${C.border}`, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
             <div style={{ display: 'flex', gap: 14 }}>
               {[
                 { label: 'Completed Project', color: C.completed },
@@ -586,7 +659,7 @@ export default function ConstituencyCampaignMap() {
               ))}
             </div>
             <div style={{ fontSize: 9.5, color: C.muted, fontFamily: 'monospace' }}>
-              Zambia 2026 Constituency Mapping · Delimitation Audit Layer 1
+              Zambia 2026 Constituency Mapping · Live Map Layer
             </div>
           </div>
         </div>
@@ -769,7 +842,7 @@ export default function ConstituencyCampaignMap() {
               onClick={() => setMapZoom('national')}
               style={{ background: 'transparent', color: C.gold, border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 700 }}
             >
-              ← Back to Zambia National command view
+              🔎 Reset to Zambia National Overview
             </button>
           </div>
 
@@ -777,12 +850,14 @@ export default function ConstituencyCampaignMap() {
 
       </div>
 
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(0.6); opacity: 1; }
-          100% { transform: scale(1.4); opacity: 0; }
+      {/* Global CSS spinner rule to render smooth loaders */}
+      <style jsx global>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
+      
     </div>
   )
 }
