@@ -23,7 +23,7 @@ const C = {
   delayed:   '#CC0000',
 }
 
-// ── Custom Dark Theme Map Styling for Vercel Google Maps Integration ──
+// ── Custom Dark Theme Map Styling for CNN-Style Visuals ──
 const DARK_MAP_STYLE = [
   { "elementType": "geometry", "stylers": [{ "color": "#0e1724" }] },
   { "elementType": "labels.text.stroke", "stylers": [{ "color": "#0e1724" }] },
@@ -69,11 +69,6 @@ const DARK_MAP_STYLE = [
     "stylers": [{ "color": "#2a3d54" }]
   },
   {
-    "featureType": "road.highway.controlled_access",
-    "elementType": "geometry",
-    "stylers": [{ "color": "#2c3e50" }]
-  },
-  {
     "featureType": "transit",
     "elementType": "geometry",
     "stylers": [{ "color": "#121c2c" }]
@@ -109,8 +104,8 @@ interface CdfProject {
   voterVisibility: 'High' | 'Medium' | 'Low'
   tacticalStrategy: string
   details: string
-  lat: number // Precise latitude of the project building
-  lng: number // Precise longitude of the project building
+  lat: number
+  lng: number
 }
 
 interface ConstituencyData {
@@ -119,15 +114,15 @@ interface ConstituencyData {
   registeredVoters: number
   targetSwingWeight: 'Critical Swing' | 'Incumbent Stronghold' | 'Opposition Lock' | 'Lean Swing'
   incumbentParty: string
-  lat: number // Center latitude of constituency
-  lng: number // Center longitude of constituency
+  lat: number
+  lng: number
   candidates: ParliamentaryCandidate[]
   projects: CdfProject[]
   generalNews: string
   campaignStrategyTask: string
 }
 
-// ── Realistic Real-World Coordinates for Zambia Constituencies ──
+// ── Zambia's Strategic Election Hotspots with real-world lat/lng ──
 const CONSTITUENCIES: ConstituencyData[] = [
   {
     name: 'Munali',
@@ -267,6 +262,7 @@ export default function ConstituencyCampaignMap() {
   const [mapZoom, setMapZoom] = useState<'national' | 'constituency'>('national')
   const [activeViewMode, setActiveViewMode] = useState<'projects' | 'candidates' | 'strategy'>('projects')
   const [mapStyle, setMapStyle] = useState<'dark' | 'hybrid' | 'roadmap'>('dark')
+  const [activeFilter, setActiveFilter] = useState<'all' | 'critical' | 'swings' | 'strongholds' | 'large_projects'>('all')
   
   const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false)
   const [loadError, setLoadError] = useState(false)
@@ -274,6 +270,7 @@ export default function ConstituencyCampaignMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const markersRef = useRef<any[]>([])
+  const circlesRef = useRef<any[]>([])
   const projectMarkersRef = useRef<any[]>([])
 
   const [strategyStatus, setStrategyStatus] = useState<Record<string, boolean>>({
@@ -286,16 +283,46 @@ export default function ConstituencyCampaignMap() {
     'Choma Central': false,
   })
 
+  // ── CNN Touchscreen Filtering Engine ──
   const filteredConstituencies = useMemo(() => {
-    return CONSTITUENCIES.filter(c =>
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.province.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }, [searchTerm])
+    return CONSTITUENCIES.filter(c => {
+      // First check search term matching
+      const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            c.province.toLowerCase().includes(searchTerm.toLowerCase())
+      if (!matchesSearch) return false
+
+      // Second check CNN Category filters
+      if (activeFilter === 'critical') {
+        return c.targetSwingWeight === 'Critical Swing'
+      }
+      if (activeFilter === 'swings') {
+        return c.targetSwingWeight === 'Critical Swing' || c.targetSwingWeight === 'Lean Swing'
+      }
+      if (activeFilter === 'strongholds') {
+        return c.targetSwingWeight === 'Incumbent Stronghold' || c.targetSwingWeight === 'Opposition Lock'
+      }
+      if (activeFilter === 'large_projects') {
+        return c.projects.some(p => {
+          const numFunding = parseInt(p.funding.replace(/[^0-9]/g, ''), 10)
+          return numFunding >= 3000000 // K3,000,000 or greater
+        })
+      }
+      return true
+    })
+  }, [searchTerm, activeFilter])
 
   const selectedConst = useMemo(() => {
     return CONSTITUENCIES.find(c => c.name === selectedConstName) ?? CONSTITUENCIES[0]
   }, [selectedConstName])
+
+  // Aggregate stats for CNN map HUD
+  const hudStats = useMemo(() => {
+    const totalElectorate = filteredConstituencies.reduce((acc, c) => acc + c.registeredVoters, 0)
+    const criticalCount = filteredConstituencies.filter(c => c.targetSwingWeight === 'Critical Swing').length
+    const upndCount = filteredConstituencies.filter(c => c.incumbentParty === 'UPND').length
+    const pfCount = filteredConstituencies.filter(c => c.incumbentParty === 'Tonse Alliance (PF)').length
+    return { totalElectorate, criticalCount, upndCount, pfCount }
+  }, [filteredConstituencies])
 
   const targetWeights = {
     'Critical Swing': { bg: `${C.gold}20`, border: C.gold, color: C.gold },
@@ -304,7 +331,7 @@ export default function ConstituencyCampaignMap() {
     'Opposition Lock': { bg: `${C.delayed}20`, border: C.delayed, color: C.delayed },
   }
 
-  // ── Dynamic Google Maps script loader to prevent duplication or hydration leaks ──
+  // ── Dynamic Google Maps script loader ──
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -340,7 +367,6 @@ export default function ConstituencyCampaignMap() {
     const google = (window as any).google
     if (!google || !google.maps) return
 
-    // Standard baseline coordinates centering on Zambia's geographic core
     const zambiaCenter = { lat: -13.1339, lng: 27.8493 }
     const initialZoom = 6.2
 
@@ -360,11 +386,6 @@ export default function ConstituencyCampaignMap() {
 
     mapInstanceRef.current = mapInstance
 
-    // Listen to manual map drags/clicks to keep state unified if user taps map background
-    mapInstance.addListener('click', () => {
-      // Close open InfoWindows gracefully
-    })
-
     return () => {
       if (google.maps.event) {
         google.maps.event.clearInstanceListeners(mapInstance)
@@ -372,7 +393,7 @@ export default function ConstituencyCampaignMap() {
     }
   }, [googleMapsLoaded, mapStyle])
 
-  // ── Re-render Markers whenever selection or map changes ──
+  // ── Re-render Markers & Translucent CNN bubbles based on selection & touchscreen filter ──
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map) return
@@ -380,45 +401,81 @@ export default function ConstituencyCampaignMap() {
     const google = (window as any).google
     if (!google || !google.maps) return
 
-    // Clear old constituency markers
+    // Clear old markers
     markersRef.current.forEach(m => m.setMap(null))
     markersRef.current = []
 
+    // Clear old CNN bubbles
+    circlesRef.current.forEach(c => c.setMap(null))
+    circlesRef.current = []
+
     CONSTITUENCIES.forEach(c => {
+      const isFiltered = filteredConstituencies.some(item => item.name === c.name)
       const selected = c.name === selectedConstName
       const isIncumbUPND = c.incumbentParty === 'UPND'
       const pinColor = isIncumbUPND ? C.upnd : C.pf
 
+      const weightColor = c.targetSwingWeight === 'Critical Swing' ? C.gold :
+                          c.targetSwingWeight === 'Lean Swing' ? C.zmp :
+                          isIncumbUPND ? C.completed : C.delayed
+
+      // Dim non-matching items instead of removing them completely (exactly like CNN touchscreen interaction!)
+      const opacity = isFiltered ? 1 : 0.08
+      const fillOpacity = isFiltered ? (selected ? 0.45 : 0.22) : 0.02
+      const strokeOpacity = isFiltered ? (selected ? 0.8 : 0.4) : 0.05
+
+      // 1. Draw CNN Voter Weight concentration bubble (radius based on registered voter magnitude)
+      const circle = new google.maps.Circle({
+        strokeColor: weightColor,
+        strokeOpacity: strokeOpacity,
+        strokeWeight: selected ? 2.5 : 1.2,
+        fillColor: weightColor,
+        fillOpacity: fillOpacity,
+        map: map,
+        center: { lat: c.lat, lng: c.lng },
+        radius: Math.sqrt(c.registeredVoters) * 16.5 // Mathematical scaling factor
+      })
+
+      circle.addListener('click', () => {
+        if (!isFiltered) return
+        setSelectedConstName(c.name)
+        setMapZoom('constituency')
+      })
+      circlesRef.current.push(circle)
+
+      // 2. Draw standard Google Maps Pin inside the bubble core
       const marker = new google.maps.Marker({
         position: { lat: c.lat, lng: c.lng },
         map: map,
         title: `${c.name} Constituency`,
-        label: {
+        label: isFiltered ? {
           text: c.name,
           color: '#ffffff',
-          fontSize: selected ? '12px' : '10px',
+          fontSize: selected ? '12px' : '9px',
           fontWeight: '900'
-        },
+        } : null,
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
-          scale: selected ? 16 : 10,
+          scale: selected ? 16 : 9,
           fillColor: selected ? C.gold : pinColor,
-          fillOpacity: 1,
+          fillOpacity: opacity,
           strokeColor: '#ffffff',
           strokeWeight: selected ? 2.5 : 1.5,
+          strokeOpacity: opacity
         }
       })
 
       marker.addListener('click', () => {
+        if (!isFiltered) return
         setSelectedConstName(c.name)
         setMapZoom('constituency')
       })
 
       markersRef.current.push(marker)
     })
-  }, [googleMapsLoaded, selectedConstName])
+  }, [googleMapsLoaded, selectedConstName, filteredConstituencies])
 
-  // ── Render project hotspots when zoomed in on a specific constituency ──
+  // ── Render project hotspots inside zoomed-in constituency ──
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map) return
@@ -426,7 +483,6 @@ export default function ConstituencyCampaignMap() {
     const google = (window as any).google
     if (!google || !google.maps) return
 
-    // Clear previous project markers
     projectMarkersRef.current.forEach(m => m.setMap(null))
     projectMarkersRef.current = []
 
@@ -457,7 +513,7 @@ export default function ConstituencyCampaignMap() {
         }
       })
 
-      // Highly detailed strategic infowindow
+      // CNN-style overlay InfoWindow
       const infoWindow = new google.maps.InfoWindow({
         content: `
           <div style="color: #0c1220; font-family: system-ui, -apple-system, sans-serif; padding: 6px; max-width: 250px; line-height: 1.4;">
@@ -482,7 +538,7 @@ export default function ConstituencyCampaignMap() {
     })
   }, [googleMapsLoaded, selectedConstName, mapZoom])
 
-  // ── Camera Controller: Center and Pan smoothly based on selections ──
+  // ── Smooth Camera control panning ──
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map) return
@@ -499,11 +555,6 @@ export default function ConstituencyCampaignMap() {
     }
   }, [selectedConstName, mapZoom])
 
-  function handleMapPointClick(cName: string) {
-    setSelectedConstName(cName)
-    setMapZoom('constituency')
-  }
-
   function toggleTaskCompleted(cName: string) {
     setStrategyStatus(prev => ({ ...prev, [cName]: !prev[cName] }))
   }
@@ -515,16 +566,15 @@ export default function ConstituencyCampaignMap() {
       <div style={{ background: '#080F1A', borderBottom: `1px solid ${C.border}`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
         <div>
           <div style={{ color: C.gold, fontWeight: 800, fontSize: 13, letterSpacing: 1.5, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span>🦅</span> CONSTITUENCY STRATEGY CENTER · REAL GOOGLE MAPS LIVE
+            <span>🗺️</span> CNN ELECTION BOARD STYLE · constituency bubble tracker
           </div>
           <div style={{ color: C.muted, fontSize: 11, marginTop: 4 }}>
-            Explore satellite grids and zoom directly into actual CDF project locations to weaponize achievements or secure swing votes.
+            Bubbles scale with electorate volume. Color represents swing risk profile. Tap filters to query swing vectors and CDF project outputs.
           </div>
         </div>
         
         {/* Style & Zoom controls */}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {/* Style Toggles */}
           <div style={{ display: 'flex', background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, padding: 2 }}>
             {[
               { id: 'dark', label: 'Dark Style' },
@@ -557,6 +607,39 @@ export default function ConstituencyCampaignMap() {
         
         {/* Left Side: Search & Constituency List */}
         <div style={{ background: C.card, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column' }}>
+          
+          {/* CNN Touchscreen Filtering Tabs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', borderBottom: `1px solid ${C.border}`, padding: '8px 10px', gap: 4, background: '#080F1A' }}>
+            {[
+              { id: 'all', label: 'All Hotspots' },
+              { id: 'critical', label: '🟡 Critical' },
+              { id: 'swings', label: '🟠 Swings' },
+              { id: 'strongholds', label: '🟢 Strongholds' },
+              { id: 'large_projects', label: '🏥 Large CDF' }
+            ].map(f => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setActiveFilter(f.id as any)}
+                style={{ 
+                  flex: '1 1 auto',
+                  background: activeFilter === f.id ? C.gold : C.card2,
+                  color: activeFilter === f.id ? '#000' : C.text,
+                  border: `1px solid ${C.border}`,
+                  borderRadius: 4,
+                  padding: '5px 8px',
+                  fontSize: '9px',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  transition: 'all 0.15s'
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
           <div style={{ padding: 14, borderBottom: `1px solid ${C.border}` }}>
             <div style={{ position: 'relative' }}>
               <input 
@@ -570,7 +653,7 @@ export default function ConstituencyCampaignMap() {
             </div>
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto', maxHeight: 580 }}>
+          <div style={{ flex: 1, overflowY: 'auto', maxHeight: 520 }}>
             {filteredConstituencies.map(c => {
               const selected = c.name === selectedConstName
               const weight = targetWeights[c.targetSwingWeight]
@@ -603,29 +686,44 @@ export default function ConstituencyCampaignMap() {
             })}
             {filteredConstituencies.length === 0 && (
               <div style={{ color: C.muted, padding: 20, textAlign: 'center', fontSize: 11 }}>
-                No constituencies found matching your search.
+                No constituencies match selected search or CNN filter.
               </div>
             )}
           </div>
         </div>
 
-        {/* Center: Live Real Google Map Container */}
+        {/* Center: Live Google Map + CNN Style Absolute HUD cards */}
         <div style={{ background: C.ocean, position: 'relative', borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column' }}>
           
-          {/* Zoom Overlay Indicators */}
-          <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 5, background: 'rgba(6,12,20,0.85)', border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', fontSize: 10, pointerEvents: 'none' }}>
-            <span style={{ color: C.muted }}>Google Maps Layer:</span>{' '}
-            <strong style={{ color: mapZoom === 'national' ? C.teal : C.gold }}>
-              {mapZoom === 'national' ? 'NATIONAL HUB' : `${selectedConst.name.toUpperCase()} constituency`}
-            </strong>
-            <div style={{ color: C.muted, fontSize: 8.5, marginTop: 2 }}>
-              {mapZoom === 'national' 
-                ? 'Tap markers or list items to zoom directly to real streets and projects.' 
-                : 'Panned to coordinates. Click project markers for strategic popups.'}
+          {/* CNN-Style Battleground HUD Floating Card */}
+          <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 5, background: 'rgba(6,12,20,0.9)', border: `1px solid ${C.gold}50`, borderRadius: 10, padding: '10px 14px', width: 220, pointerEvents: 'none', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', borderLeft: `4px solid ${C.gold}` }}>
+            <span style={{ color: C.gold, fontSize: 9, fontWeight: '900', fontFamily: 'monospace', letterSpacing: 1 }}>📊 CNN LIVE BATTLEGROUND DATA</span>
+            <div style={{ color: C.text, fontSize: 16, fontWeight: '900', marginTop: 4 }}>
+              {hudStats.totalElectorate.toLocaleString()}<br/>
+              <span style={{ fontSize: 9.5, color: C.muted, fontWeight: 'normal' }}>voters in active filter view</span>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10, borderTop: `1px solid ${C.border}`, paddingTop: 8, fontSize: 9.5 }}>
+              <div>
+                <span style={{ color: C.muted }}>Critical Swings:</span><br/>
+                <strong style={{ color: C.gold }}>{hudStats.criticalCount} seats</strong>
+              </div>
+              <div>
+                <span style={{ color: C.muted }}>Incumbent Lead:</span><br/>
+                <strong style={{ color: C.upnd }}>{hudStats.upndCount} seats</strong>
+              </div>
             </div>
           </div>
 
-          {/* Actual Google Map viewport mount point */}
+          {/* Left Zoom Indicator */}
+          <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 5, background: 'rgba(6,12,20,0.85)', border: `1px solid ${C.border}`, borderRadius: 8, padding: '8px 12px', fontSize: 10, pointerEvents: 'none' }}>
+            <span style={{ color: C.muted }}>CNN Bubble Map:</span>{' '}
+            <strong style={{ color: mapZoom === 'national' ? C.teal : C.gold }}>
+              {mapZoom === 'national' ? 'NATIONAL HUB' : `${selectedConst.name.toUpperCase()} constituency`}
+            </strong>
+          </div>
+
+          {/* Actual Google Map container */}
           <div 
             ref={mapContainerRef} 
             style={{ flex: 1, width: '100%', height: '100%', minHeight: 480 }}
@@ -639,27 +737,18 @@ export default function ConstituencyCampaignMap() {
             {!googleMapsLoaded && !loadError && (
               <div style={{ color: C.muted, padding: 40, textAlign: 'center', fontSize: 12, background: C.bg, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 12 }}>
                 <div style={{ border: `3px solid ${C.border}`, borderTop: `3px solid ${C.gold}`, borderRadius: '50%', width: 24, height: 24, animation: 'spin 1s linear infinite' }} />
-                <span>Mounting live Google Maps Canvas...</span>
+                <span>Mounting CNN Election Board Live...</span>
               </div>
             )}
           </div>
 
-          {/* Quick Info Bar Overlay */}
-          <div style={{ background: '#080F1A', borderTop: `1px solid ${C.border}`, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-            <div style={{ display: 'flex', gap: 14 }}>
-              {[
-                { label: 'Completed Project', color: C.completed },
-                { label: 'In Progress', color: C.progress },
-                { label: 'Delayed / Bottleneck', color: C.delayed },
-              ].map(leg => (
-                <span key={leg.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, color: C.text }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: leg.color }} />
-                  {leg.label}
-                </span>
-              ))}
-            </div>
-            <div style={{ fontSize: 9.5, color: C.muted, fontFamily: 'monospace' }}>
-              Zambia 2026 Constituency Mapping · Live Map Layer
+          {/* CNN-Style Bottom Crawler Ticker */}
+          <div style={{ background: '#CC0000', borderTop: `1px solid ${C.border}`, overflow: 'hidden', padding: '6px 0', position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ background: '#000', color: '#fff', fontSize: '9px', fontWeight: '900', padding: '3px 8px', fontFamily: 'monospace', letterSpacing: 1.5, zIndex: 10, flexShrink: 0, boxShadow: '4px 0 10px rgba(0,0,0,0.5)' }}>CNN ALERTS</span>
+            <div className="ticker-wrap" style={{ flex: 1, overflow: 'hidden' }}>
+              <span className="ticker-inner" style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 10.5, color: '#fff', whiteSpace: 'nowrap', display: 'inline-block', animation: 'marquee 28s linear infinite' }}>
+                &nbsp;&nbsp; ⚠ BATTLEGROUND MUNALI: CDF Maternity Wing 100% operational, sways urban health sentiment +3.5pts. &nbsp;&nbsp; 🟢 SOUTHERN PROVINCE INCUMBENT STRONGHOLD: Borehole networks deliver drought relief to 18,000 farmers. &nbsp;&nbsp; ⚠ COPPERBELT CONTRACTOR DEBATES: NDOLA Solar Hub counters load-shedding protests. &nbsp;&nbsp; 🔴 LUAPULA LOCK: PF regional machinery leverages fishing-ban grievances in Mansa. &nbsp;&nbsp;
+              </span>
             </div>
           </div>
         </div>
@@ -850,11 +939,15 @@ export default function ConstituencyCampaignMap() {
 
       </div>
 
-      {/* Global CSS spinner rule to render smooth loaders */}
+      {/* Global CSS spinner and ticker crawlers rules */}
       <style jsx global>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        @keyframes marquee {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-100%, 0, 0); }
         }
       `}</style>
       
