@@ -1,6 +1,7 @@
-tsx'use client'
+'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { runForecast, DEFAULT_LEVERS, type ForecastLevers } from '@/app/lib/forecast'
 
 export default function TikTokFactorPage() {
@@ -17,7 +18,7 @@ export default function TikTokFactorPage() {
 
   return (
     <div style={{ padding: 28, fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif' }}>
-      <a href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: 13 }}>&larr; Back</a>
+      <Link href="/" style={{ color: '#6b7280', textDecoration: 'none', fontSize: 13 }}>&larr; Back</Link>
       <h1 style={{ marginTop: 8 }}>TikTok factor</h1>
       <p style={{ color: '#6b7280', maxWidth: 720 }}>Simulate a youth turnout and persuasion boost driven by viral TikTok engagement. This adjusts turnout and undecided flow to UPND.</p>
 

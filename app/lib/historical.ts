@@ -1,4 +1,4 @@
-ts// app/lib/historical.ts
+// app/lib/historical.ts
 // Real ECZ presidential results — PUBLIC RECORD, for calibration only.
 // Sources: Electoral Commission of Zambia official results (elections.org.zm);
 // EISA Journal of African Elections Vol.20 No.2 (2021); ECZ gazette figures.

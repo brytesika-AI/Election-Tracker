@@ -9,6 +9,8 @@ import {
 import { ELECTION_DATA, JudgeVerdict } from '@/app/lib/data'
 import ZambiaMap from '@/app/components/ZambiaMap'
 import ScenarioHub from '@/app/components/ScenarioHub'
+import ConstituencyCampaignMap from '@/app/components/ConstituencyCampaignMap'
+
 
 // ── Palette ──────────────────────────────────────────────
 const C = {
@@ -347,7 +349,7 @@ export default function Dashboard() {
   const [news, setNews]                     = useState<NewsFeed | null>(null)
   const [newsLoading, setNewsLoading]       = useState(false)
   const [activeCandidateId, setActiveCandidateId] = useState('hh')
-  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity' | 'warroom'>('overview')
+  const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'provinces' | 'strategy' | 'model' | 'history' | 'integrity' | 'warroom' | 'campaign'>('overview')
   const countdown = useCountdown(ELECTION_DATA.electionDate)
 
   const fetchNlpSentiment = useCallback(async () => {
@@ -520,6 +522,7 @@ export default function Dashboard() {
 
   const dashboardTabs = [
     { id: 'overview' as const, label: 'Overview', note: 'Race, call and map' },
+    { id: 'campaign' as const, label: '🗺️ CAMPAIGN MAP', note: 'Constituencies · Projects · Candidates' },
     { id: 'provinces' as const, label: 'Provinces', note: 'Popularity and mood' },
     { id: 'strategy' as const, label: 'Strategy', note: 'Tickets and scenarios' },
     { id: 'history' as const, label: 'History & Risk', note: 'Elections 1991–2026 · 20 factors' },
@@ -1915,6 +1918,10 @@ export default function Dashboard() {
             )
           })()}
         </>
+        )}
+
+        {activeDashboardTab === 'campaign' && (
+          <ConstituencyCampaignMap />
         )}
 
         {activeDashboardTab === 'warroom' && (

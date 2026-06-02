@@ -1,4 +1,4 @@
-ts// app/lib/forecast.ts
+// app/lib/forecast.ts
 // Monte Carlo runoff-probability engine for the Zambia 2026 presidential race.
 // Pure functions, no dependencies. The output is a MODEL SIMULATION over assumed
 // inputs and uncertainty — it is NOT a forecast of the actual election result.

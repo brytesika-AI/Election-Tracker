@@ -1,6 +1,7 @@
-tsx'use client'
+'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import {
   runForecast,
   DEFAULT_LEVERS,
@@ -81,7 +82,7 @@ export default function ScenarioLabPage() {
   return (
     <div style={{ minHeight: '100vh', background: COLORS.bg, color: COLORS.text, fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif', padding: '28px 18px 64px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <a href="/" style={{ color: COLORS.sub, textDecoration: 'none', fontSize: 13 }}>&larr; Back to dashboard</a>
+        <Link href="/" style={{ color: COLORS.sub, textDecoration: 'none', fontSize: 13 }}>&larr; Back to dashboard</Link>
 
         <h1 style={{ fontSize: 30, fontWeight: 800, margin: '14px 0 4px' }}>Scenario Lab</h1>
         <p style={{ color: COLORS.sub, margin: '0 0 14px', maxWidth: 760, lineHeight: 1.5 }}>

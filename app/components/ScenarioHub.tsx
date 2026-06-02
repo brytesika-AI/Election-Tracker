@@ -197,10 +197,10 @@ export default function ScenarioHub() {
   const [ran, setRan] = useState(false)
   const [partyLens, setPartyLens] = useState<'UPND' | 'BM_MZ' | 'NEUTRAL'>('NEUTRAL')
 
+  const [daysLeft, setDaysLeft] = useState(72)
   const D = ELECTION_DATA
   const hhPoll = D.nationalPoll.upnd
   const bmPoll = D.nationalPoll.mundubile_tonse
-  const daysLeft = Math.round((new Date('2026-08-13').getTime() - Date.now()) / 86400000)
   const agent = AGENTS.find(a => a.id === activeAgent)!
 
   const runAll = useCallback(async () => {
@@ -237,7 +237,13 @@ export default function ScenarioHub() {
   }, [hhPoll, bmPoll])
 
   // Auto-run on mount
-  useEffect(() => { runAll() }, [runAll])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDaysLeft(Math.round((new Date('2026-08-13').getTime() - Date.now()) / 86400000))
+      runAll()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [runAll])
 
   const isLoading = loading.has(activeAgent)
   const r = results
@@ -545,7 +551,7 @@ export default function ScenarioHub() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <Card title="PIVOT MESSAGE" accent={C.teal}>
                     <div style={{ padding: '8px 0', fontStyle: 'italic', fontSize: 13, color: C.text, lineHeight: 1.6, borderLeft: `3px solid ${C.teal}`, paddingLeft: 12 }}>
-                      "{s.pivotMessage}"
+                      &ldquo;{s.pivotMessage}&rdquo;
                     </div>
                   </Card>
                   <Card title="BIGGEST RISK" accent={C.pf}>
@@ -805,7 +811,7 @@ export default function ScenarioHub() {
             <div style={{ background: C.card2, borderRadius: 6, padding: 10, marginBottom: 8, borderLeft: `2px solid ${C.teal}` }}>
               <div style={{ fontSize: 8, color: C.teal, letterSpacing: 1, fontWeight: 700, marginBottom: 4 }}>KWACHA RALLY</div>
               <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>
-                K19.87/USD — ~10% stronger since Dec 2025. Bloomberg's top-performing currency. Copper $13,090/t.
+                K19.87/USD — ~10% stronger since Dec 2025. Bloomberg&apos;s top-performing currency. Copper $13,090/t.
               </div>
             </div>
 
