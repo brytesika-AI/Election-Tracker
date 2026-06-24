@@ -1,16 +1,16 @@
-﻿// Zambia Election Intelligence Data 2026
+// Zambia Election Intelligence Data 2026
 // SentimentCommand Platform — verified election facts plus clearly labelled model estimates.
-// LIVE UPDATE: 29 May 2026 — post ECZ-nomination closure (22 May 2026), 14 candidates confirmed.
+// LIVE UPDATE: 24 June 2026 — Official campaign window active. ballot printing commencing June 30 in Dubai. Voter register ~8.8 million.
 // Sources: ECZ (elections.org.zm), ZamStats, News Diggers, Lusaka Times, Zambian Observer,
 //          Afrobarometer R10, ZERN Survey (UCT/CSSR), Bank of Zambia, World Bank.
 
 export const ELECTION_DATA = {
   electionDate: '2026-08-13',
-  voterTotal: 8786300,       // ECZ certified register — official
+  voterTotal: 8800000,       // ECZ certified register — official late June 2026 update
   constituencies: 226,       // ECZ — 70 new constituencies (no voting history)
   districts: 116,
   wards: 1858,
-  aiConfidence: 82,          // Post-nomination + live polling data integrated
+  aiConfidence: 85,          // Post-nomination + campaign tracking data integrated (June 2026)
   presidentialThreshold: 50,
   presidentialRule: 'President-elect must receive more than 50% of valid votes cast; otherwise a second-round/runoff risk is triggered.',
   nominationsClosedDate: '2026-05-22',  // ECZ confirmation — 14 candidates on ballot
@@ -57,7 +57,7 @@ export const ELECTION_DATA = {
       socialHandle: '@HHichilema',
       sentimentScore: 58,
       facebookPage: 'HakaindehichilemaHH',
-      narrative: 'LIVE (29 May 2026): HH leads the field, but our hardship-weighted model places him at ~47.2% — below the 50%+1 first-round gate, so runoff is the base case (headline online/approval figures of 55–60% are self-selected or approval, not vote share). Kwacha rallied ~10% since Dec 2025 (briefly Bloomberg\'s top-performing currency). Inflation fell to 6.6% (May) — lowest since Feb 2018. Mealie meal prices down to K289/25kg (from K344 a year ago). Main risks: lived cost-of-living pressure remains the dominant drag; load shedding still material; Bishops Council warned UPND against political violence; Mazabuka nomination-day violence incident. UPND swept multiple seats unopposed, drawing opposition criticism.',
+      narrative: 'LIVE (24 June 2026): Intense campaigns are underway during the official May 21 – Aug 12 window. HH leads the field, but our hardship-weighted model places him at ~47.2% — below the 50%+1 first-round gate, so runoff is the base case (headline online/approval figures of 55–60% are self-selected or approval, not vote share). Kwacha rallied ~10% since Dec 2025. Inflation fell to 6.6% (May) — lowest since Feb 2018. Mealie meal prices down to K289/25kg. ECZ announced ballot paper printing will begin June 30 in Dubai, inviting representatives to observe. Main risks: lived cost-of-living pressure remains the dominant drag; load shedding still material; opposition alleges ECZ campaign schedule restrictions; Bishops Council warned UPND against political violence.',
       quotedPosts: [
         { src: 'Facebook · HH Official Page', text: 'Thank you Mr President for the free education. My three children are in school this year for the first time. God bless you HH. 🙏' },
         { src: 'Facebook · Lusaka Discuss Group', text: 'HH promised us change but electricity still goes for hours a day. Mealie meal eased to around K289 but life is still hard. What kind of change is this? Disappointing.' },
@@ -83,7 +83,7 @@ export const ELECTION_DATA = {
       socialHandle: '@BrianMundubile · Tonse Alliance',
       sentimentScore: 65,
       facebookPage: 'BrianMundubile',
-      narrative: 'Post-nomination: Mundubile-Makebi is now the confirmed opposition lane. The field is set. The model upgrades their share as ticket clarity reduces split-vote leakage. The 50%+1 calculation now turns entirely on voter turnout, rally penetration and whether Northern/Luapula/Muchinga structures deliver as expected.',
+      narrative: 'Post-nomination (June 2026): Mundubile-Makebi leads the Tonse Alliance campaign. Recent friction arose over ECZ\'s presidential campaign scheduling, with the alliance alleging they were targeted to restrict their rallies. Meanwhile, the legal dispute over former President Edgar Lungu\'s burial concluded, with a South African court ruling in favor of the family, settling the political narrative around his legacy. The campaign is highly active across Northern, Luapula, and Muchinga.',
       quotedPosts: [
         { src: 'Facebook · Opposition supporter sample', text: 'Mundubile has the northern base and the opposition must unite quickly before nominations close.' },
         { src: 'Facebook · Luapula Province Group', text: 'Brian Mundubile visited Samfya last week. The reception was overwhelming. People are tired and ready for change. Even former UPND supporters are switching.' },
