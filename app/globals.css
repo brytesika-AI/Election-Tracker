@@ -1363,6 +1363,21 @@ body {
 }
 
 @media (max-width: 900px) {
+  .social-landscape-hero,
+  .social-landscape-main-grid,
+  .social-landscape-candidate-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .social-landscape-nav {
+    justify-content: flex-start !important;
+  }
+
+  .social-landscape-metrics,
+  .social-landscape-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
   .zambia-map-grid {
     grid-template-columns: 1fr !important;
   }
@@ -1474,6 +1489,15 @@ body {
 }
 
 @media (max-width: 620px) {
+  .social-landscape-metrics,
+  .social-landscape-action-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .social-landscape-candidate-row > div {
+    text-align: left !important;
+  }
+
   .hybrid-model__agents {
     grid-template-columns: 1fr !important;
   }

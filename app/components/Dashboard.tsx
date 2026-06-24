@@ -893,6 +893,14 @@ export default function Dashboard() {
           style={{ padding: '5px 14px', background: showQuotes ? '#1877F2' : C.card, color: showQuotes ? 'white' : C.muted, border: `1px solid #1877F2`, borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, cursor: 'pointer' }}>
           {showQuotes ? '💬 HIDE POSTS' : '💬 SHOW POSTS'}
         </button>
+        <a href="/twitter"
+          style={{ padding: '5px 14px', background: C.card, color: '#1DA1F2', border: '1px solid #1DA1F2', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, textDecoration: 'none' }}>
+          TWITTER/X ROOM
+        </a>
+        <a href="/tiktok"
+          style={{ padding: '5px 14px', background: C.card, color: '#FE2C55', border: '1px solid #FE2C55', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', fontWeight: 700, textDecoration: 'none' }}>
+          TIKTOK ROOM
+        </a>
         {judgeMode !== 'idle' && (
           <span style={{ fontSize: 9, fontFamily: 'monospace', color: judgeMode === 'ai' ? C.teal : C.gold }}>
             {judgeMode === 'ai' ? '✓ AI ACTIVE' : '◎ DEMO MODE'}

@@ -15,9 +15,6 @@ const LEADER_PAGES = [
   { id: 'pf_ndc', name: 'Brian Mundubile + Makebi Zulu', fbPage: 'BrianMundubile', fbUrl: 'https://www.facebook.com/BrianMundubile' },
   { id: 'kalaba', name: 'Harry Kalaba',        fbPage: 'HarryKalaba',           fbUrl: 'https://www.facebook.com/HarryKalaba' },
   { id: 'membe',  name: "Fred M'membe",        fbPage: 'SocialistPartyZambia',  fbUrl: 'https://www.facebook.com/SocialistPartyZambia' },
-  // Official party pages (in addition to leader pages above)
-  { id: 'upnd_party', name: 'UPND (Official Party)', fbPage: 'UPNDZambia',        fbUrl: 'https://www.facebook.com/UPNDZambia' },
-  { id: 'pf_party',   name: 'Patriotic Front (Official Party)', fbPage: 'PatrioticFront.Zambia', fbUrl: 'https://www.facebook.com/PatrioticFront.Zambia' },
 ]
 
 // ── In-memory cache (hot path — survives within same Vercel instance) ─────────
@@ -90,7 +87,7 @@ async function triggerApifyScrape(pages: typeof LEADER_PAGES): Promise<string | 
 
 // ── Poll a specific Apify run and load results into cache ─────────────────────
 // Called when user explicitly requests a refresh (up to 55s wait)
-async function pollApifyRun(runId: string, leaderId: string): Promise<string[]> {
+async function pollApifyRun(runId: string): Promise<string[]> {
   if (!APIFY_TOKEN) return []
   const deadline = Date.now() + 55000
   while (Date.now() < deadline) {
@@ -281,8 +278,6 @@ const DEMO_ANALYSIS: Record<string, { sentiment: 'positive' | 'negative' | 'neut
   pf_ndc: { sentiment: 'positive', score: 64, summary: 'Mundubile-Makebi lane energising northern rural base and Copperbelt youth, but ticket and alliance clarity remain the main risk', topThemes: ['Alliance unity', 'Northern vote', 'Youth coalition', '2026 comeback'] },
   kalaba: { sentiment: 'positive', score: 61, summary: 'Widely respected as principled but Citizens First/CF Orange is seen as too small to win alone — coalition calls dominate the conversation', topThemes: ['Principled leadership', 'Coalition pressure', 'Anti-corruption', 'Luapula base'] },
   membe:  { sentiment: 'neutral',  score: 49, summary: "Polarised: intellectuals and TikTok youth rally to M'membe's mining analysis, business community fears socialist policy", topThemes: ['Mining royalties', 'TikTok youth', 'Press freedom', 'Socialism debate'] },
-  upnd_party: { sentiment: 'positive', score: 56, summary: 'Official UPND page pushes delivery messaging (free education, CDF, debt deal) but comment sections are dominated by cost-of-living and load-shedding anger', topThemes: ['CDF delivery', 'Free education', 'Cost of living', 'Load shedding'] },
-  pf_party:   { sentiment: 'neutral',  score: 51, summary: 'Official PF page rallies the comeback base around Mundubile-Makebi, but unresolved leadership/ticket questions and 2021 record keep sentiment split', topThemes: ['2026 comeback', 'Leadership clarity', 'Northern base', 'Anti-UPND'] },
 }
 
 // ── GET handler ───────────────────────────────────────────────────────────────
@@ -301,9 +296,20 @@ export async function GET(req: NextRequest) {
   let apifyRunId: string | null = null
   if (APIFY_TOKEN && needsScrape) {
     // Fire async — do not await (non-blocking)
-    triggerApifyScrape(targetLeaders).then(runId => {
-      if (runId) apifyRunId = runId
-    })
+    apifyRunId = await triggerApifyScrape(targetLeaders)
+    if (forceRefresh && apifyRunId) {
+      const texts = await pollApifyRun(apifyRunId)
+      if (texts.length > 0) {
+        targetLeaders.forEach(leader => {
+          apifyCache[leader.id] = {
+            texts,
+            runId: apifyRunId!,
+            scrapedAt: Date.now(),
+            postCount: texts.length,
+          }
+        })
+      }
+    }
   }
 
   const results = await Promise.all(
@@ -363,6 +369,7 @@ export async function GET(req: NextRequest) {
     apifyEnabled: !!APIFY_TOKEN,
     aiEnabled: !!CF_ACCOUNT_ID,
     scrapeTriggered: needsScrape && !!APIFY_TOKEN,
+    apifyRunId,
     webhookUrl: 'https://zambia-election-app.vercel.app/api/apify-webhook',
   })
 }

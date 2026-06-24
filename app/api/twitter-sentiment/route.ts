@@ -76,6 +76,26 @@ function extractTweetTexts(items: Tweet[], candidateQueries: string[]): string[]
     .filter(t => t.length > 15)
 }
 
+async function pollTwitterRun(runId: string): Promise<Tweet[]> {
+  if (!APIFY_TOKEN) return []
+  const deadline = Date.now() + 55000
+  while (Date.now() < deadline) {
+    await new Promise(resolve => setTimeout(resolve, 4000))
+    try {
+      const statusRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_TOKEN}`)
+      const { data } = await statusRes.json()
+      if (data?.status === 'SUCCEEDED') {
+        const itemsRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}/dataset/items?token=${APIFY_TOKEN}&limit=200`)
+        return await itemsRes.json()
+      }
+      if (data?.status === 'FAILED' || data?.status === 'ABORTED' || data?.status === 'TIMED-OUT') return []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
 async function analyzeWithAI(candidateName: string, texts: string[], platform: string) {
   if (!CF_ACCOUNT_ID || !CF_API_TOKEN || texts.length === 0) return null
   const sample = texts.slice(0, 25).join('\n- ')
@@ -204,8 +224,25 @@ export async function GET(req: NextRequest) {
     return !cached || (Date.now() - cached.scrapedAt) > CACHE_TTL_MS
   })
 
+  let apifyRunId: string | null = null
   if (APIFY_TOKEN && needsScrape) {
-    triggerTwitterScrape().catch(() => {})
+    apifyRunId = await triggerTwitterScrape()
+    if (forceRefresh && apifyRunId) {
+      const items = await pollTwitterRun(apifyRunId)
+      if (items.length > 0) {
+        CANDIDATE_QUERIES.forEach(candidate => {
+          const texts = extractTweetTexts(items, candidate.queries)
+          if (texts.length > 0) {
+            twitterCache[candidate.id] = {
+              texts,
+              runId: apifyRunId!,
+              scrapedAt: Date.now(),
+              tweetCount: texts.length,
+            }
+          }
+        })
+      }
+    }
   }
 
   const results = await Promise.all(
@@ -255,6 +292,7 @@ export async function GET(req: NextRequest) {
     apifyEnabled: !!APIFY_TOKEN,
     aiEnabled: !!CF_ACCOUNT_ID,
     scrapeTriggered: needsScrape && !!APIFY_TOKEN,
+    apifyRunId,
   })
 }
 

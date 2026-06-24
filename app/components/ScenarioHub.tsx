@@ -1,5 +1,6 @@
 'use client'
 
+/* eslint-disable react/no-unescaped-entities */
 import { useState, useCallback, useEffect } from 'react'
 import { ELECTION_DATA } from '@/app/lib/data'
 
